@@ -1,30 +1,43 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Velkommen hjem</title>
 	<style>
-		#ball {
+		#waving-man {
 			position: relative;
-			background-color: red;
 			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			animation: bounce 1s infinite alternate;
+			height: 100px;
+			background-color: transparent;
+			animation: wave 2s infinite;
+			transform-origin: bottom;
 		}
-		@keyframes bounce {
-			from {top: 0px;}
-			to {top: 200px;}
+		#waving-man:before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 0;
+			height: 0;
+			border-right: 25px solid transparent;
+			border-top: 50px solid yellow;
+			transform-origin: bottom right;
+			transform: rotate(45deg);
+		}
+		@keyframes wave {
+			0% {transform: rotate(0deg);}
+			25% {transform: rotate(-10deg);}
+			75% {transform: rotate(10deg);}
+			100% {transform: rotate(0deg);}
 		}
 	</style>
 </head>
 <body>
 	<h1>Velkommen hjem!</h1>
 	<p>Vi er glade for at se dig her.</p>
-	<div id="ball"></div>
+	<div id="waving-man"></div>
 	<script>
-		var ball = document.getElementById("ball");
+		var man = document.getElementById("waving-man");
 	</script>
 </body>
 </html>
+
