@@ -1,0 +1,29 @@
+using UnityEngine;
+using System.Collections;
+
+public class GameController : MonoBehaviour {
+
+    public GameObject playerCharacter; // reference to the player character prefab
+    public GameObject enemyPrefab; // reference to the enemy prefab
+    public float enemySpawnInterval = 2f; // interval at which enemies will spawn
+    public float enemySpeed = 5f; // speed at which enemies move
+
+    private float lastEnemySpawnTime = 0f;
+
+    void Update () {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            playerCharacter.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+        }
+
+        if (Time.time > lastEnemySpawnTime + enemySpawnInterval) {
+            SpawnEnemy();
+            lastEnemySpawnTime = Time.time;
+        }
+    }
+
+    void SpawnEnemy () {
+        GameObject enemy = Instantiate(enemyPrefab, new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f)), Quaternion.identity);
+        enemy.GetComponent<Rigidbody>().velocity = (playerCharacter.transform.position - enemy.transform.position).normalized * enemySpeed;
+    }
+
+}
