@@ -26,9 +26,9 @@
 			width: 40,
 			height: 30,
 			velocity: 0,
-			gravity: 0.8,
+			gravity: 0.6,
 			flap: function() {
-				this.velocity = -12;
+				this.velocity = -10;
 			},
 			draw: function() {
 				ctx.fillStyle = "#FFFF00";
@@ -93,7 +93,7 @@
 		}
 
 		// Set up the event listeners
-		document.addEventListener("touchstart", function(event) {
+		canvas.addEventListener("mousedown", function(event) {
 			if (!started) {
 				started = true;
 			} else {
@@ -101,9 +101,6 @@
 			}
 		});
 
-		// Start the game loop
-		requestAnimationFrame(loop);
-	</script>
-</body>
-</html>
+		canvas.addEventListener("touchstart", function(event
+
 
