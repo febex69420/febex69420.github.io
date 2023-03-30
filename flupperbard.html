@@ -11,6 +11,90 @@
 <body>
 	<h1>Flappy Bird</h1>
 	<canvas id="canvas" width="288" height="512"></canvas>
-	<script src="flappybird.js"></script>
+	<script>
+		// Set up the canvas and game variables
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var score = 0;
+		var gameover = false;
+
+		// Set up the bird object
+		var bird = {
+			x: 50,
+			y: 250,
+			width: 40,
+			height: 30,
+			velocity: 0,
+			gravity: 1.5,
+			flap: function() {
+				this.velocity = -15;
+			},
+			draw: function() {
+				ctx.fillStyle = "#FFFF00";
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+			}
+		};
+
+		// Set up the pipe object
+		var pipe = {
+			x: 288,
+			y: 0,
+			width: 50,
+			height: 150,
+			speed: 5,
+			draw: function() {
+				ctx.fillStyle = "#00FF00";
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+				ctx.fillRect(this.x, this.y + this.height + 100, this.width, canvas.height - this.height - 100);
+			},
+			update: function() {
+				this.x -= this.speed;
+				if (this.x < -this.width) {
+					this.x = canvas.width;
+					score++;
+				}
+			}
+		};
+
+		// Set up the game loop
+		function loop() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			bird.velocity += bird.gravity;
+			bird.y += bird.velocity;
+			if (bird.y > canvas.height - bird.height) {
+				gameover = true;
+			}
+			if (bird.y < 0) {
+				bird.y = 0;
+			}
+			if (pipe.x < bird.x + bird.width && pipe.x + pipe.width > bird.x && (bird.y < pipe.height || bird.y + bird.height > pipe.height + 100)) {
+				gameover = true;
+			}
+			if (gameover) {
+				ctx.fillStyle = "#FF0000";
+				ctx.font = "30px Arial";
+				ctx.fillText("Game Over!", 100, 250);
+			} else {
+				pipe.update();
+				pipe.draw();
+				bird.draw();
+				ctx.fillStyle = "#000000";
+				ctx.font = "20px Arial";
+				ctx.fillText("Score: " + score, 10, 30);
+				requestAnimationFrame(loop);
+			}
+		}
+
+		// Set up the event listeners
+		document.addEventListener("keydown", function(event) {
+			if (event.keyCode === 32) {
+				bird.flap();
+			}
+		});
+
+		// Start the game loop
+		requestAnimationFrame(loop);
+	</script>
 </body>
 </html>
+dsfdf
