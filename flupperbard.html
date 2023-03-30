@@ -17,6 +17,7 @@
 		var ctx = canvas.getContext("2d");
 		var score = 0;
 		var gameover = false;
+		var started = false;
 
 		// Set up the bird object
 		var bird = {
@@ -25,9 +26,9 @@
 			width: 40,
 			height: 30,
 			velocity: 0,
-			gravity: 1.5,
+			gravity: 0.8,
 			flap: function() {
-				this.velocity = -15;
+				this.velocity = -12;
 			},
 			draw: function() {
 				ctx.fillStyle = "#FFFF00";
@@ -59,35 +60,43 @@
 		// Set up the game loop
 		function loop() {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			bird.velocity += bird.gravity;
-			bird.y += bird.velocity;
-			if (bird.y > canvas.height - bird.height) {
-				gameover = true;
-			}
-			if (bird.y < 0) {
-				bird.y = 0;
-			}
-			if (pipe.x < bird.x + bird.width && pipe.x + pipe.width > bird.x && (bird.y < pipe.height || bird.y + bird.height > pipe.height + 100)) {
-				gameover = true;
-			}
-			if (gameover) {
-				ctx.fillStyle = "#FF0000";
-				ctx.font = "30px Arial";
-				ctx.fillText("Game Over!", 100, 250);
+			if (started) {
+				bird.velocity += bird.gravity;
+				bird.y += bird.velocity;
+				if (bird.y > canvas.height - bird.height) {
+					gameover = true;
+				}
+				if (bird.y < 0) {
+					bird.y = 0;
+				}
+				if (pipe.x < bird.x + bird.width && pipe.x + pipe.width > bird.x && (bird.y < pipe.height || bird.y + bird.height > pipe.height + 100)) {
+					gameover = true;
+				}
+				if (gameover) {
+					ctx.fillStyle = "#FF0000";
+					ctx.font = "30px Arial";
+					ctx.fillText("Game Over!", 100, 250);
+				} else {
+					pipe.update();
+					pipe.draw();
+					bird.draw();
+					ctx.fillStyle = "#000000";
+					ctx.font = "20px Arial";
+					ctx.fillText("Score: " + score, 10, 30);
+				}
 			} else {
-				pipe.update();
-				pipe.draw();
-				bird.draw();
 				ctx.fillStyle = "#000000";
-				ctx.font = "20px Arial";
-				ctx.fillText("Score: " + score, 10, 30);
-				requestAnimationFrame(loop);
+				ctx.font = "30px Arial";
+				ctx.fillText("Press to Start", 80, 250);
 			}
+			requestAnimationFrame(loop);
 		}
 
 		// Set up the event listeners
-		document.addEventListener("keydown", function(event) {
-			if (event.keyCode === 32) {
+		document.addEventListener("touchstart", function(event) {
+			if (!started) {
+				started = true;
+			} else {
 				bird.flap();
 			}
 		});
@@ -97,4 +106,4 @@
 	</script>
 </body>
 </html>
-dsfdf
+
