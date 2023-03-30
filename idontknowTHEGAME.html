@@ -1,100 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Dodge the Balls</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-		}
-	</style>
+    <title>Ball Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-	<h1>Dodge the Balls</h1>
-	<canvas id="canvas" width="400" height="400"></canvas>
-	<script>
-		// Set up the canvas and game variables
-		var canvas = document.getElementById("canvas");
-		var ctx = canvas.getContext("2d");
-		var score = 0;
-		var gameover = false;
-		var started = false;
+    <h1>Ball Game</h1>
+    <canvas id="canvas" width="600" height="400"></canvas>
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var ball = {
+            x: canvas.width/2,
+            y: canvas.height-30,
+            radius: 10,
+            dx: 3,
+            dy: -3
+        };
+        var paddle = {
+            width: 75,
+            height: 10,
+            x: (canvas.width - 75) / 2,
+            y: canvas.height - 10
+        };
+        var rightPressed = false;
+        var leftPressed = false;
+        var score = 0;
+        var brickRowCount = 3;
+        var brickColumnCount = 5;
+        var brickWidth = 75;
+        var brickHeight = 20;
+        var brickPadding = 10;
+        var brickOffsetTop = 30;
+        var brickOffsetLeft = 30;
+        var bricks = [];
+        for(var c=0; c<brickColumnCount; c++) {
+            bricks[c] = [];
+            for(var r=0; r<brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y: 0, status: 1 };
+            }
+        }
 
-		// Set up the player object
-		var player = {
-			x: canvas.width / 2,
-			y: canvas.height / 2,
-			radius: 20,
-			color: "#00FF00",
-			draw: function() {
-				ctx.fillStyle = this.color;
-				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-				ctx.fill();
-			}
-		};
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
 
-		// Set up the ball object
-		var ball = {
-			x: Math.floor(Math.random() * canvas.width),
-			y: 0,
-			radius: 15,
-			color: "#FF0000",
-			speed: 5,
-			draw: function() {
-				ctx.fillStyle = this.color;
-				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-				ctx.fill();
-			},
-			update: function() {
-				this.y += this.speed;
-				if (this.y > canvas.height + this.radius) {
-					this.y = 0;
-					this.x = Math.floor(Math.random() * canvas.width);
-					score++;
-				}
-			}
-		};
+        function keyDownHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") {
+                rightPressed = true;
+            }
+            else if(e.key == "Left" || e.key == "ArrowLeft") {
+                leftPressed = true;
+            }
+        }
 
-		// Set up the game loop
-		function loop() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			if (started) {
-				if (gameover) {
-					ctx.fillStyle = "#FF0000";
-					ctx.font = "30px Arial";
-					ctx.fillText("Game Over!", 120, 200);
-				} else {
-					player.draw();
-					ball.update();
-					ball.draw();
-					ctx.fillStyle = "#000000";
-					ctx.font = "20px Arial";
-					ctx.fillText("Score: " + score, 10, 30);
+        function keyUpHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") {
+                rightPressed = false;
+            }
+            else if(e.key == "Left" || e.key == "ArrowLeft") {
+                leftPressed = false;
+            }
+        }
 
-					// Check for collision
-					var distance = Math.sqrt(Math.pow(player.x - ball.x, 2) + Math.pow(player.y - ball.y, 2));
-					if (distance < player.radius + ball.radius) {
-						gameover = true;
-					}
-				}
-			} else {
-				ctx.fillStyle = "#000000";
-				ctx.font = "30px Arial";
-				ctx.fillText("Press to Start", 80, 200);
-			}
-			requestAnimationFrame(loop);
-		}
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
 
-		// Set up the event listeners
-		document.addEventListener("click", function(event) {
-			if (!started) {
-				started = true;
-			}
-		});
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
 
-		// Start the game loop
-		requestAnimationFrame(loop);
-	</script>
-</body>
-</html>
+        function drawBricks() {
+            for(var c=0; c<brickColumnCount; c++) {
+                for(var r=0; r<brickRowCount; r++) {
+                    if(bricks[c][r].status == 1) {
+                        var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                        var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = "#0095DD";
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        function collisionDetection() {
+            for(var c=0; c<brickColumnCount; c
+
