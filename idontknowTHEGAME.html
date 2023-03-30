@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dodge the Balls</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<h1>Dodge the Balls</h1>
+	<canvas id="canvas" width="400" height="400"></canvas>
+	<script>
+		// Set up the canvas and game variables
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var score = 0;
+		var gameover = false;
+		var started = false;
+
+		// Set up the player object
+		var player = {
+			x: canvas.width / 2,
+			y: canvas.height / 2,
+			radius: 20,
+			color: "#00FF00",
+			draw: function() {
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+				ctx.fill();
+			}
+		};
+
+		// Set up the ball object
+		var ball = {
+			x: Math.floor(Math.random() * canvas.width),
+			y: 0,
+			radius: 15,
+			color: "#FF0000",
+			speed: 5,
+			draw: function() {
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+				ctx.fill();
+			},
+			update: function() {
+				this.y += this.speed;
+				if (this.y > canvas.height + this.radius) {
+					this.y = 0;
+					this.x = Math.floor(Math.random() * canvas.width);
+					score++;
+				}
+			}
+		};
+
+		// Set up the game loop
+		function loop() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			if (started) {
+				if (gameover) {
+					ctx.fillStyle = "#FF0000";
+					ctx.font = "30px Arial";
+					ctx.fillText("Game Over!", 120, 200);
+				} else {
+					player.draw();
+					ball.update();
+					ball.draw();
+					ctx.fillStyle = "#000000";
+					ctx.font = "20px Arial";
+					ctx.fillText("Score: " + score, 10, 30);
+
+					// Check for collision
+					var distance = Math.sqrt(Math.pow(player.x - ball.x, 2) + Math.pow(player.y - ball.y, 2));
+					if (distance < player.radius + ball.radius) {
+						gameover = true;
+					}
+				}
+			} else {
+				ctx.fillStyle = "#000000";
+				ctx.font = "30px Arial";
+				ctx.fillText("Press to Start", 80, 200);
+			}
+			requestAnimationFrame(loop);
+		}
+
+		// Set up the event listeners
+		document.addEventListener("click", function(event) {
+			if (!started) {
+				started = true;
+			}
+		});
+
+		// Start the game loop
+		requestAnimationFrame(loop);
+	</script>
+</body>
+</html>
