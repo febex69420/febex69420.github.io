@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Spaceship Game</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<h1>Spaceship Game</h1>
+	<canvas id="canvas" width="500" height="500"></canvas>
+	<script>
+		// Set up the canvas and game variables
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var score = 0;
+		var gameover = false;
+		var started = false;
+
+		// Set up the spaceship object
+		var spaceship = {
+			x: 200,
+			y: 200,
+			width: 50,
+			height: 50,
+			speed: 5,
+			draw: function() {
+				ctx.fillStyle = "#00FFFF";
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+			},
+			moveUp: function() {
+				this.y -= this.speed;
+			},
+			moveDown: function() {
+				this.y += this.speed;
+			},
+			moveLeft: function() {
+				this.x -= this.speed;
+			},
+			moveRight: function() {
+				this.x += this.speed;
+			}
+		};
+
+		// Set up the obstacle object
+		var obstacle = {
+			x: 500,
+			y: 0,
+			width: 50,
+			height: 150,
+			speed: 5,
+			draw: function() {
+				ctx.fillStyle = "#FF0000";
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+			},
+			update: function() {
+				this.x -= this.speed;
+				if (this.x < -this.width) {
+					this.x = canvas.width;
+					this.height = Math.floor(Math.random() * 200) + 50;
+					score++;
+				}
+			}
+		};
+
+		// Set up the game loop
+		function loop() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			if (gameover) {
+				ctx.fillStyle = "#FF0000";
+				ctx.font = "30px Arial";
+				ctx.fillText("Game Over!", 180, 250);
+			} else {
+				obstacle.update();
+				obstacle.draw();
+				spaceship.draw();
+				ctx.fillStyle = "#000000";
+				ctx.font = "20px Arial";
+				ctx.fillText("Score: " + score, 10, 30);
+				if (spaceship.x + spaceship.width > obstacle.x && spaceship.x < obstacle.x + obstacle.width && spaceship.y + spaceship.height > obstacle.y && spaceship.y < obstacle.y + obstacle.height) {
+					gameover = true;
+				}
+			}
+			requestAnimationFrame(loop);
+		}
+
+		// Set up the event listeners
+		document.addEventListener("keydown", function(event) {
+			if (!gameover) {
+				if (!started) {
+					started = true;
+				}
+				if (event.code === "ArrowUp") {
+					spaceship.moveUp();
+				} else if (event.code === "ArrowDown") {
+					spaceship.moveDown();
+				} else if (event.code === "ArrowLeft") {
+					spaceship.moveLeft();
+				} else if (event.code === "ArrowRight") {
+					spaceship.moveRight();
+				}
+			}
+		});
+
+		// Start the game loop
+		requestAnimationFrame(loop);
+	</script>
+</body>
+</html>
+``
