@@ -109,18 +109,4 @@
 	</script>
 </body>
 </html>
-``// Set up keyboard controls
-document.addEventListener("keydown", function(event) {
-  if (event.keyCode === 37) {  // Left arrow key
-    spaceship.vx = -spaceship.speed;
-  } else if (event.keyCode === 39) {  // Right arrow key
-    spaceship.vx = spaceship.speed;
-  }
-});
-
-document.addEventListener("keyup", function(event) {
-  if (event.keyCode === 37 || event.keyCode === 39) {
-    spaceship.vx = 0;
-  }
-});
-
+``
