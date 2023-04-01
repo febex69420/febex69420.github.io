@@ -19,8 +19,8 @@
         var ball = {
             x: canvas.width/2,
             y: canvas.height/2,
-            dx: 3,
-            dy: 3,
+            dx: Math.random() * 6 - 3,
+            dy: Math.random() * 6 - 3,
             radius: 10,
             minSpeed: 1
         };
@@ -31,16 +31,32 @@
         var paddle1Y = canvas.height/2 - paddleHeight/2;
         var paddle2Y = canvas.height/2 - paddleHeight/2;
 
+        // Set up the score
+        var player1Score = 0;
+        var player2Score = 0;
+
         // Move the paddles
         document.addEventListener("keydown", function(event) {
             if (event.key === "w") {
                 paddle1Y -= 10;
+                if (paddle1Y < 0) {
+                    paddle1Y = 0;
+                }
             } else if (event.key === "s") {
                 paddle1Y += 10;
+                if (paddle1Y + paddleHeight > canvas.height) {
+                    paddle1Y = canvas.height - paddleHeight;
+                }
             } else if (event.key === "ArrowUp") {
                 paddle2Y -= 10;
+                if (paddle2Y < 0) {
+                    paddle2Y = 0;
+                }
             } else if (event.key === "ArrowDown") {
                 paddle2Y += 10;
+                if (paddle2Y + paddleHeight > canvas.height) {
+                    paddle2Y = canvas.height - paddleHeight;
+                }
             }
         });
 
@@ -73,27 +89,11 @@
                 ball.dx = -ball.dx;
             }
 
-            // Slow down the ball
-            ball.dx *= 0.99;
-            ball.dy *= 0.99;
+            // Check if the ball falls out in the sides
+            if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+                if (ball.x - ball.radius < 0) {
+                    player2
 
-            // Ensure that the ball never slows down too much
-            if (Math.abs(ball.dx) < ball.minSpeed) {
-                ball.dx = ball.minSpeed * Math.sign(ball.dx);
-            }
-            if (Math.abs(ball.dy) < ball.minSpeed) {
-                ball.dy = ball.minSpeed * Math.sign(ball.dy);
-            }
-
-            // Request the next animation frame
-            requestAnimationFrame(draw);
-        }
-
-        // Start the game
-        draw();
-    </script>
-</body>
-</html>
 
 
 
