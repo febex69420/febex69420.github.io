@@ -72,3 +72,46 @@
 	</script>
 </body>
 </html>
+function draw() {
+    // Draw the game objects
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
+    ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
+
+    // Move the ball
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    // Bounce off the walls
+    if (ball.y + ball.dy > canvas.height || ball.y + ball.dy < 0) {
+        ball.dy = -ball.dy;
+    }
+
+    // Check if the ball hits the paddles
+    if (ball.x - ball.radius < paddleWidth && ball.y > paddle1Y && ball.y < paddle1Y + paddleHeight) {
+        ball.dx = -ball.dx;
+    } else if (ball.x + ball.radius > canvas.width - paddleWidth && ball.y > paddle2Y && ball.y < paddle2Y + paddleHeight) {
+        ball.dx = -ball.dx;
+    }
+
+    // Move the paddles
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "w") {
+            paddle1Y -= 10;
+        } else if (event.key === "s") {
+            paddle1Y += 10;
+        } else if (event.key === "ArrowUp") {
+            paddle2Y -= 10;
+        } else if (event.key === "ArrowDown") {
+            paddle2Y += 10;
+        }
+    });
+
+    // Redraw the paddles
+    ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
+    ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
+}
