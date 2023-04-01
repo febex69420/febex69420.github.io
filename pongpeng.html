@@ -30,6 +30,19 @@
         var paddle1Y = canvas.height/2 - paddleHeight/2;
         var paddle2Y = canvas.height/2 - paddleHeight/2;
 
+        // Move the paddles
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "w") {
+                paddle1Y -= 10;
+            } else if (event.key === "s") {
+                paddle1Y += 10;
+            } else if (event.key === "ArrowUp") {
+                paddle2Y -= 10;
+            } else if (event.key === "ArrowDown") {
+                paddle2Y += 10;
+            }
+        });
+
         // Draw the game objects
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,19 +72,6 @@
                 ball.dx = -ball.dx;
             }
 
-            // Move the paddles
-            document.addEventListener("keydown", function(event) {
-                if (event.key === "w") {
-                    paddle1Y -= 10;
-                } else if (event.key === "s") {
-                    paddle1Y += 10;
-                } else if (event.key === "ArrowUp") {
-                    paddle2Y -= 10;
-                } else if (event.key === "ArrowDown") {
-                    paddle2Y += 10;
-                }
-            });
-
             // Slow down the ball
             ball.dx *= 0.99;
             ball.dy *= 0.99;
@@ -85,4 +85,5 @@
     </script>
 </body>
 </html>
+
 
