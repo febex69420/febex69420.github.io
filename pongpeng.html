@@ -1,117 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Ping Pong Game</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-		}
-	</style>
+    <meta charset="utf-8">
+    <title>Ping Pong Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-	<canvas id="gameCanvas" width="600" height="400"></canvas>
-	<script>
-		var canvas = document.getElementById("gameCanvas");
-		var ctx = canvas.getContext("2d");
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("gameCanvas");
+        var ctx = canvas.getContext("2d");
 
-		// Set up game objects
-		var ball = {
-			x: canvas.width/2,
-			y: canvas.height/2,
-			radius: 10,
-			dx: 5,
-			dy: 2 // changed from 5 to 2
-		};
+        // Set up the ball
+        var ball = {
+            x: canvas.width/2,
+            y: canvas.height/2,
+            dx: 3,
+            dy: 3,
+            radius: 10
+        };
 
-		var paddleHeight = 75;
-		var paddleWidth = 10;
-		var paddle1Y = canvas.height/2 - paddleHeight/2;
-		var paddle2Y = canvas.height/2 - paddleHeight/2;
+        // Set up the paddles
+        var paddleWidth = 10;
+        var paddleHeight = 80;
+        var paddle1Y = canvas.height/2 - paddleHeight/2;
+        var paddle2Y = canvas.height/2 - paddleHeight/2;
 
-		function draw() {
-			// Draw the game objects
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.beginPath();
-			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-			ctx.fill();
+        // Draw the game objects
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-			ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
+            // Draw the ball
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+            ctx.fill();
 
-			// Move the ball
-			ball.x += ball.dx;
-			ball.y += ball.dy;
+            // Draw the paddles
+            ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
+            ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
 
-			// Bounce off the walls
-			if (ball.y + ball.dy > canvas.height || ball.y + ball.dy < 0) {
-				ball.dy = -ball.dy;
-			}
+            // Move the ball
+            ball.x += ball.dx;
+            ball.y += ball.dy;
 
-			// Check if the ball hits the paddles
-			if (ball.x - ball.radius < paddleWidth && ball.y > paddle1Y && ball.y < paddle1Y + paddleHeight) {
-				ball.dx = -ball.dx;
-			} else if (ball.x + ball.radius > canvas.width - paddleWidth && ball.y > paddle2Y && ball.y < paddle2Y + paddleHeight) {
-				ball.dx = -ball.dx;
-			}
+            // Bounce off the walls
+            if (ball.y + ball.dy > canvas.height - ball.radius || ball.y + ball.dy < ball.radius) {
+                ball.dy = -ball.dy;
+            }
 
-			// Move the paddles
-			document.addEventListener("keydown", function(event) {
-				if (event.key === "w") {
-					paddle1Y -= 10;
-				} else if (event.key === "s") {
-					paddle1Y += 10;
-				} else if (event.key === "ArrowUp") {
-					paddle2Y -= 10;
-				} else if (event.key === "ArrowDown") {
-					paddle2Y += 10;
-				}
-			});
-		}
+            // Check if the ball hits the paddles
+            if (ball.x - ball.radius < paddleWidth && ball.y > paddle1Y && ball.y < paddle1Y + paddleHeight) {
+                ball.dx = -ball.dx;
+            } else if (ball.x + ball.radius > canvas.width - paddleWidth && ball.y > paddle2Y && ball.y < paddle2Y + paddleHeight) {
+                ball.dx = -ball.dx;
+            }
 
-		setInterval(draw, 10);
-	</script>
+            // Move the paddles
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "w") {
+                    paddle1Y -= 10;
+                } else if (event.key === "s") {
+                    paddle1Y += 10;
+                } else if (event.key === "ArrowUp") {
+                    paddle2Y -= 10;
+                } else if (event.key === "ArrowDown") {
+                    paddle2Y += 10;
+                }
+            });
+
+            // Slow down the ball
+            ball.dx *= 0.99;
+            ball.dy *= 0.99;
+
+            // Request the next animation frame
+            requestAnimationFrame(draw);
+        }
+
+        // Start the game
+        draw();
+    </script>
 </body>
 </html>
-function draw() {
-    // Draw the game objects
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-    ctx.fill();
 
-    ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-    ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
-
-    // Move the ball
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    // Bounce off the walls
-    if (ball.y + ball.dy > canvas.height || ball.y + ball.dy < 0) {
-        ball.dy = -ball.dy;
-    }
-
-    // Check if the ball hits the paddles
-    if (ball.x - ball.radius < paddleWidth && ball.y > paddle1Y && ball.y < paddle1Y + paddleHeight) {
-        ball.dx = -ball.dx;
-    } else if (ball.x + ball.radius > canvas.width - paddleWidth && ball.y > paddle2Y && ball.y < paddle2Y + paddleHeight) {
-        ball.dx = -ball.dx;
-    }
-
-    // Move the paddles
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "w") {
-            paddle1Y -= 10;
-        } else if (event.key === "s") {
-            paddle1Y += 10;
-        } else if (event.key === "ArrowUp") {
-            paddle2Y -= 10;
-        } else if (event.key === "ArrowDown") {
-            paddle2Y += 10;
-        }
-    });
-
-    // Redraw the paddles
-    ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-    ctx.fillRect(canvas.width-paddleWidth, paddle2Y, paddleWidth, paddleHeight);
-}
