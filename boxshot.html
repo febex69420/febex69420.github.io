@@ -1,95 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Box Shooter</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-		}
-	</style>
-</head>
-<body>
-	<canvas id="canvas" width="800" height="600"></canvas>
-	<script>
-		// Set up the canvas and context
-		var canvas = document.getElementById("canvas");
-		var ctx = canvas.getContext("2d");
-		var canvas_width = canvas.width;
-		var canvas_height = canvas.height;
+  <head>
+    <title>Box Shooting Game</title>
+    <style>
+      /* Style for the game container */
+      #game-container {
+        width: 500px;
+        height: 400px;
+        margin: 0 auto;
+        border: 1px solid black;
+        position: relative;
+      }
 
-		// Define colors
-		var black = "#000000";
-		var white = "#FFFFFF";
+      /* Style for the box */
+      .box {
+        width: 50px;
+        height: 50px;
+        background-color: yellow;
+        border: 1px solid black;
+        position: absolute;
+      }
 
-		// Set up the player
-		var player_width = 50;
-		var player_height = 50;
-		var player_x = canvas_width / 2 - player_width / 2;
-		var player_y = canvas_height - player_height;
-		var player_speed = 10;
+      /* Style for the bullet */
+      .bullet {
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <!-- Create a box using JavaScript -->
+      <script>
+        // Set the box position
+        var boxX = 50;
+        var boxY = 50;
 
-		// Set up the boxes
-		var box_width = 30;
-		var box_height = 30;
-		var box_speed = 5;
-		var box_list = [];
-		var box_timer = 0;
-		var box_timer_max = 60;
+        // Create the box element
+        var box = document.createElement("div");
+        box.className = "box";
+        box.style.left = boxX + "px";
+        box.style.top = boxY + "px";
 
-		// Set up the bullets
-		var bullet_width = 5;
-		var bullet_height = 10;
-		var bullet_speed = 10;
-		var bullet_list = [];
+        // Add the box to the game container
+        var gameContainer = document.getElementById("game-container");
+        gameContainer.appendChild(box);
+      </script>
 
-		// Set up the score
-		var score = 0;
-		var score_text = "";
+      <!-- Move the box using JavaScript -->
+      <script>
+        // Set the box speed
+        var boxSpeed = 5;
 
-		// Handle key events
-		document.addEventListener("keydown", function(event) {
-			if (event.keyCode === 32) { // Space bar
-				var bullet_x = player_x + player_width / 2 - bullet_width / 2;
-				var bullet_y = player_y;
-				bullet_list.push({x: bullet_x, y: bullet_y});
-			} else if (event.keyCode === 37) { // Left arrow
-				if (player_x > 0) {
-					player_x -= player_speed;
-				}
-			} else if (event.keyCode === 39) { // Right arrow
-				if (player_x < canvas_width - player_width) {
-					player_x += player_speed;
-				}
-			}
-		});
+        // Move the box every 10 milliseconds
+        setInterval(function() {
+          // Get the box position
+          var boxX = parseInt(box.style.left);
+          var boxY = parseInt(box.style.top);
 
-		// Main game loop
-		function gameLoop() {
-			// Move the boxes
-			for (var i = 0; i < box_list.length; i++) {
-				box_list[i].y += box_speed;
-			}
+          // Move the box
+          boxX += boxSpeed;
+          if (boxX > 450) {
+            boxSpeed = -5;
+          } else if (boxX < 50) {
+            boxSpeed = 5;
+          }
+          box.style.left = boxX + "px";
+        }, 10);
+      </script>
 
-			// Spawn new boxes
-			if (box_timer < box_timer_max) {
-				box_timer++;
-			} else {
-				var box_x = Math.floor(Math.random() * (canvas_width - box_width));
-				var box_y = -box_height;
-				box_list.push({x: box_x, y: box_y});
-				box_timer = 0;
-			}
+      <!-- Create the player bullet using JavaScript -->
+      <script>
+        // Set the bullet position
+        var bulletX = 250;
+        var bulletY = 350;
 
-			// Move the bullets
-			for (var i = 0; i < bullet_list.length; i++) {
-				bullet_list[i].y -= bullet_speed;
-			}
+        // Create the bullet element
+        var bullet = document.createElement("div");
+        bullet.className = "bullet";
+        bullet.style.left = bulletX + "px";
+        bullet.style.top = bulletY + "px";
 
-			// Check for collisions between bullets and boxes
-			for (var i = 0; i < bullet_list.length; i++) {
-				for (var j = 0; j < box_list.length; j++) {
-					if (bullet_list[i].x + bullet_width > box_list[j].x &&
-						bullet_list[i].x < box_list[j].x + box_width &&
-						bullet_list[i].y + bullet_height > box_list[j].y &&
-						bullet_list[i].y < box_list[j].y +
+        // Add the bullet to the game container
+        gameContainer.appendChild(bullet);
+
+        // Move the bullet every 10 milliseconds
+        setInterval(function() {
+          // Get the bullet position
+          var bulletY = parseInt(bullet.style.top);
+
+          // Move the bullet
+          bulletY -= 5;
+          bullet.style.top = bulletY + "px";
+
+          // Check if the bullet hits the box
+          if (bulletY < boxY + 50 && bulletX > boxX && bulletX < boxX + 50) {
+            // Remove the box and bullet
+            gameContainer.removeChild(box);
+            gameContainer.removeChild(bullet);
+          }
+        }, 10);
+      </script>
+    </div>
+  </body>
+</html>
 
