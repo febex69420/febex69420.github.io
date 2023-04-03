@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Tall Game</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #F5DEB3;
+		}
+		#player {
+			width: 50px;
+			height: 50px;
+			background-color: #0000FF;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+		}
+		.net {
+			width: 50px;
+			height: 50px;
+			background-color: #00FF00;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<div id="player"></div>
+
+	<script>
+		// Get the player element and its style properties
+		var player = document.getElementById("player");
+		var playerWidth = parseInt(window.getComputedStyle(player).getPropertyValue("width"));
+		var playerHeight = parseInt(window.getComputedStyle(player).getPropertyValue("height"));
+
+		// Create an array to hold the nets
+		var nets = [];
+
+		// Function to create a net at a random location
+		function createNet() {
+			var net = document.createElement("div");
+			net.className = "net";
+			net.style.left = Math.floor(Math.random() * (window.innerWidth - playerWidth)) + "px";
+			net.style.bottom = Math.floor(Math.random() * (window.innerHeight - playerHeight)) + "px";
+			document.body.appendChild(net);
+			nets.push(net);
+		}
+
+		// Function to check if the player is overlapping a net
+		function checkCollision(net) {
+			var netRect = net.getBoundingClientRect();
+			var playerRect = player.getBoundingClientRect();
+			return !(
+				netRect.bottom < playerRect.top ||
+				netRect.top > playerRect.bottom ||
+				netRect.right < playerRect.left ||
+				netRect.left > playerRect.right
+			);
+		}
+
+		// Function to update the game state every frame
+		function update() {
+			// Check for collisions with nets
+			for (var i = 0; i < nets.length; i++) {
+				var net = nets[i];
+				if (checkCollision(net)) {
+					// Increase the player's height and remove the net
+					player.style.height = parseInt(window.getComputedStyle(player).getPropertyValue("height")) + 10 + "px";
+					net.remove();
+					nets.splice(i, 1);
+					i--;
+				}
+			}
+
+			// Create a new net every few frames
+			if (Math.random() < 0.1) {
+				createNet();
+			}
+
+			// Call this function again on the next frame
+			requestAnimationFrame(update);
+		}
+
+		// Start the game loop
+		requestAnimationFrame(update);
+	</script>
+</body>
+</html>
