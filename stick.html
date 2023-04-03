@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Round Hole and Stick</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="400" height="400"></canvas>
+
+	<script>
+		// Get the canvas element and its context
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		// Draw the round hole
+		ctx.beginPath();
+		ctx.arc(200, 200, 50, 0, 2*Math.PI);
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fill();
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "#000000";
+		ctx.stroke();
+
+		// Draw the stick
+		ctx.beginPath();
+		ctx.moveTo(200, 150);
+		ctx.lineTo(200, 50);
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "#000000";
+		ctx.stroke();
+	</script>
+</body>
+</html>
