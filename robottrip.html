@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robot Riding on Horse Game</title>
+	<style>
+		#game {
+			width: 800px;
+			height: 600px;
+			margin: auto;
+			background-color: #4CAF50;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		#robot {
+			width: 80px;
+			height: 120px;
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			background-image: url('https://i.imgur.com/NfU6BQA.png');
+			background-size: contain;
+			z-index: 1;
+		}
+		
+		#horse {
+			width: 200px;
+			height: 180px;
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			background-image: url('https://i.imgur.com/Mi1dou4.png');
+			background-size: contain;
+			z-index: 2;
+		}
+		
+		.turtle {
+			width: 60px;
+			height: 60px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-image: url('https://i.imgur.com/eXfJMPN.png');
+			background-size: contain;
+			animation: moveTurtle 5s linear infinite;
+			z-index: 3;
+		}
+		
+		@keyframes moveTurtle {
+			from { left: -60px; }
+			to { left: 800px; }
+		}
+		
+		.bullet {
+			width: 10px;
+			height: 10px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-color: red;
+			animation: shootBullet 1s linear forwards;
+			z-index: 4;
+		}
+		
+		@keyframes shootBullet {
+			from {
+				top: 50%;
+				left: 50%;
+				opacity: 1;
+			}
+			to {
+				top: -10%;
+				left: 100%;
+				opacity: 0;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="game">
+		<div id="horse"></div>
+		<div id="robot"></div>
+	</div>
+	
+	<script>
+		let game = document.getElementById('game');
+		let robot = document.getElementById('robot');
+		let horse = document.getElementById('horse');
+		
+		game.addEventListener('click', function() {
+			let bullet = document.createElement('div');
+			bullet.classList.add('bullet');
+			game.appendChild(bullet);
+			let turtle = document.elementFromPoint(robot.offsetLeft + 40, robot.offsetTop + 60);
+			if (turtle && turtle.classList.contains('turtle')) {
+				turtle.remove();
+			} else {
+				bullet.remove();
+			}
+		});
+		
+		setInterval(function() {
+			let turtle = document.createElement('div');
+			turtle.classList.add('turtle');
+			game.appendChild(turtle);
+			let timer = setInterval(function() {
+				if (turtle.offsetTop >= game.clientHeight - 60) {
+					clearInterval(timer);
+					if (robot.offsetLeft >= turtle.offsetLeft - 60 && robot.offsetLeft <= turtle.offsetLeft + 60) {
+						alert('Game
