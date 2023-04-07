@@ -1,82 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>AI Chatbot</title>
-  <style>
-    #chat-container {
-      width: 500px;
-      margin: 0 auto;
-      padding: 20px;
-      border: 1px solid black;
-    }
-
-    #messages-container {
-      height: 300px;
-      overflow-y: scroll;
-      border: 1px solid black;
-      padding: 10px;
-    }
-
-    #message-input {
-      width: 100%;
-      margin-top: 10px;
-      padding: 5px;
-    }
-
-    #send-button {
-      margin-top: 10px;
-      padding: 5px;
-      background-color: lightblue;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+	<title>Sentiment Analysis Example</title>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <div id="chat-container">
-    <div id="messages-container"></div>
-    <input type="text" id="message-input" placeholder="Enter your message">
-    <button id="send-button">Send</button>
-  </div>
-  <script>
-    // Define function to send message to AI and display response
-    function sendMessage() {
-      // Get user input message
-      var messageInput = document.getElementById('message-input');
-      var message = messageInput.value;
-
-      // Clear input field
-      messageInput.value = '';
-
-      // Display user message in chat
-      var messagesContainer = document.getElementById('messages-container');
-      var messageDiv = document.createElement('div');
-      messageDiv.innerText = 'User: ' + message;
-      messagesContainer.appendChild(messageDiv);
-
-      // Send message to AI
-      fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: message
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Display AI response in chat
-        var aiResponseDiv = document.createElement('div');
-        aiResponseDiv.innerText = 'AI: ' + data.response;
-        messagesContainer.appendChild(aiResponseDiv);
-      });
-    }
-
-    // Add event listener to send button
-    var sendButton = document.getElementById('send-button');
-    sendButton.addEventListener('click', sendMessage);
-  </script>
+	<h1>Sentiment Analysis Example</h1>
+	<p>Enter some text to analyze:</p>
+	<textarea id="text" rows="4" cols="50"></textarea><br><br>
+	<button onclick="analyze()">Analyze</button>
+	<p id="result"></p>
+	
+	<script>
+		function analyze() {
+			var text = document.getElementById("text").value;
+			var url = "https://api.aylien.com/api/v1/sentiment";
+			var data = { "text": text };
+			var headers = {
+				"Content-Type": "application/json",
+				"X-AYLIEN-TextAPI-Application-Key": "YOUR_API_KEY",
+				"X-AYLIEN-TextAPI-Application-ID": "YOUR_APP_ID"
+			};
+			
+			axios.post(url, data, { headers: headers })
+			  .then(function (response) {
+			    console.log(response.data);
+			    var result = response.data.polarity;
+			    document.getElementById("result").innerHTML = "Sentiment: " + result;
+			  })
+			  .catch(function (error) {
+			    console.log(error);
+			  });
+		}
+	</script>
 </body>
 </html>
+
