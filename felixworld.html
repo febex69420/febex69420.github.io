@@ -49,6 +49,13 @@
 			left: 50%;
 			transform: translate(-50%, -50%);
 		}
+		#grass {
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -58,13 +65,16 @@
 	</div>
 	<h1>WELCOME</h1>
 	<button onclick="showLoading()">START</button>
+	<img id="grass" src="https://dummyimage.com/100x100/008000/fff&text=Touch+me" alt="Grass" onclick="congrats()">
 	<script>
 		function showLoading() {
 			document.getElementById('loading').style.display = 'block';
 			setTimeout(function() {
 				document.getElementById('loading').style.display = 'none';
-				alert('TOUCH GRASS!');
 			}, 3000);
+		}
+		function congrats() {
+			alert('Congrats, you touched grass!');
 		}
 	</script>
 </body>
