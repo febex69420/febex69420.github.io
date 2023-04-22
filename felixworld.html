@@ -51,8 +51,8 @@
 		}
 		#grass {
 			display: none;
-			position: fixed;
-			bottom: 0;
+			position: absolute;
+			bottom: 20%;
 			left: 50%;
 			transform: translateX(-50%);
 			cursor: pointer;
@@ -63,16 +63,15 @@
 	<div id="loading">
 		<img id="loading-image" src="https://dummyimage.com/300x300/000/fff&text=Loading..." alt="Loading...">
 		<h1 id="loading-text">TOUCH GRASS!</h1>
+		<img id="grass" src="https://dummyimage.com/100x100/008000/fff&text=Touch+me" alt="Grass" onclick="congrats()">
 	</div>
 	<h1>WELCOME</h1>
 	<button onclick="showLoading()">START</button>
-	<img id="grass" src="https://dummyimage.com/100x100/008000/fff&text=Touch+me" alt="Grass" onclick="congrats()"">
 	<script>
 		function showLoading() {
 			document.getElementById('loading').style.display = 'block';
 			setTimeout(function() {
 				document.getElementById('loading').style.display = 'none';
-				document.getElementById('grass').style.display = 'block';
 			}, 3000);
 		}
 		function congrats() {
@@ -81,5 +80,4 @@
 	</script>
 </body>
 </html>
-
 
