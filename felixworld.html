@@ -25,10 +25,48 @@
 			cursor: pointer;
 			margin-bottom: 20vh;
 		}
+		#loading {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #f2f2f2;
+			z-index: 9999;
+		}
+		#loading-image {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		#loading-text {
+			font-size: 5em;
+			color: #008000;
+			position: absolute;
+			top: 60%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
 	</style>
 </head>
 <body>
+	<div id="loading">
+		<img id="loading-image" src="https://dummyimage.com/300x300/000/fff&text=Loading..." alt="Loading...">
+		<h1 id="loading-text">TOUCH GRASS!</h1>
+	</div>
 	<h1>WELCOME</h1>
-	<button onclick="location.href='javascript:alert(\'TOUCH GRASS!\');'">START</button>
+	<button onclick="showLoading()">START</button>
+	<script>
+		function showLoading() {
+			document.getElementById('loading').style.display = 'block';
+			setTimeout(function() {
+				document.getElementById('loading').style.display = 'none';
+				alert('TOUCH GRASS!');
+			}, 3000);
+		}
+	</script>
 </body>
 </html>
+
