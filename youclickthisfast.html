@@ -10,7 +10,7 @@
 		function startTimer() {
 			clicks = 0;
 			prevClicks = 0;
-			document.getElementById("clicks").innerHTML = "Clicks per second: 0";
+			document.getElementById("clicksPerSec").innerHTML = "Clicks per second: 0";
 			document.getElementById("timer").innerHTML = "Timer: 10 seconds";
 			document.getElementById("clickBtn").disabled = true;
 			timerId = setInterval(countClicks, 100);
@@ -27,7 +27,7 @@
 		function countClicks() {
 			var curClicks = clicks;
 			clicks = 0;
-			document.getElementById("clicks").innerHTML = "Clicks per second: " + ((curClicks - prevClicks) / 10).toFixed(2);
+			document.getElementById("clicksPerSec").innerHTML = "Clicks per second: " + ((curClicks - prevClicks) / 10).toFixed(2);
 			prevClicks = curClicks;
 		}
 		
@@ -55,7 +55,7 @@
 <body>
 	<button id="clickBtn" onclick="startTimer()">Click</button>
 	<div id="clicksMade"></div>
-	<div id="clicks"></div>
+	<div id="clicksPerSec"></div>
 	<div id="timer"></div>
 	
 	<script>
@@ -63,5 +63,6 @@
 	</script>
 </body>
 </html>
+
 
 
