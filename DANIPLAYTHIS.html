@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Click a Million Times</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			text-align: center;
+		}
+		
+		#clickButton {
+			background-color: green;
+			color: white;
+			border: none;
+			padding: 15px 30px;
+			font-size: 20px;
+			cursor: pointer;
+			margin-top: 50px;
+		}
+		
+		#clicks {
+			font-size: 36px;
+			margin-top: 20px;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>Click a Million Times (or You Can't Do That)</h1>
+	
+	<button id="clickButton" onclick="addClick()">Click Me!</button>
+	
+	<div id="clicks">0 clicks</div>
+	
+	<script>
+		var clicks = 0;
+		
+		function addClick() {
+			clicks++;
+			
+			if (clicks === 1000000) {
+				alert("Huh, you wasted your time! Hehe. TOUCH GRASS");
+			}
+			
+			document.getElementById("clicks").innerHTML = clicks + " clicks";
+		}
+	</script>
+</body>
+</html>
