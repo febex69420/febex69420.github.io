@@ -43,21 +43,6 @@
 			cursor: pointer;
 			border-radius: 10px;
 		}
-        #secret-code {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-        }
-        #code-input {
-            font-size: 20px;
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            margin: 10px;
-            text-align: center;
-        }
 	</style>
 </head>
 <body>
@@ -65,7 +50,7 @@
 	<div id="money-maker">
 		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
 		<button class="button" onclick="showShop()">Shop</button>
-        <button class="button" onclick="showCodeInput()">Secret Code</button>
+		<button class="button" onclick="showCodeInput()">Enter Code</button>
 	</div>
 	<div id="shop">
 		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
@@ -74,11 +59,11 @@
 		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
 		<button class="button" onclick="hideShop()">Back</button>
 	</div>
-    <div id="secret-code">
-        <input id="code-input" type="text" placeholder="Enter code here...">
-        <button class="button" onclick="checkCode()">Submit</button>
-        <button class="button" onclick="hideCodeInput()">Cancel</button>
-    </div>
+	<div id="code-input" style="display:none;">
+		<input type="text" placeholder="Enter code here" id="code-input-field">
+		<button class="button" onclick="checkCode()">Submit</button>
+		<button class="button" onclick="hideCodeInput()">Cancel</button>
+	</div>
 	<script>
 		var money = 0;
 
@@ -97,7 +82,13 @@
 			document.getElementById("money-maker").style.display = "block";
 		}
 
-		function buyItem
+		function buyItem(itemName, itemPrice) {
+			if (money >= itemPrice) {
+				money -= itemPrice;
+				document.getElementById("money").innerHTML = money + " 💸";
+				alert("You bought " + itemName + " for " + itemPrice + " 💸!");
+			} else {
+				alert("You don't have enough money to buy " +
 
 
 
