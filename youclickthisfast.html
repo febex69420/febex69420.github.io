@@ -33,6 +33,7 @@
 		
 		function handleClick() {
 			clicks++;
+			document.getElementById("clicksMade").innerHTML = "Clicks made: " + clicks;
 		}
 	</script>
 	<style>
@@ -53,6 +54,7 @@
 </head>
 <body>
 	<button id="clickBtn" onclick="startTimer()">Click</button>
+	<div id="clicksMade"></div>
 	<div id="clicks"></div>
 	<div id="timer"></div>
 	
@@ -61,4 +63,5 @@
 	</script>
 </body>
 </html>
+
 
