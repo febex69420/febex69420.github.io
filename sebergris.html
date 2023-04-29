@@ -43,6 +43,15 @@
 			cursor: pointer;
 			border-radius: 10px;
 		}
+		#secret-code {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background-color: white;
+			padding: 10px;
+			border-radius: 10px;
+			display: none;
+		}
 	</style>
 </head>
 <body>
@@ -50,7 +59,7 @@
 	<div id="money-maker">
 		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
 		<button class="button" onclick="showShop()">Shop</button>
-		<button class="button" onclick="showCodePrompt()">Enter Code</button>
+		<button class="button" onclick="showSecretCode()">Secret Code</button>
 	</div>
 	<div id="shop">
 		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
@@ -59,8 +68,14 @@
 		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
 		<button class="button" onclick="hideShop()">Back</button>
 	</div>
+	<div id="secret-code">
+		<label for="code">Enter the secret code:</label>
+		<input type="text" id="code" name="code">
+		<button onclick="checkSecretCode()">Submit</button>
+	</div>
 	<script>
 		var money = 0;
+		var secretCode = "webse";
 
 		function earnMoney() {
 			money++;
@@ -73,24 +88,5 @@
 		}
 
 		function hideShop() {
-			document.getElementById("shop").style.display = "none";
-			document.getElementById("money-maker").style.display = "block";
-		}
-
-		function buyItem(itemName, itemPrice) {
-			if (money >= itemPrice) {
-				money -= itemPrice;
-				document.getElementById("money").innerHTML = money + " 💸";
-				alert("You bought " + itemName + " for " + itemPrice + " 💸!");
-			} else {
-				alert("You don't have enough money to buy " + itemName + "!");
-			}
-		}
-
-		function showCodePrompt() {
-			var code = prompt("Enter code:");
-			if (code === "webse") {
-				money += 1000000;
-				document.getElementById("money").innerHTML = money + " 💸";
-				alert("You have earned 1,000,000 💸!");
+			document.getElementById("shop").style.display = "
 
