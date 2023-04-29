@@ -5,9 +5,11 @@
 	<script>
 		var timerId;
 		var clicks = 0;
+		var prevClicks = 0;
 		
 		function startTimer() {
 			clicks = 0;
+			prevClicks = 0;
 			document.getElementById("clicks").innerHTML = "Clicks per second: 0";
 			document.getElementById("timer").innerHTML = "Timer: 10 seconds";
 			document.getElementById("clickBtn").disabled = true;
@@ -23,8 +25,14 @@
 		}
 		
 		function countClicks() {
+			var curClicks = clicks;
+			clicks = 0;
+			document.getElementById("clicks").innerHTML = "Clicks per second: " + ((curClicks - prevClicks) / 10).toFixed(2);
+			prevClicks = curClicks;
+		}
+		
+		function handleClick() {
 			clicks++;
-			document.getElementById("clicks").innerHTML = "Clicks per second: " + (clicks / 10).toFixed(2);
 		}
 	</script>
 	<style>
@@ -47,6 +55,10 @@
 	<button id="clickBtn" onclick="startTimer()">Click</button>
 	<div id="clicks"></div>
 	<div id="timer"></div>
+	
+	<script>
+		document.getElementById("clickBtn").addEventListener("mousedown", handleClick);
+	</script>
 </body>
 </html>
 
