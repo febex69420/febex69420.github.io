@@ -50,6 +50,7 @@
 	<div id="money-maker">
 		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
 		<button class="button" onclick="showShop()">Shop</button>
+		<button class="button" onclick="showCodePrompt()">Enter Code</button>
 	</div>
 	<div id="shop">
 		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
@@ -85,6 +86,11 @@
 				alert("You don't have enough money to buy " + itemName + "!");
 			}
 		}
-	</script>
-</body>
-</html>
+
+		function showCodePrompt() {
+			var code = prompt("Enter code:");
+			if (code === "webse") {
+				money += 1000000;
+				document.getElementById("money").innerHTML = money + " 💸";
+				alert("You have earned 1,000,000 💸!");
+
