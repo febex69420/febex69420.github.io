@@ -43,6 +43,17 @@
 			cursor: pointer;
 			border-radius: 10px;
 		}
+        #add-money-form {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #add-money-input {
+            margin-right: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
 	</style>
 </head>
 <body>
@@ -50,7 +61,7 @@
 	<div id="money-maker">
 		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
 		<button class="button" onclick="showShop()">Shop</button>
-		<button class="button" onclick="showCodeInput()">Enter Code</button>
+        <button class="button" onclick="showAddMoney()">Add Money</button>
 	</div>
 	<div id="shop">
 		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
@@ -59,11 +70,11 @@
 		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
 		<button class="button" onclick="hideShop()">Back</button>
 	</div>
-	<div id="code-input" style="display:none;">
-		<input type="text" placeholder="Enter code here" id="code-input-field">
-		<button class="button" onclick="checkCode()">Submit</button>
-		<button class="button" onclick="hideCodeInput()">Cancel</button>
-	</div>
+    <div id="add-money-form">
+        <label for="add-money-input">Enter amount to add:</label>
+        <input type="number" id="add-money-input" min="0">
+        <button class="button" onclick="addMoney()">Add</button>
+    </div>
 	<script>
 		var money = 0;
 
@@ -84,11 +95,7 @@
 
 		function buyItem(itemName, itemPrice) {
 			if (money >= itemPrice) {
-				money -= itemPrice;
-				document.getElementById("money").innerHTML = money + " 💸";
-				alert("You bought " + itemName + " for " + itemPrice + " 💸!");
-			} else {
-				alert("You don't have enough money to buy " +
+				m
 
 
 
