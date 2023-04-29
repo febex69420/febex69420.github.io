@@ -50,7 +50,6 @@
 	<div id="money-maker">
 		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
 		<button class="button" onclick="showShop()">Shop</button>
-		<button class="button" onclick="customAmount()">Custom Amount</button>
 	</div>
 	<div id="shop">
 		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
@@ -58,11 +57,6 @@
 		<button class="item" onclick="buyItem('Computer', 100)">Buy Computer (100 💸)</button>
 		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
 		<button class="button" onclick="hideShop()">Back</button>
-	</div>
-	<div id="custom-amount" style="display: none;">
-		<input type="number" id="amount-input">
-		<button class="button" onclick="addCustomAmount()">Add Money</button>
-		<button class="button" onclick="hideCustomAmount()">Cancel</button>
 	</div>
 	<script>
 		var money = 0;
@@ -90,6 +84,9 @@
 			} else {
 				alert("You don't have enough money to buy " + itemName + "!");
 			}
-		
+		}
+	</script>
+</body>
+</html>
 
 
