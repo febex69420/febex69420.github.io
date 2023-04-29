@@ -28,6 +28,17 @@
 </head>
 <body>
 	<h1>Welcome to Spex</h1>
-	<button onclick="window.location.href='https://example.com/dinosaur-dancing'">Start!</button>
+	<button onclick="countClick()">Start!</button>
+	<p id="clickCount">0</p>
+	
+	<script>
+		let clickCount = 0;
+		const clickCounter = document.getElementById("clickCount");
+		
+		function countClick() {
+			clickCount++;
+			clickCounter.innerHTML = clickCount;
+		}
+	</script>
 </body>
 </html>
