@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Click Timer</title>
+	<script>
+		var timerId;
+		var clicks = 0;
+		
+		function startTimer() {
+			clicks = 0;
+			document.getElementById("clicks").innerHTML = "Clicks per second: 0";
+			document.getElementById("timer").innerHTML = "Timer: 10 seconds";
+			document.getElementById("clickBtn").disabled = true;
+			timerId = setInterval(countClicks, 100);
+			setTimeout(stopTimer, 10000);
+		}
+		
+		function stopTimer() {
+			clearInterval(timerId);
+			var cps = clicks / 10;
+			document.getElementById("clickBtn").disabled = false;
+			alert("You clicked " + cps.toFixed(2) + " times per second!");
+		}
+		
+		function countClicks() {
+			clicks++;
+			document.getElementById("clicks").innerHTML = "Clicks per second: " + (clicks / 10).toFixed(2);
+		}
+	</script>
+	<style>
+		#clickBtn {
+			background-color: green;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			font-size: 20px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<button id="clickBtn" onclick="startTimer()">Click</button>
+	<div id="clicks"></div>
+	<div id="timer"></div>
+</body>
+</html>
