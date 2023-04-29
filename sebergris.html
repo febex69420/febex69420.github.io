@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Money Maker</title>
+	<style>
+		#money {
+			font-size: 50px;
+			text-align: center;
+			margin-top: 100px;
+		}
+		.button {
+			background-color: green;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			display: inline-block;
+			font-size: 16px;
+			margin: 20px;
+			cursor: pointer;
+			border-radius: 10px;
+		}
+		#money-maker {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		#shop {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: none;
+		}
+		.item {
+			background-color: green;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			display: block;
+			font-size: 16px;
+			margin: 20px;
+			cursor: pointer;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="money">0 💸</div>
+	<div id="money-maker">
+		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
+		<button class="button" onclick="showShop()">Shop</button>
+	</div>
+	<div id="shop">
+		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
+		<button class="item" onclick="buyItem('Food', 10)">Buy Food (10 💸)</button>
+		<button class="item" onclick="buyItem('Computer', 100)">Buy Computer (100 💸)</button>
+		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
+		<button class="button" onclick="hideShop()">Back</button>
+	</div>
+	<script>
+		var money = 0;
+
+		function earnMoney() {
+			money++;
+			document.getElementById("money").innerHTML = money + " 💸";
+		}
+
+		function showShop() {
+			document.getElementById("money-maker").style.display = "none";
+			document.getElementById("shop").style.display = "block";
+		}
+
+		function hideShop() {
+			document.getElementById("shop").style.display = "none";
+			document.getElementById("money-maker").style.display = "block";
+		}
+
+		function buyItem(itemName, itemPrice) {
+			if (money >= itemPrice) {
+				money -= itemPrice;
+				document.getElementById("money").innerHTML = money + " 💸";
+				alert("You bought " + itemName + " for " + itemPrice + " 💸!");
+			} else {
+				alert("You don't have enough money to buy " + itemName + "!");
+			}
+		}
+	</script>
+</body>
+</html>
