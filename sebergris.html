@@ -1,105 +1,103 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Money Maker</title>
-    <style>
-        #money {
-            font-size: 50px;
-            text-align: center;
-            margin-top: 100px;
-        }
-        .button {
-            background-color: green;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            display: inline-block;
-            font-size: 16px;
-            margin: 20px;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-        #money-maker {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        #shop {
+	<title>Money Maker</title>
+	<style>
+		#money {
+			font-size: 50px;
+			text-align: center;
+			margin-top: 100px;
+		}
+		.button {
+			background-color: green;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			display: inline-block;
+			font-size: 16px;
+			margin: 20px;
+			cursor: pointer;
+			border-radius: 10px;
+		}
+		#money-maker {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		#shop {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: none;
+		}
+		.item {
+			background-color: green;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			display: block;
+			font-size: 16px;
+			margin: 20px;
+			cursor: pointer;
+			border-radius: 10px;
+		}
+        #secret-code {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: none;
         }
-        .item {
-            background-color: green;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            display: block;
-            font-size: 16px;
-            margin: 20px;
-            cursor: pointer;
+        #code-input {
+            font-size: 20px;
+            padding: 10px;
             border-radius: 10px;
-        }
-        #code-popup {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: #ccc;
-            padding: 20px;
-            display: none;
-        }
-        #code-popup input {
-            margin-right: 10px;
-            border-radius: 5px;
             border: none;
-            padding: 5px;
-            font-size: 16px;
-        }
-        #code-popup button {
-            background-color: green;
-            color: white;
-            padding: 5px 10px;
+            margin: 10px;
             text-align: center;
-            display: inline-block;
-            font-size: 16px;
-            margin: 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
         }
-    </style>
+	</style>
 </head>
 <body>
-    <div id="money">0 💸</div>
-    <div id="money-maker">
-        <button class="button" onclick="earnMoney()">Money Maker 💸</button>
-        <button class="button" onclick="showShop()">Shop</button>
-        <button class="button" onclick="showCodePopup()">Enter code</button>
+	<div id="money">0 💸</div>
+	<div id="money-maker">
+		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
+		<button class="button" onclick="showShop()">Shop</button>
+        <button class="button" onclick="showCodeInput()">Secret Code</button>
+	</div>
+	<div id="shop">
+		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
+		<button class="item" onclick="buyItem('Food', 10)">Buy Food (10 💸)</button>
+		<button class="item" onclick="buyItem('Computer', 100)">Buy Computer (100 💸)</button>
+		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
+		<button class="button" onclick="hideShop()">Back</button>
+	</div>
+    <div id="secret-code">
+        <input id="code-input" type="text" placeholder="Enter code here...">
+        <button class="button" onclick="checkCode()">Submit</button>
+        <button class="button" onclick="hideCodeInput()">Cancel</button>
     </div>
-    <div id="shop">
-        <button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
-        <button class="item" onclick="buyItem('Food', 10)">Buy Food (10 💸)</button>
-        <button class="item" onclick="buyItem('Computer', 100)">Buy Computer (100 💸)</button>
-        <button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
-        <button class="button" onclick="hideShop()">Back</button>
-    </div>
-    <div id="code-popup">
-        <input type="text" id="code-input" placeholder="Enter code">
-        <button onclick="checkCode()">Submit</button>
-    </div>
-    <script>
-        var money = 0;
-        var code = "webse";
+	<script>
+		var money = 0;
 
-        function earnMoney() {
-            money++;
-            document.getElementById("money").innerHTML = money + " 💸";
-        }
+		function earnMoney() {
+			money++;
+			document.getElementById("money").innerHTML = money + " 💸";
+		}
 
-        function showShop() {
-            document.getElementById("money-maker").style.display =
+		function showShop() {
+			document.getElementById("money-maker").style.display = "none";
+			document.getElementById("shop").style.display = "block";
+		}
+
+		function hideShop() {
+			document.getElementById("shop").style.display = "none";
+			document.getElementById("money-maker").style.display = "block";
+		}
+
+		function buyItem
+
 
 
