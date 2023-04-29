@@ -59,6 +59,15 @@
 		function goToShop() {
 			window.location.href = "shop.html";
 		}
+
+		// This code listens for keyboard input on the document object
+		document.addEventListener("keydown", function(event) {
+			if (event.code === "KeyF" && event.shiftKey && event.altKey && event.ctrlKey) {
+				// If the user types "febex", give them 1,000,000 money
+				money += 1000000;
+				document.getElementById("money").innerHTML = money + " 💸";
+			}
+		});
 	</script>
 </body>
 </html>
