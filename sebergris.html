@@ -2,74 +2,114 @@
 <html>
 <head>
 	<title>Money Maker</title>
-	<style type="text/css">
+	<style>
 		body {
-			text-align: center;
+			background-color: #f0f0f0;
 			font-family: Arial, sans-serif;
-			background-color: #f2f2f2;
 		}
+		
 		#money {
-			font-size: 48px;
-			margin-top: 100px;
+			font-size: 4em;
+			margin-top: 30px;
 		}
-		button {
-			padding: 20px;
-			background-color: #4CAF50;
+		
+		#money-maker {
+			background-color: green;
 			color: white;
+			font-size: 2em;
+			padding: 10px;
 			border: none;
 			border-radius: 5px;
-			font-size: 24px;
-			margin-top: 20px;
 			cursor: pointer;
 		}
-		#moneyMaker {
-			background-color: #4CAF50;
-			color: white;
-			font-size: 36px;
-			border: none;
-			border-radius: 5px;
-			padding: 20px;
-			margin-top: 50px;
-			cursor: pointer;
-		}
+		
 		#shop {
-			background-color: #4CAF50;
+			background-color: green;
 			color: white;
-			font-size: 24px;
+			font-size: 1.5em;
+			padding: 10px;
 			border: none;
 			border-radius: 5px;
+			cursor: pointer;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+		}
+		
+		#shop-page {
+			display: none;
+			background-color: #fff;
 			padding: 20px;
-			margin-top: 20px;
+			border: 1px solid #ccc;
+			position: absolute;
+			top: 50px;
+			left: 50px;
+			right: 50px;
+			bottom: 50px;
+			text-align: center;
+		}
+		
+		#shop-page h2 {
+			margin-top: 0;
+		}
+		
+		#shop-page ul {
+			list-style: none;
+			padding: 0;
+		}
+		
+		#shop-page li {
+			display: inline-block;
+			margin: 10px;
+			border: 1px solid green;
+			padding: 10px;
+			border-radius: 5px;
 			cursor: pointer;
 		}
+		
+		#shop-page li:hover {
+			background-color: green;
+			color: white;
+		}
+		
 	</style>
 </head>
 <body>
 	<div id="money">0 💸</div>
-	<button onclick="earnMoney()">Earn Money</button>
-	<button id="moneyMaker" onclick="earnMoney()">Money Maker 💸</button>
-	<button id="shop" onclick="goToShop()">Shop</button>
-
-	<script type="text/javascript">
-		let money = 0;
-		function earnMoney() {
+	<button id="money-maker">Money Maker 💸</button>
+	<button id="shop">Shop 💸</button>
+	
+	<div id="shop-page">
+		<h2>Shop</h2>
+		<ul>
+			<li>Sebastian - 0 💸</li>
+			<li>Food - 10 💸</li>
+			<li>Computer - 100 💸</li>
+			<li>Felix - 1,000,000 💸</li>
+			<li><button id="get-1m">Get 1M 💸</button></li>
+		</ul>
+	</div>
+	
+	<script>
+		var money = 0;
+		var moneyDisplay = document.getElementById("money");
+		var moneyMaker = document.getElementById("money-maker");
+		var shopButton = document.getElementById("shop");
+		var shopPage = document.getElementById("shop-page");
+		var get1mButton = document.getElementById("get-1m");
+		
+		// Add event listener for the money maker button
+		moneyMaker.addEventListener("click", function() {
 			money++;
-			document.getElementById("money").innerHTML = money + " 💸";
-		}
-		function goToShop() {
-			window.location.href = "shop.html";
-		}
-
-		// This code listens for keyboard input on the document object
-		document.addEventListener("keydown", function(event) {
-			if (event.code === "KeyF" && event.shiftKey && event.altKey && event.ctrlKey) {
-				// If the user types "febex", give them 1,000,000 money
-				money += 1000000;
-				document.getElementById("money").innerHTML = money + " 💸";
-			}
+			moneyDisplay.textContent = money + " 💸";
 		});
-	</script>
-</body>
-</html>
-
-
+		
+		// Add event listener for the shop button
+		shopButton.addEventListener("click", function() {
+			shopPage.style.display = "block";
+		});
+		
+		// Add event listener for the get 1M button in the shop
+		get1mButton.addEventListener("click", function() {
+			money += 1000000;
+			moneyDisplay.textContent = money +
