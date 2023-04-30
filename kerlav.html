@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rainbow Button</title>
+	<style>
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		button {
+			padding: 20px;
+			font-size: 24px;
+			background-color: #ff2e2e; /* fallback color */
+			background-image: linear-gradient(to bottom right, red, orange, yellow, green, blue, indigo, violet);
+			color: white;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+		}
+		#secret-screen {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background-color: black;
+			color: white;
+			padding: 50px;
+			box-sizing: border-box;
+			text-align: center;
+			font-size: 36px;
+		}
+		#secret-input {
+			margin-top: 20px;
+			padding: 10px;
+			font-size: 24px;
+			border: none;
+			border-radius: 10px;
+			background-color: white;
+			color: black;
+		}
+		#secret-button {
+			margin-top: 20px;
+			padding: 10px;
+			font-size: 24px;
+			background-color: #ff2e2e; /* fallback color */
+			background-image: linear-gradient(to bottom right, red, orange, yellow, green, blue, indigo, violet);
+			color: white;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<button id="rainbow-button">Press Me!</button>
+
+	<div id="secret-screen">
+		<p>Kasper er lav!</p>
+		<input id="secret-input" type="text" placeholder="Type febex...">
+		<button id="secret-button">Submit</button>
+	</div>
+
+	<script>
+		// Get references to the button and secret screen
+		const rainbowButton = document.getElementById("rainbow-button");
+		const secretScreen = document.getElementById("secret-screen");
+
+		// Add event listener for the rainbow button
+		rainbowButton.addEventListener("click", () => {
+			// Generate a random number between 0 and 99
+			const randomNumber = Math.floor(Math.random() * 100);
+
+			// If the number is 0, show the secret screen
+			if (randomNumber === 0) {
+				secretScreen.style.display = "block";
+			}
+			// Otherwise, show an alert with the color
+			else {
+				const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+				const randomColor = colors[Math.floor(Math.random() * colors.length)];
+				alert(`You got ${randomColor}!`);
+			}
+		});
+
+		// Add event listener for the secret button
+		const secretButton = document.getElementById("secret-button");
+		secretButton.addEventListener("click", () => {
+			// Get the value of the secret input
+			const secretInput = document.getElementById("secret-input").value;
+
+			// If the input matches "febex", show a black screen
+			if (secretInput === "febex") {
+				document.body.style.backgroundColor = "black";
+				document.body.style
