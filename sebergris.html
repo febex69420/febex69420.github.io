@@ -4,81 +4,89 @@
 	<title>Money Maker</title>
 	<style>
 		#money {
-			font-size: 48px;
-			margin-top: 100px;
+			font-size: 50px;
 			text-align: center;
+			margin-top: 100px;
 		}
-		#button {
-			display: block;
-			margin: 0 auto;
+		.button {
 			background-color: green;
 			color: white;
-			padding: 16px;
-			border: none;
-			border-radius: 8px;
-			font-size: 24px;
+			padding: 15px 32px;
+			text-align: center;
+			display: inline-block;
+			font-size: 16px;
+			margin: 20px;
 			cursor: pointer;
+			border-radius: 10px;
+		}
+		#money-maker {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 		}
 		#shop {
-			display: block;
-			margin: 0 auto;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: none;
+		}
+		.item {
 			background-color: green;
 			color: white;
-			padding: 16px;
-			border: none;
-			border-radius: 8px;
-			font-size: 24px;
+			padding: 15px 32px;
+			text-align: center;
+			display: block;
+			font-size: 16px;
+			margin: 20px;
 			cursor: pointer;
+			border-radius: 10px;
 		}
 	</style>
 </head>
 <body>
 	<div id="money">0 💸</div>
-	<button id="button">Money Maker 💸</button>
-	<button id="shop">Shop 💸</button>
-
-	<div id="shop-screen" style="display: none;">
-		<h2>Shop</h2>
-		<p>Buy items to increase your earnings!</p>
-		<ul>
-			<li>Sebastian - 0 💸</li>
-			<li>Food - 10 💸</li>
-			<li>Emil - 1 💸</li>
-			<li>Kasper - (-100) 💸</li>
-			<li>Computer - 100 💸</li>
-			<li>Felix - 1000000 💸</li>
-		</ul>
-		<button id="close-shop">Close</button>
+	<div id="money-maker">
+		<button class="button" onclick="earnMoney()">Money Maker 💸</button>
+		<button class="button" onclick="showShop()">Shop</button>
 	</div>
-
+	<div id="shop">
+		<button class="item" onclick="buyItem('Sebastian', 0)">Buy Sebastian (0 💸)</button>
+		<button class="item" onclick="buyItem('Food', 10)">Buy Food (10 💸)</button>
+		<button class="item" onclick="buyItem('Computer', 100)">Buy Computer (100 💸)</button>
+		<button class="item" onclick="buyItem('Felix', 1000000)">Buy Felix (1,000,000 💸)</button>
+		<button class="button" onclick="hideShop()">Back</button>
+	</div>
 	<script>
-		let money = 0;
-		let sebastian = false;
-		let food = 0;
-		let emil = false;
-		let kasper = false;
-		let computer = false;
-		let felix = false;
+		var money = 0;
 
-		const moneyEl = document.getElementById("money");
-		const buttonEl = document.getElementById("button");
-		const shopEl = document.getElementById("shop");
-		const shopScreenEl = document.getElementById("shop-screen");
-		const closeShopEl = document.getElementById("close-shop");
-
-		buttonEl.addEventListener("click", () => {
+		function earnMoney() {
 			money++;
-			moneyEl.innerText = money + " 💸";
-		});
+			document.getElementById("money").innerHTML = money + " 💸";
+		}
 
-		shopEl.addEventListener("click", () => {
-			shopScreenEl.style.display = "block";
-		});
+		function showShop() {
+			document.getElementById("money-maker").style.display = "none";
+			document.getElementById("shop").style.display = "block";
+		}
 
-		closeShopEl.addEventListener("click", () => {
-			shopScreenEl.style.display = "none";
-		});
+		function hideShop() {
+			document.getElementById("shop").style.display = "none";
+			document.getElementById("money-maker").style.display = "block";
+		}
+
+		function buyItem(itemName, itemPrice) {
+			if (money >= itemPrice) {
+				money -= itemPrice;
+				document.getElementById("money").innerHTML = money + " 💸";
+				alert("You bought " + itemName + " for " + itemPrice + " 💸!");
+			} else {
+				alert("You don't have enough money to buy " + itemName + "!");
+			}
+		}
 	</script>
 </body>
 </html>
+
 
