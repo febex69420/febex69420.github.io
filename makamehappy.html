@@ -3,7 +3,7 @@
   <head>
     <title>Click to Make Me Happy</title>
     <style>
-      /* Center the button and the arrows */
+      /* Center the button */
       body {
         display: flex;
         justify-content: center;
@@ -20,35 +20,6 @@
         font-size: 24px;
         border-radius: 10px;
         cursor: pointer;
-        position: relative;
-        z-index: 1;
-      }
-      
-      /* Style the arrows */
-      .arrow {
-        position: absolute;
-        top: 50%;
-        font-size: 48px;
-        color: green;
-        transform: translateY(-50%);
-        z-index: 0;
-      }
-      
-      /* Position the arrows */
-      .left-arrow {
-        left: -100px;
-      }
-      
-      .right-arrow {
-        right: -100px;
-      }
-      
-      /* Style the text */
-      .text {
-        font-size: 18px;
-        color: green;
-        margin-top: 10px;
-        text-align: center;
       }
       
       /* Style the congratulatory message */
@@ -61,9 +32,6 @@
   </head>
   <body>
     <button class="big-button" onclick="showCongrats()">Click to Make Me Happy</button>
-    <div class="arrow left-arrow">&#8592;</div>
-    <div class="arrow right-arrow">&#8594;</div>
-    <div class="text">Click to Make Me Happy!</div>
     <div id="congrats"></div>
     <script>
       function showCongrats() {
@@ -73,13 +41,9 @@
         congrats.className = "congrats";
         document.getElementById("congrats").appendChild(congrats);
         
-        // Hide the button and arrows after clicking
+        // Hide the button after clicking
         var button = document.querySelector(".big-button");
         button.style.display = "none";
-        var arrows = document.querySelectorAll(".arrow");
-        for (var i = 0; i < arrows.length; i++) {
-          arrows[i].style.display = "none";
-        }
       }
     </script>
   </body>
