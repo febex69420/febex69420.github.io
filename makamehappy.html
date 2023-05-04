@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Click to Make Me Happy</title>
+    <style>
+      /* Center the button and the text */
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      
+      /* Style the button */
+      .big-button {
+        background-color: green;
+        border: none;
+        color: white;
+        padding: 20px 50px;
+        font-size: 24px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      
+      /* Style the arrows */
+      .arrow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        color: green;
+      }
+      
+      /* Position the arrows and text */
+      .left-arrow {
+        transform: translate(-150%, -50%);
+      }
+      
+      .right-arrow {
+        transform: translate(150%, -50%);
+      }
+      
+      .text {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="big-button" onclick="showCongrats()">Click to Make Me Happy</button>
+    <div class="arrow left-arrow">&#8592;<span class="text">Click to Make Me Happy!</span></div>
+    <div class="arrow right-arrow">&#8594;<span class="text">Click to Make Me Happy!</span></div>
+    <script>
+      function showCongrats() {
+        // Show the congratulatory message
+        var congrats = document.createElement("div");
+        congrats.innerText = "CONGRATS! YOU MADE ME HAPPY";
+        congrats.style.fontSize = "48px";
+        congrats.style.color = "green";
+        congrats.style.textAlign = "center";
+        document.body.appendChild(congrats);
+        
+        // Hide the button and arrows after clicking
+        var button = document.querySelector(".big-button");
+        button.style.display = "none";
+        var arrows = document.querySelectorAll(".arrow");
+        for (var i = 0; i < arrows.length; i++) {
+          arrows[i].style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
