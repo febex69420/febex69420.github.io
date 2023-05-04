@@ -3,7 +3,7 @@
   <head>
     <title>Click to Make Me Happy</title>
     <style>
-      /* Center the button and the text */
+      /* Center the button and the arrows */
       body {
         display: flex;
         justify-content: center;
@@ -20,49 +20,58 @@
         font-size: 24px;
         border-radius: 10px;
         cursor: pointer;
+        position: relative;
+        z-index: 1;
       }
       
       /* Style the arrows */
       .arrow {
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 24px;
+        font-size: 48px;
         color: green;
+        transform: translateY(-50%);
+        z-index: 0;
       }
       
-      /* Position the arrows and text */
+      /* Position the arrows */
       .left-arrow {
-        transform: translate(-150%, -50%);
+        left: -100px;
       }
       
       .right-arrow {
-        transform: translate(150%, -50%);
+        right: -100px;
       }
       
+      /* Style the text */
       .text {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
         font-size: 18px;
         color: green;
+        margin-top: 10px;
+        text-align: center;
+      }
+      
+      /* Style the congratulatory message */
+      .congrats {
+        font-size: 48px;
+        color: green;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <button class="big-button" onclick="showCongrats()">Click to Make Me Happy</button>
-    <div class="arrow left-arrow">&#8592;<span class="text">Click to Make Me Happy!</span></div>
-    <div class="arrow right-arrow">&#8594;<span class="text">Click to Make Me Happy!</span></div>
+    <div class="arrow left-arrow">&#8592;</div>
+    <div class="arrow right-arrow">&#8594;</div>
+    <div class="text">Click to Make Me Happy!</div>
+    <div id="congrats"></div>
     <script>
       function showCongrats() {
         // Show the congratulatory message
         var congrats = document.createElement("div");
         congrats.innerText = "CONGRATS! YOU MADE ME HAPPY";
-        congrats.style.fontSize = "48px";
-        congrats.style.color = "green";
-        congrats.style.textAlign = "center";
-        document.body.appendChild(congrats);
+        congrats.className = "congrats";
+        document.getElementById("congrats").appendChild(congrats);
         
         // Hide the button and arrows after clicking
         var button = document.querySelector(".big-button");
