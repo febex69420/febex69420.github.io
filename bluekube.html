@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Game</title>
+	<style>
+		#game-window {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 500px;
+			height: 500px;
+			border: 2px solid black;
+			background-color: green;
+			overflow: hidden;
+		}
+		#player {
+			position: absolute;
+			top: 400px;
+			left: 225px;
+			width: 50px;
+			height: 50px;
+			background-color: blue;
+			border-radius: 50%;
+			animation: rotate 2s linear infinite;
+			transition: all 0.5s;
+		}
+		#enemy {
+			position: absolute;
+			top: -50px;
+			left: 0;
+			width: 50px;
+			height: 50px;
+			background-color: red;
+			border-radius: 50%;
+			animation: fall 2s linear infinite;
+			transition: all 0.5s;
+		}
+		@keyframes rotate {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+		@keyframes fall {
+			0% {
+				top: -50px;
+			}
+			100% {
+				top: 500px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="game-window">
+		<div id="player"></div>
+		<div id="enemy"></div>
+	</div>
+	<div id="timer">0</div>
+	<script>
+		var gameWindow = document.getElementById("game-window");
+		var player = document.getElementById("player");
+		var enemy = document.getElementById("enemy");
+		var timer = document.getElementById("timer");
+		var score = 0;
+		var interval = setInterval(function() {
+			score++;
+			timer.innerHTML = score;
+		}, 1000);
+		player.addEventListener("click", function() {
+			if (!document.fullscreenElement) {
+				gameWindow.requestFullscreen();
+			} else {
+				document.exitFullscreen();
+			}
+		});
+		document.addEventListener("keydown", function(event) {
+			if (event.code === "Space") {
+				var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"));
+				var playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue("left"));
+				var enemyTop = parseInt(window.getComputedStyle(enemy).getPropertyValue("top"));
+				var enemyLeft = parseInt(window.getComputedStyle(enemy).getPropertyValue("left"));
+				if (enemyTop >= playerTop && enemyTop <= playerTop + 50 && enemyLeft >= playerLeft && enemyLeft <= playerLeft + 50) {
+					score = 0;
+					timer.innerHTML = score;
+				} else {
+					player.style.top = (playerTop - 100) + "px";
+				}
+			}
+		});
+		setInterval(function() {
+			var gameWindowWidth = parseInt(window.getComputedStyle(gameWindow).getPropertyValue("width"));
+			var gameWindowHeight = parseInt(window.getComputedStyle(gameWindow).getPropertyValue("height"));
+			var enemyLeft = Math.floor(Math.random() * (gameWindowWidth - 50));
+			enemy.style.left = enemyLeft + "px";
+			enemy.style.top = "-50px";
+		}, 2000);
+	</script>
+</body>
+</html>
