@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>3D Models</title>
+	<style>
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		.start-btn {
+			font-size: 2em;
+			padding: 20px;
+			background-color: #1e90ff;
+			color: #fff;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+		}
+		.gallery {
+			display: none;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		.back-btn {
+			font-size: 2em;
+			padding: 20px;
+			background-color: #1e90ff;
+			color: #fff;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+			margin-bottom: 20px;
+		}
+		.gallery img {
+			width: 200px;
+			height: 200px;
+			object-fit: cover;
+			margin: 0 20px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<button class="start-btn" onclick="showGallery()">Check out 3D models</button>
+		<div class="gallery">
+			<img src="circle.jpg" onclick="show3D('circle')">
+			<img src="square.jpg" onclick="show3D('square')">
+			<img src="triangle.jpg" onclick="show3D('triangle')">
+			<img src="bike.jpg" onclick="show3D('bike')">
+			<button class="back-btn" onclick="hideGallery()">BACK</button>
+		</div>
+	</div>
+
+	<script>
+		function showGallery() {
+			document.querySelector('.container').style.display = 'none';
+			document.querySelector('.gallery').style.display = 'flex';
+		}
+
+		function hideGallery() {
+			document.querySelector('.container').style.display = 'flex';
+			document.querySelector('.gallery').style.display = 'none';
+		}
+
+		function show3D(shape) {
+			// Here you would write code to display the 3D model of the selected shape
+			console.log('Showing 3D model of', shape);
+		}
+	</script>
+</body>
+</html>
