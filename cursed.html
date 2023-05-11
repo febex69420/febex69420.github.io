@@ -83,7 +83,11 @@
 	<script>
 		function generateCursedText() {
 			const originalText = document.getElementById("original-text").value;
-			const cursedText = originalText.replace(/./g, "👻");
+			let cursedText = "";
+			for (let i = 0; i < originalText.length; i++) {
+				const charCode = originalText.charCodeAt(i);
+				cursedText += String.fromCharCode(charCode) + "\u0336";
+			}
 			document.getElementById("cursed-text").value = cursedText;
 		}
 	</script>
