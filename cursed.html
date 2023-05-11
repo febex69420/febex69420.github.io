@@ -26,6 +26,22 @@
 		#output {
 			color: white;
 			background-color: black;
+			font-size: 24px;
+		}
+		#output span {
+			position: relative;
+			display: inline-block;
+		}
+		#output span::after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 10%;
+			bottom: 0;
+			left: 0;
+			background-color: red;
+			transform: scaleY(3);
+			transform-origin: bottom;
 		}
 		#button {
 			margin-top: 20px;
@@ -57,12 +73,12 @@
 		const curseText = (text) => {
 			let cursedText = '';
 			for (let i = 0; i < text.length; i++) {
-				cursedText += text[i] + '\u0336';
+				cursedText += '<span>' + text[i] + '</span>';
 			}
 			return cursedText;
 		};
 		button.addEventListener('click', () => {
-			output.innerText = curseText(input.value);
+			output.innerHTML = curseText(input.value);
 		});
 	</script>
 </body>
