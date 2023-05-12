@@ -1,84 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cursed Text Generator</title>
-	<meta charset="UTF-8">
+	<title>Cursed Text</title>
 	<style>
 		body {
-			font-family: Arial, sans-serif;
-			font-size: 16px;
-			text-align: center;
-		}
-		.box {
-			display: inline-block;
-			vertical-align: top;
-			width: 45%;
-			height: 400px;
-			border: 2px solid black;
-			padding: 10px;
-			box-sizing: border-box;
-			overflow: auto;
-			margin: 20px;
-		}
-		#input {
-			resize: none;
-		}
-		#output {
-			color: white;
-			background-color: black;
 			font-size: 24px;
+			text-align: center;
+			margin: 0;
+			padding: 0;
 		}
-		#output span {
-			position: relative;
+
+		h1 {
+			font-size: 48px;
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			margin-top: 50px;
+			margin-bottom: 50px;
+			text-decoration: line-through;
+			text-decoration-thickness: 3px;
+			text-decoration-color: red;
+			font-family: Arial, sans-serif;
+			color: white;
+			text-shadow: 2px 2px black;
+			padding: 10px;
 			display: inline-block;
 		}
-		#output span::after {
-			content: '';
-			position: absolute;
-			width: 100%;
-			height: 10%;
-			bottom: 0;
-			left: 0;
-			background-color: red;
-			transform: scaleY(3);
-			transform-origin: bottom;
+
+		.container {
+			display: flex;
+			height: 100vh;
 		}
-		#button {
-			margin-top: 20px;
-			padding: 10px 20px;
-			font-size: 20px;
-			background-color: blue;
+
+		.left {
+			flex: 1;
+			background-color: black;
 			color: white;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
+			padding: 20px;
+			font-size: 24px;
+			font-family: Arial, sans-serif;
+		}
+
+		.right {
+			flex: 1;
+			background-color: black;
+			color: white;
+			padding: 20px;
+			font-size: 24px;
+			font-family: Arial, sans-serif;
+			text-decoration: line-through;
+			text-decoration-thickness: 3px;
+			text-decoration-color: red;
+			text-shadow: 2px 2px black;
 		}
 	</style>
 </head>
 <body>
-	<h1>MAKE CURSED TEXT</h1>
-	<div class="box">
-		<h2>Input:</h2>
-		<textarea id="input"></textarea>
+	<h1>T̸̽̾̍͌͜h̵̝̾͒̉͝ỉ̶̺̊͆̚s̵̼͗̿̈͆ ̷͈̑̈́͊͆í̸̝͛̄͝s̷̯̝̻̔ ̶͚̾̑̅̋c̷̟͈̃͝u̸͚̒̌̀̚r̷͎͂͗ş̸͋͑̀͠ẽ̵̢̞͛ḓ̸͊̍͗̉ ̵̫̏̉t̷͉̊͂͊͘e̸̥̓͘x̴͖̋͐͘͠t̵̟̣͂͝</h1>
+	<div class="container">
+		<div class="left">
+			<textarea id="input" rows="10" cols="50"></textarea>
+		</div>
+		<div class="right">
+			<p id="output"></p>
+		</div>
 	</div>
-	<div class="box">
-		<h2>Output:</h2>
-		<div id="output"></div>
-	</div>
-	<button id="button">CURSE IT!</button>
 	<script>
-		const button = document.getElementById('button');
-		const input = document.getElementById('input');
-		const output = document.getElementById('output');
-		const curseText = (text) => {
-			let cursedText = '';
-			for (let i = 0; i < text.length; i++) {
-				cursedText += '<span>' + text[i] + '</span>';
+		const input = document.getElementById("input");
+		const output = document.getElementById("output");
+		input.addEventListener("input", () => {
+			const text = input.value;
+			output.innerHTML = "";
+			for(let i = 0; i < text.length; i++) {
+				let cursed = String.fromCharCode(text.charCodeAt(i) + Math.floor(Math.random() * 50));
+				output.innerHTML += cursed;
 			}
-			return cursedText;
-		};
-		button.addEventListener('click', () => {
-			output.innerHTML = curseText(input.value);
 		});
 	</script>
 </body>
