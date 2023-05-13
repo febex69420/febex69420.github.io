@@ -91,11 +91,28 @@
           alert('Congratulations! You just purchased ' + itemName);
         } else {
           alert('Sorry, you do not have enough money to purchase ' + itemName);
+      ...
+          } else if (itemName === 'Sebastian') {
+            setInterval(function() {
+              money += income;
+              moneyDisplay.innerText = money + ' 💸';
+            }, 3600000); // 1 hour = 3600000 milliseconds
+          }
+        } else {
+          alert('Sorry, you do not have enough money to purchase ' + itemName);
+        }
+      }
+
+      function checkIfPurchased(itemName) {
+        if (itemName === 'Sebastian') {
+          return 1;
+        } else {
+          return 0;
         }
       }
     </script>
   </body>
 </html>
-``
+
 
 
