@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas Drawing Tool</title>
+	<style>
+		#leftBox {
+			width: 200px;
+			height: 500px;
+			float: left;
+			background-color: #ccc;
+		}
+		#rightBox {
+			width: 600px;
+			height: 500px;
+			float: left;
+			background-color: #fff;
+		}
+		canvas {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="leftBox">
+		<h3>Tools</h3>
+		<button id="pencilBtn">Pencil</button>
+		<button id="eraserBtn">Eraser</button>
+		<h3>Colors</h3>
+		<button id="redBtn">Red</button>
+		<button id="orangeBtn">Orange</button>
+		<button id="yellowBtn">Yellow</button>
+		<button id="greenBtn">Green</button>
+		<button id="blueBtn">Blue</button>
+		<button id="purpleBtn">Purple</button>
+		<button id="pinkBtn">Pink</button>
+		<button id="brownBtn">Brown</button>
+		<button id="blackBtn">Black</button>
+		<button id="grayBtn">Gray</button>
+		<button id="whiteBtn">White</button>
+	</div>
+	<div id="rightBox">
+		<h3>Canvas</h3>
+		<canvas id="canvas" width="600" height="500"></canvas>
+	</div>
+	<script>
+		// Get the canvas and context
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		// Set initial tool and color
+		var tool = "pencil";
+		var color = "#000";
+
+		// Add click event listener to pencil button
+		document.getElementById("pencilBtn").addEventListener("click", function() {
+			tool = "pencil";
+		});
+
+		// Add click event listener to eraser button
+		document.getElementById("eraserBtn").addEventListener("click", function() {
+			tool = "eraser";
+		});
+
+		// Add click event listeners to color buttons
+		document.getElementById("redBtn").addEventListener("click", function() {
+			color = "#f00";
+		});
+		document.getElementById("orangeBtn").addEventListener("click", function() {
+			color = "#ffa500";
+		});
+		document.getElementById("yellowBtn").addEventListener("click", function() {
+			color = "#ff0";
+		});
+		document.getElementById("greenBtn").addEventListener("click", function() {
+			color = "#0f0";
+		});
+		document.getElementById("blueBtn").addEventListener("click", function() {
+			color = "#00f";
+		});
+		document.getElementById("purpleBtn").addEventListener("click", function() {
+			color = "#800080";
+		});
+		document.getElementById("pinkBtn").addEventListener("click", function() {
+			color = "#ffc0cb";
+		});
+		document.getElementById("brownBtn").addEventListener("click", function() {
+			color = "#a52a2a";
+		});
+		document.getElementById("blackBtn").addEventListener("click", function() {
+			color = "#000";
+		});
+		document.getElementById("grayBtn").addEventListener("click", function() {
+			color = "#808080";
+		});
+		document.getElementById("whiteBtn").addEventListener("click", function
+// Add mousedown event listener to canvas
+canvas.addEventListener("mousedown", function(e) {
+	if (tool === "eraser") {
+		// Erase a circle at the mouse position
+		ctx.beginPath();
+		ctx.arc(e.offsetX, e.offsetY, 20, 0, 2 * Math.PI);
+		ctx.clip();
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.closePath();
+		ctx.restore();
+	} else if (tool === "pencil") {
+		// Set pencil properties and start drawing
+		ctx.fillStyle = color;
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 5;
+		ctx.lineJoin = "round";
+		ctx.lineCap = "round";
+		ctx.beginPath();
+		ctx.moveTo(e.offsetX, e.offsetY);
+		canvas.addEventListener("mousemove", draw);
+	}
+});
+
+// Add mouseup event listener to canvas
+canvas.addEventListener("mouseup", function() {
+	canvas.removeEventListener("mousemove", draw);
+});
+
+// Draw function for pencil tool
+function draw(e) {
+	ctx.lineTo(e.offsetX, e.offsetY);
+	ctx.stroke();
+}
