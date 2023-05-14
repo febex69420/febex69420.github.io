@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas Drawing</title>
+  </head>
+  <body>
+    <div>
+      <canvas id="canvas" width="500" height="500"></canvas>
+    </div>
+    <div>
+      <button id="pencil">Pencil</button>
+      <button id="eraser">Eraser</button>
+      <select id="color">
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+        <option value="pink">Pink</option>
+        <option value="brown">Brown</option>
+        <option value="black">Black</option>
+        <option value="gray">Gray</option>
+        <option value="white">White</option>
+      </select>
+    </div>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      let tool = "pencil";
+      let color = "black";
+
+      const pencilBtn = document.getElementById("pencil");
+      const eraserBtn = document.getElementById("eraser");
+      const colorSelect = document.getElementById("color");
+
+      pencilBtn.addEventListener("click", function() {
+        tool = "pencil";
+        console.log("Tool selected: Pencil");
+      });
+
+      eraserBtn.addEventListener("click", function() {
+        tool = "eraser";
+        console.log("Tool selected: Eraser");
+      });
+
+      colorSelect.addEventListener("change", function() {
+        color = colorSelect.value;
+        console.log("Color selected: " + color);
+      });
+
+      canvas.addEventListener("mousedown", function(e) {
+        console.log("Mouse down on canvas");
+        if (tool === "eraser") {
+          console.log("Erasing");
+          ctx.beginPath();
+          ctx.arc(e.offsetX, e.offsetY, 20, 0, 2 * Math.PI);
+          ctx.clip();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.closePath();
+          ctx.restore();
+        } else if (tool === "pencil") {
+          console.log("Drawing");
+          ctx.fillStyle = color;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 5;
+          ctx.lineJoin = "round";
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(e.offsetX, e.offsetY);
+          canvas.addEventListener("mousemove", draw);
+        }
+      });
+
+      canvas.addEventListener("mouseup", function() {
+        console.log("Mouse up on canvas");
+        canvas.removeEventListener("mousemove", draw);
+      });
+
+      function draw(e) {
+        console.log("Drawing point: " + e.offsetX + ", " + e.offsetY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+    </script>
+  </body>
+</html>
