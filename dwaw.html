@@ -3,10 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Canvas Drawing</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #canvas {
+        width: 100vw;
+        height: 100vh;
+        display: block;
+      }
+      div {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
   <body>
     <div>
-      <canvas id="canvas" width="500" height="500"></canvas>
+      <canvas id="canvas"></canvas>
     </div>
     <div>
       <button id="pencil">Pencil</button>
@@ -79,10 +94,38 @@
       });
 
       function draw(e) {
-        console.log("Drawing point: " + e.offsetX + ", " + e.offsetY);
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-      }
-    </script>
-  </body>
-</html>
+        console.log("Drawing point: " + e.offsetX
+canvas.addEventListener("mousedown", function(e) {
+  console.log("Mouse down on canvas");
+  if (tool === "eraser") {
+    console.log("Erasing");
+    ctx.beginPath();
+    ctx.arc(e.offsetX, e.offsetY, 20, 0, 2 * Math.PI);
+    ctx.clip();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.closePath();
+    ctx.restore();
+  } else if (tool === "pencil") {
+    console.log("Drawing");
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 5;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+    canvas.addEventListener("mousemove", draw);
+  }
+});
+
+canvas.addEventListener("mouseup", function() {
+  console.log("Mouse up on canvas");
+  canvas.removeEventListener("mousemove", draw);
+});
+
+function draw(e) {
+  console.log("Drawing point: " + e.offsetX + ", " + e.offsetY);
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+}
+
