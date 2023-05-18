@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Avatar Shop</title>
+  <style>
+    .avatar {
+      background-color: yellow;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 300px;
+    }
+
+    .avatar img {
+      width: 200px;
+    }
+
+    .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .bag {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .bag img {
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div class="avatar">
+    <img src="avatar_image.jpg" alt="Avatar">
+    <button id="shopBtn" class="button">Shop</button>
+  </div>
+
+  <div id="purchaseScreen" style="display: none;">
+    <button id="buyBtn" class="button">Buy</button>
+  </div>
+
+  <script>
+    // Check if the item is in stock
+    var inStock = true;
+
+    // Retrieve purchase status from localStorage (if available)
+    var purchased = localStorage.getItem('purchased');
+    if (purchased) {
+      document.querySelector('.avatar').innerHTML += '<div class="bag"><img src="bag_image.jpg" alt="Bag"></div>';
+    }
+
+    // Attach event listeners
+    document.getElementById('shopBtn').addEventListener('click', function() {
+      document.getElementById('purchaseScreen').style.display = 'block';
+    });
+
+    document.getElementById('buyBtn').addEventListener('click', function() {
+      if (inStock) {
+        // Perform purchase action
+        localStorage.setItem('purchased', true);
+        inStock = false;
+        document.querySelector('.avatar').innerHTML += '<div class="bag"><img src="bag_image.jpg" alt="Bag"></div>';
+        document.getElementById('purchaseScreen').style.display = 'none';
+      } else {
+        alert('Sorry, the item is out of stock.');
+        document.getElementById('purchaseScreen').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
