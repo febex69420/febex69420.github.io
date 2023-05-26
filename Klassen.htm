@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Website</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        .button {
+            font-size: 24px;
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+        .screen {
+            display: none;
+        }
+        .green-text {
+            color: green;
+        }
+        .red-text {
+            color: red;
+        }
+    </style>
+    <script>
+        function showScreenTwo() {
+            document.getElementById("screen-one").style.display = "none";
+            document.getElementById("screen-two").style.display = "block";
+        }
+
+        function showScreenThree(color) {
+            document.getElementById("screen-two").style.display = "none";
+            document.getElementById("screen-three").style.display = "block";
+            if (color === "green") {
+                document.getElementById("result-text").className = "green-text";
+                document.getElementById("result-text").textContent = "Green Text";
+            } else if (color === "red") {
+                document.getElementById("result-text").className = "red-text";
+                document.getElementById("result-text").textContent = "Red Text";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="screen-one">
+        <button class="button" onclick="showScreenTwo()">4.ac</button>
+    </div>
+
+    <div id="screen-two" class="screen">
+        <button class="button" onclick="showScreenThree('green')">Felix</button>
+        <button class="button" onclick="showScreenThree('red')">Sebastian</button>
+        <button class="button" onclick="showScreenThree('red')">Srgæjnfdgkj</button>
+        <button class="button" onclick="showScreenThree('red')">Djfgdnf</button>
+        <button class="button" onclick="showScreenThree('red')">Wsegfwsgseref</button>
+        <button class="button" onclick="showScreenThree('red')">Asetfsef</button>
+    </div>
+
+    <div id="screen-three" class="screen">
+        <button class="button" onclick="showScreenTwo()">Tjek in</button>
+        <p id="result-text"></p>
+    </div>
+</body>
+</html>
