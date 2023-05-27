@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat with ChatGPT</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function sendMessage() {
+      var message = document.getElementById("message").value;
+
+      // Display user message
+      var userMessageElement = document.createElement("p");
+      userMessageElement.innerHTML = "You: " + message;
+      document.getElementById("chat-log").appendChild(userMessageElement);
+
+      // Send message to server
+      axios.post("/chat", { message: message })
+        .then(function(response) {
+          // Display ChatGPT's response
+          var chatGptResponseElement = document.createElement("p");
+          chatGptResponseElement.innerHTML = "ChatGPT: " + response.data;
+          document.getElementById("chat-log").appendChild(chatGptResponseElement);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+      // Clear input box
+      document.getElementById("message").value = "";
+    }
+  </script>
+</head>
+<body>
+  <h1>Chat with ChatGPT</h1>
+  <div id="chat-log"></div>
+  <input type="text" id="message">
+  <button onclick="sendMessage()">Send</button>
+</body>
+</html>
