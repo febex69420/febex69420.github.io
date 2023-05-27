@@ -1,37 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Your Mom Jokes</title>
+  <title>Jokes Galore</title>
   <style>
     body {
       text-align: center;
       margin-top: 200px;
       font-family: Arial, sans-serif;
     }
+
+    .button {
+      padding: 15px 30px;
+      font-size: 24px;
+    }
   </style>
   <script>
-    function displayRandomJoke() {
-      var jokes = [
-        "Your mom is so tech-savvy, she went viral on YouTube before you were born.",
-        "Your mom is so hospitable, she gives high fives to the microwave saying, 'Good job!'",
-        "Your mom is so resourceful, she can find the TV remote even when it's in a different time zone.",
-        "Your mom is so talented, she once won a staring contest with a painting.",
-        "Your mom is so organized, she alphabetizes her spice rack in binary code.",
-        "Your mom is so athletic, she can juggle five remote controls without dropping a show.",
-        "Your mom is so funny, she made the laugh track laugh.",
-        "Your mom is so clever, she can use emojis to write a Shakespearean sonnet.",
-        "Your mom is so fashionable, she wears sunglasses even when it's raining compliments.",
-        "Your mom is so cool, she once won a dance-off against a disco ball."
-      ];
+    var yourMomJokes = [
+      "Your mom is so tech-savvy, she went viral on YouTube before you were born.",
+      "Your mom is so hospitable, she gives high fives to the microwave saying, 'Good job!'",
+      "Your mom is so resourceful, she can find the TV remote even when it's in a different time zone.",
+      "Your mom is so talented, she once won a staring contest with a painting.",
+      "Your mom is so organized, she alphabetizes her spice rack in binary code.",
+      "Your mom is so athletic, she can juggle five remote controls without dropping a show.",
+      "Your mom is so funny, she made the laugh track laugh.",
+      "Your mom is so clever, she can use emojis to write a Shakespearean sonnet.",
+      "Your mom is so fashionable, she wears sunglasses even when it's raining compliments.",
+      "Your mom is so cool, she once won a dance-off against a disco ball."
+    ];
 
-      var randomIndex = Math.floor(Math.random() * jokes.length);
-      var randomJoke = jokes[randomIndex];
+    var knockKnockJokes = [
+      "Knock, knock. Who's there? Boo. Boo who? Don't cry, it's just a joke!",
+      "Knock, knock. Who's there? Lettuce. Lettuce who? Lettuce in, it's cold out here!",
+      "Knock, knock. Who's there? Olive. Olive who? Olive you and I miss you!",
+      "Knock, knock. Who's there? Cow says. Cow says who? No silly, cow says moooo!",
+      "Knock, knock. Who's there? Orange. Orange who? Orange you glad you asked!",
+      "Knock, knock. Who's there? Harry. Harry who? Harry up and answer the door!",
+      "Knock, knock. Who's there? Wooden shoe. Wooden shoe who? Wooden shoe like to hear another joke?",
+      "Knock, knock. Who's there? Atch. Atch who? Bless you!",
+      "Knock, knock. Who's there? Cows go. Cows go who? No silly, cows go moo!",
+      "Knock, knock. Who's there? Lettuce. Lettuce who? Lettuce in, it's raining outside!"
+    ];
+
+    function displayRandomYourMomJoke() {
+      var randomIndex = Math.floor(Math.random() * yourMomJokes.length);
+      var randomJoke = yourMomJokes[randomIndex];
+      document.getElementById("jokeDisplay").innerHTML = randomJoke;
+    }
+
+    function displayRandomKnockKnockJoke() {
+      var randomIndex = Math.floor(Math.random() * knockKnockJokes.length);
+      var randomJoke = knockKnockJokes[randomIndex];
       document.getElementById("jokeDisplay").innerHTML = randomJoke;
     }
   </script>
 </head>
 <body>
-  <button onclick="displayRandomJoke()">Your Mom</button>
+  <button class="button" onclick="displayRandomYourMomJoke()">Your Mom Jokes</button>
+  <button class="button" onclick="displayRandomKnockKnockJoke()">Knock Knock Jokes</button>
   <div id="jokeDisplay"></div>
 </body>
 </html>
+
