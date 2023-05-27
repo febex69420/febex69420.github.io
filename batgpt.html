@@ -36,3 +36,24 @@
   <button onclick="sendMessage()">Send</button>
 </body>
 </html>
+const express = require('express');
+const axios = require('axios');
+
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+app.post('/chat', (req, res) => {
+  const message = req.body.message;
+
+  // Replace this section with your ChatGPT implementation
+  // For simplicity, let's assume ChatGPT just echoes the message
+  const chatGptResponse = `You said: ${message}`;
+
+  res.send(chatGptResponse);
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
