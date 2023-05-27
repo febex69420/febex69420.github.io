@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Mom Jokes</title>
+  <style>
+    body {
+      text-align: center;
+      margin-top: 200px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+  <script>
+    function displayRandomJoke() {
+      var jokes = [
+        "Your mom is so tech-savvy, she went viral on YouTube before you were born.",
+        "Your mom is so hospitable, she gives high fives to the microwave saying, 'Good job!'",
+        "Your mom is so resourceful, she can find the TV remote even when it's in a different time zone.",
+        "Your mom is so talented, she once won a staring contest with a painting.",
+        "Your mom is so organized, she alphabetizes her spice rack in binary code.",
+        "Your mom is so athletic, she can juggle five remote controls without dropping a show.",
+        "Your mom is so funny, she made the laugh track laugh.",
+        "Your mom is so clever, she can use emojis to write a Shakespearean sonnet.",
+        "Your mom is so fashionable, she wears sunglasses even when it's raining compliments.",
+        "Your mom is so cool, she once won a dance-off against a disco ball."
+      ];
+
+      var randomIndex = Math.floor(Math.random() * jokes.length);
+      var randomJoke = jokes[randomIndex];
+      document.getElementById("jokeDisplay").innerHTML = randomJoke;
+    }
+  </script>
+</head>
+<body>
+  <button onclick="displayRandomJoke()">Your Mom</button>
+  <div id="jokeDisplay"></div>
+</body>
+</html>
