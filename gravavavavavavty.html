@@ -1,53 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>3D Phone Screen</title>
+  <title>Gravity Showcase</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
     }
-    #canvas-container {
-      width: 100%;
-      height: 100%;
-      position: fixed;
+    canvas {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div id="canvas-container"></div>
+  <canvas id="gravityCanvas"></canvas>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
   <script>
-    // Set up the scene, camera, and renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById("canvas-container").appendChild(renderer.domElement);
+    const canvas = document.getElementById("gravityCanvas");
+    const ctx = canvas.getContext("2d");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
 
-    // Create a cube and add it to the scene
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    // Define the wheel
+    const wheelRadius = 50;
+    const wheelX = width - wheelRadius;
+    const wheelY = height - wheelRadius;
 
-    // Set the initial camera position
-    camera.position.z = 5;
+    // Define the cubes
+    const cubeSize = 30;
+    const numCubes = 5;
+    let cubes = [];
+    for (let i = 0; i < numCubes; i++) {
+      cubes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: Math.random() * 4 - 2,
+        vy: Math.random() * 4 - 2,
+        color: getRandomColor(),
+      });
+    }
+
+    // Helper function to get a random color
+    function getRandomColor() {
+      return "#" + Math.floor(Math.random() * 16777215).toString(16);
+    }
+
+    // Function to draw the wheel
+    function drawWheel() {
+      ctx.beginPath();
+      ctx.arc(wheelX, wheelY, wheelRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "#cccccc";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Function to draw the cubes
+    function drawCubes() {
+      cubes.forEach((cube) => {
+        ctx.fillStyle = cube.color;
+        ctx.fillRect(cube.x, cube.y, cubeSize, cubeSize);
+      });
+    }
+
+    // Function to update cube positions based on gravity
+    function updateCubes() {
+      cubes.forEach((cube) => {
+        // Gravity towards the wheel
+        const dx = wheelX - (cube.x + cubeSize / 2);
+        const dy = wheelY - (cube.y + cubeSize / 2);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const gravity = 0.1;
+        cube.vx += (dx / distance) * gravity;
+        cube.vy += (dy / distance) * gravity;
+
+        // Update cube position
+        cube.x += cube.vx;
+        cube.y += cube.vy;
+
+        // Bounce off the walls
+        if (cube.x <= 0 || cube.x + cubeSize >= width) {
+          cube.vx *= -1;
+        }
+        if (cube.y <= 0 || cube.y + cubeSize >= height) {
+          cube.vy *= -1;
+        }
+      });
+    }
 
     // Animation loop
     function animate() {
+      ctx.clearRect(0, 0, width, height);
+      drawWheel();
+      drawCubes();
+      updateCubes();
       requestAnimationFrame(animate);
-
-      // Add rotation or interaction here if needed
-      // For example, you can rotate the cube:
-      // cube.rotation.x += 0.01;
-      // cube.rotation.y += 0.01;
-
-      renderer.render(scene, camera);
     }
 
     animate();
   </script>
 </body>
 </html>
+
