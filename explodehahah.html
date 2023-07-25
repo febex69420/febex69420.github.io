@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explosion Effect</title>
+  <title>Falling Cubes Explosion</title>
   <style>
     body, html {
       margin: 0;
@@ -43,6 +43,7 @@
     container.addEventListener('click', (event) => {
       const numCubes = 50;
       const explosionDuration = 1000; // milliseconds
+      const fallingDuration = 2000; // milliseconds
 
       for (let i = 0; i < numCubes; i++) {
         const cube = document.createElement('div');
@@ -59,8 +60,14 @@
         }, 10);
 
         setTimeout(() => {
-          cube.remove();
+          cube.style.transition = `all ${fallingDuration}ms ease-in`;
+          cube.style.top = window.innerHeight + 'px';
+          cube.style.opacity = 0;
         }, explosionDuration);
+
+        setTimeout(() => {
+          cube.remove();
+        }, explosionDuration + fallingDuration);
       }
     });
   </script>
