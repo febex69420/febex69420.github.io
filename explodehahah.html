@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Big Red Cube</title>
+  <title>Explosion Effect</title>
   <style>
     body, html {
       margin: 0;
       padding: 0;
       height: 100%;
+      background-color: white;
       overflow: hidden;
     }
 
@@ -17,34 +18,50 @@
       justify-content: center;
       align-items: center;
       height: 100%;
-      background-color: black;
     }
 
     .cube {
-      width: 200px;
-      height: 200px;
-      background-color: red;
-      transition: all 0.5s ease;
-      cursor: pointer;
-    }
-
-    .expanded {
-      width: 100%;
-      height: 100%;
+      width: 20px;
+      height: 20px;
       background-color: orange;
+      position: absolute;
+      transition: all 1s ease-out;
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
   <div id="container">
-    <div class="cube" id="redCube"></div>
+    <div class="cube" style="top: 50%; left: 50%;"></div>
   </div>
 
   <script>
-    const redCube = document.getElementById('redCube');
+    const container = document.getElementById('container');
 
-    redCube.addEventListener('click', () => {
-      redCube.classList.add('expanded');
+    container.addEventListener('click', (event) => {
+      const numCubes = 50;
+      const explosionDuration = 1000; // milliseconds
+
+      for (let i = 0; i < numCubes; i++) {
+        const cube = document.createElement('div');
+        cube.classList.add('cube');
+        cube.style.top = event.clientY + 'px';
+        cube.style.left = event.clientX + 'px';
+        container.appendChild(cube);
+
+        setTimeout(() => {
+          const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
+          const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
+          cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
+          cube.style.opacity = 1;
+        }, 10);
+
+        setTimeout(() => {
+          cube.remove();
+        }, explosionDuration);
+      }
     });
   </script>
 </body>
