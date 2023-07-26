@@ -7,9 +7,6 @@
       margin: 0;
       overflow: hidden;
     }
-    canvas {
-      display: block;
-    }
     #box {
       width: 200px;
       height: 200px;
@@ -17,7 +14,11 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) rotate(0deg);
+      transition: transform 0.2s ease-out;
+    }
+    canvas {
+      display: block;
     }
   </style>
 </head>
@@ -76,6 +77,9 @@
         }
         if (cube.y <= 0 || cube.y + cubeSize >= boxHeight) {
           cube.vy *= -0.8; // Bounce back with some loss of energy
+          if (cube.y + cubeSize >= boxHeight) {
+            cube.y = boxHeight - cubeSize; // Prevent cubes from going below the box
+          }
         }
       });
     }
@@ -108,7 +112,7 @@
       if (isTurning) {
         const currentMouseX = event.clientX;
         const deltaX = currentMouseX - previousMouseX;
-        box.style.transform = `rotate(${deltaX * 0.2}deg)`;
+        box.style.transform = `translate(-50%, -50%) rotate(${deltaX * 0.2}deg)`;
         previousMouseX = currentMouseX;
       }
     });
@@ -119,5 +123,4 @@
   </script>
 </body>
 </html>
-
 
