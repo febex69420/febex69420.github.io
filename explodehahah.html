@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Falling Cubes Explosion</title>
+  <title>Straight Line of Cubes</title>
   <style>
     body, html {
       margin: 0;
@@ -39,37 +39,66 @@
 
   <script>
     const container = document.getElementById('container');
+    let isDrawing = false;
+    let line;
 
-    container.addEventListener('click', (event) => {
-      const numCubes = 50;
-      const explosionDuration = 1000; // milliseconds
-      const fallingDuration = 2000; // milliseconds
+    container.addEventListener('mousedown', (event) => {
+      isDrawing = true;
+      line = document.createElement('div');
+      line.classList.add('cube');
+      line.style.top = event.clientY + 'px';
+      line.style.left = event.clientX + 'px';
+      container.appendChild(line);
+    });
 
-      for (let i = 0; i < numCubes; i++) {
-        const cube = document.createElement('div');
-        cube.classList.add('cube');
-        cube.style.top = event.clientY + 'px';
-        cube.style.left = event.clientX + 'px';
-        container.appendChild(cube);
+    container.addEventListener('mousemove', (event) => {
+      if (isDrawing) {
+        const dx = event.clientX - parseInt(line.style.left);
+        const dy = event.clientY - parseInt(line.style.top);
+        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+        const angle = Math.atan2(dy, dx);
 
-        setTimeout(() => {
-          const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
-          const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
-          cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
-          cube.style.opacity = 1;
-        }, 10);
+        const numCubes = Math.floor(distance / 20); // Adjust cube density
+        const explosionDuration = 1000; // milliseconds
+        const fallingDuration = 2000; // milliseconds
 
-        setTimeout(() => {
-          cube.style.transition = `all ${fallingDuration}ms ease-in`;
-          cube.style.top = window.innerHeight + 'px';
-          cube.style.opacity = 0;
-        }, explosionDuration);
+        for (let i = 0; i < numCubes; i++) {
+          const cube = document.createElement('div');
+          cube.classList.add('cube');
+          cube.style.top = parseInt(line.style.top) + i * (20 * Math.sin(angle)) + 'px';
+          cube.style.left = parseInt(line.style.left) + i * (20 * Math.cos(angle)) + 'px';
+          container.appendChild(cube);
 
-        setTimeout(() => {
-          cube.remove();
-        }, explosionDuration + fallingDuration);
+          setTimeout(() => {
+            const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
+            const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
+            cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            cube.style.opacity = 1;
+          }, 10);
+
+          setTimeout(() => {
+            cube.style.transition = `all ${fallingDuration}ms ease-in`;
+            cube.style.top = window.innerHeight + 'px';
+            cube.style.opacity = 0;
+          }, explosionDuration);
+
+          setTimeout(() => {
+            cube.remove();
+          }, explosionDuration + fallingDuration);
+        }
       }
+    });
+
+    container.addEventListener('mouseup', () => {
+      isDrawing = false;
+      if (line) line.remove();
+    });
+
+    container.addEventListener('mouseleave', () => {
+      isDrawing = false;
+      if (line) line.remove();
     });
   </script>
 </body>
 </html>
+
