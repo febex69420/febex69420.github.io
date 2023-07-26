@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Gravity Showcase</title>
+  <title>2D Gravity Showcase</title>
   <style>
     body {
       margin: 0;
@@ -10,53 +10,49 @@
     canvas {
       display: block;
     }
+    #box {
+      width: 200px;
+      height: 200px;
+      border: 2px solid black;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   </style>
 </head>
 <body>
-  <canvas id="gravityCanvas"></canvas>
+  <div id="box">
+    <canvas id="gravityCanvas"></canvas>
+  </div>
 
   <script>
     const canvas = document.getElementById("gravityCanvas");
     const ctx = canvas.getContext("2d");
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
+    const box = document.getElementById("box");
+    const boxWidth = 200;
+    const boxHeight = 200;
 
-    // Define the wheel
-    const wheelRadius = 50;
-    const wheelX = width - wheelRadius;
-    const wheelY = height - wheelRadius;
+    canvas.width = boxWidth;
+    canvas.height = boxHeight;
 
-    // Define the cubes
-    const cubeSize = 30;
+    const cubeSize = 20;
     const numCubes = 5;
     let cubes = [];
     for (let i = 0; i < numCubes; i++) {
       cubes.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: Math.random() * 4 - 2,
-        vy: Math.random() * 4 - 2,
+        x: Math.random() * (boxWidth - cubeSize),
+        y: Math.random() * (boxHeight - cubeSize),
+        vx: Math.random() * 2 - 1,
+        vy: Math.random() * 2 - 1,
         color: getRandomColor(),
       });
     }
 
-    // Helper function to get a random color
     function getRandomColor() {
       return "#" + Math.floor(Math.random() * 16777215).toString(16);
     }
 
-    // Function to draw the wheel
-    function drawWheel() {
-      ctx.beginPath();
-      ctx.arc(wheelX, wheelY, wheelRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "#cccccc";
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    // Function to draw the cubes
     function drawCubes() {
       cubes.forEach((cube) => {
         ctx.fillStyle = cube.color;
@@ -64,42 +60,64 @@
       });
     }
 
-    // Function to update cube positions based on gravity
     function updateCubes() {
       cubes.forEach((cube) => {
-        // Gravity towards the wheel
-        const dx = wheelX - (cube.x + cubeSize / 2);
-        const dy = wheelY - (cube.y + cubeSize / 2);
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const gravity = 0.1;
-        cube.vx += (dx / distance) * gravity;
-        cube.vy += (dy / distance) * gravity;
+        // Apply gravity by adding a constant value to the y-velocity
+        const gravity = 0.2;
+        cube.vy += gravity;
 
         // Update cube position
         cube.x += cube.vx;
         cube.y += cube.vy;
 
         // Bounce off the walls
-        if (cube.x <= 0 || cube.x + cubeSize >= width) {
+        if (cube.x <= 0 || cube.x + cubeSize >= boxWidth) {
           cube.vx *= -1;
         }
-        if (cube.y <= 0 || cube.y + cubeSize >= height) {
-          cube.vy *= -1;
+        if (cube.y <= 0 || cube.y + cubeSize >= boxHeight) {
+          cube.vy *= -0.8; // Bounce back with some loss of energy
         }
       });
     }
 
-    // Animation loop
+    function drawBox() {
+      ctx.strokeStyle = "black";
+      ctx.strokeRect(0, 0, boxWidth, boxHeight);
+    }
+
     function animate() {
-      ctx.clearRect(0, 0, width, height);
-      drawWheel();
+      ctx.clearRect(0, 0, boxWidth, boxHeight);
+      drawBox();
       drawCubes();
       updateCubes();
       requestAnimationFrame(animate);
     }
 
     animate();
+
+    // Interaction: Turn the box using the wheel
+    let isTurning = false;
+    let previousMouseX = 0;
+
+    box.addEventListener("mousedown", (event) => {
+      isTurning = true;
+      previousMouseX = event.clientX;
+    });
+
+    box.addEventListener("mousemove", (event) => {
+      if (isTurning) {
+        const currentMouseX = event.clientX;
+        const deltaX = currentMouseX - previousMouseX;
+        box.style.transform = `rotate(${deltaX * 0.2}deg)`;
+        previousMouseX = currentMouseX;
+      }
+    });
+
+    box.addEventListener("mouseup", () => {
+      isTurning = false;
+    });
   </script>
 </body>
 </html>
+
 
