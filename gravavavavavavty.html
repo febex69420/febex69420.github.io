@@ -99,28 +99,35 @@
 
     animate();
 
-    // Interaction: Turn the box using the wheel
-    let isTurning = false;
+    // Interaction: Turn the box by dragging it
+    let isDragging = false;
     let previousMouseX = 0;
+    let initialRotation = 0;
 
     box.addEventListener("mousedown", (event) => {
-      isTurning = true;
+      isDragging = true;
       previousMouseX = event.clientX;
+      initialRotation = getCurrentRotation();
     });
 
-    box.addEventListener("mousemove", (event) => {
-      if (isTurning) {
+    document.addEventListener("mousemove", (event) => {
+      if (isDragging) {
         const currentMouseX = event.clientX;
         const deltaX = currentMouseX - previousMouseX;
-        box.style.transform = `translate(-50%, -50%) rotate(${deltaX * 0.2}deg)`;
+        box.style.transform = `translate(-50%, -50%) rotate(${initialRotation + deltaX * 0.2}deg)`;
         previousMouseX = currentMouseX;
       }
     });
 
-    box.addEventListener("mouseup", () => {
-      isTurning = false;
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
     });
+
+    // Helper function to get the current rotation of the box
+    function getCurrentRotation() {
+      const matrix = new DOMMatrix(getComputedStyle(box).transform);
+      return Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
+    }
   </script>
 </body>
 </html>
-
