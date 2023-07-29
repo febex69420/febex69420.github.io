@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Gamer Tag Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #main-page {
+            display: block;
+        }
+
+        #generator-page {
+            display: none;
+        }
+
+        #generate-button {
+            font-size: 24px;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-page">
+        <h1>Create Gamer Tag</h1>
+        <button id="generate-button" onclick="showGamerTag()">Create Gamer Tag</button>
+    </div>
+
+    <div id="generator-page">
+        <h1>Your Random Gamer Tag:</h1>
+        <p id="gamer-tag"></p>
+        <button onclick="location.reload()">Generate Another</button>
+    </div>
+
+    <script>
+        function showGamerTag() {
+            const mainPage = document.getElementById("main-page");
+            const generatorPage = document.getElementById("generator-page");
+
+            mainPage.style.display = "none";
+            generatorPage.style.display = "block";
+
+            // Generate a random gamer tag
+            const adjectives = ["Swift", "Stealthy", "Fierce", "Epic", "Ninja", "Sneaky", "Awesome"];
+            const nouns = ["Warrior", "Dragon", "Shadow", "Hero", "Legend", "Champion", "Hunter"];
+
+            const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+            const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+
+            const gamerTag = randomAdjective + " " + randomNoun;
+            document.getElementById("gamer-tag").innerText = gamerTag;
+        }
+    </script>
+</body>
+</html>
