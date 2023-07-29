@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Straight Line of Cubes</title>
+  <title>Drag to Make Line and Explode</title>
   <style>
     body, html {
       margin: 0;
@@ -33,14 +33,13 @@
   </style>
 </head>
 <body>
-  <div id="container">
-    <div class="cube" style="top: 50%; left: 50%;"></div>
-  </div>
+  <div id="container"></div>
 
   <script>
     const container = document.getElementById('container');
     let isDrawing = false;
     let line;
+    let cubes = [];
 
     container.addEventListener('mousedown', (event) => {
       isDrawing = true;
@@ -59,8 +58,6 @@
         const angle = Math.atan2(dy, dx);
 
         const numCubes = Math.floor(distance / 20); // Adjust cube density
-        const explosionDuration = 1000; // milliseconds
-        const fallingDuration = 2000; // milliseconds
 
         for (let i = 0; i < numCubes; i++) {
           const cube = document.createElement('div');
@@ -68,37 +65,41 @@
           cube.style.top = parseInt(line.style.top) + i * (20 * Math.sin(angle)) + 'px';
           cube.style.left = parseInt(line.style.left) + i * (20 * Math.cos(angle)) + 'px';
           container.appendChild(cube);
-
-          setTimeout(() => {
-            const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
-            const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
-            cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
-            cube.style.opacity = 1;
-          }, 10);
-
-          setTimeout(() => {
-            cube.style.transition = `all ${fallingDuration}ms ease-in`;
-            cube.style.top = window.innerHeight + 'px';
-            cube.style.opacity = 0;
-          }, explosionDuration);
-
-          setTimeout(() => {
-            cube.remove();
-          }, explosionDuration + fallingDuration);
+          cubes.push(cube);
         }
       }
     });
 
     container.addEventListener('mouseup', () => {
       isDrawing = false;
-      if (line) line.remove();
+      if (line) {
+        setTimeout(() => {
+          cubes.forEach((cube) => {
+            const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
+            const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
+            cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            cube.style.opacity = 1;
+            cube.style.transition = 'all 1s ease-in';
+            cube.style.top = window.innerHeight + 'px';
+            cube.style.opacity = 0;
+            setTimeout(() => cube.remove(), 1000);
+          });
+          cubes = [];
+          line.remove();
+        }, 2000);
+      }
     });
 
     container.addEventListener('mouseleave', () => {
       isDrawing = false;
-      if (line) line.remove();
+      if (line) {
+        cubes.forEach((cube) => cube.remove());
+        cubes = [];
+        line.remove();
+      }
     });
   </script>
 </body>
 </html>
+
 
