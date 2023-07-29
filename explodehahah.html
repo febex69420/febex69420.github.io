@@ -90,6 +90,37 @@
       }
     });
 
+    container.addEventListener('click', (event) => {
+      const numCubes = 50;
+      const explosionDuration = 1000; // milliseconds
+      const fallingDuration = 2000; // milliseconds
+
+      for (let i = 0; i < numCubes; i++) {
+        const cube = document.createElement('div');
+        cube.classList.add('cube');
+        cube.style.top = event.clientY + 'px';
+        cube.style.left = event.clientX + 'px';
+        container.appendChild(cube);
+
+        setTimeout(() => {
+          const randomX = (Math.random() - 0.5) * 2 * window.innerWidth;
+          const randomY = (Math.random() - 0.5) * 2 * window.innerHeight;
+          cube.style.transform = `translate(${randomX}px, ${randomY}px)`;
+          cube.style.opacity = 1;
+        }, 10);
+
+        setTimeout(() => {
+          cube.style.transition = `all ${fallingDuration}ms ease-in`;
+          cube.style.top = window.innerHeight + 'px';
+          cube.style.opacity = 0;
+        }, explosionDuration);
+
+        setTimeout(() => {
+          cube.remove();
+        }, explosionDuration + fallingDuration);
+      }
+    });
+
     container.addEventListener('mouseleave', () => {
       isDrawing = false;
       if (line) {
@@ -101,5 +132,6 @@
   </script>
 </body>
 </html>
+
 
 
