@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    background-color: black;
+    margin: 0;
+    overflow: hidden;
+  }
+  
+  #matrix {
+    position: absolute;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    color: limegreen;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<div id="matrix"></div>
+<script>
+  const matrixElement = document.getElementById('matrix');
+
+  const getRandomChar = () => {
+    const characters = '0123456789';
+    return characters[Math.floor(Math.random() * characters.length)];
+  };
+
+  const generateMatrixText = () => {
+    const numColumns = Math.ceil(window.innerWidth / 10);
+    const numRows = Math.ceil(window.innerHeight / 20);
+    let matrixText = '';
+
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numColumns; col++) {
+        matrixText += getRandomChar();
+      }
+      matrixText += '<br>';
+    }
+
+    matrixElement.innerHTML = matrixText;
+  };
+
+  const updateMatrix = () => {
+    setInterval(() => {
+      generateMatrixText();
+    }, 100);
+  };
+
+  updateMatrix();
+</script>
+</body>
+</html>
