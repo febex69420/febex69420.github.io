@@ -3,59 +3,37 @@
   <head>
     <title>Money Maker</title>
     <style>
-      #money {
-        font-size: 48px;
-        margin-top: 200px;
-      }
-      #money-maker {
-        background-color: green;
-        color: white;
-        font-size: 24px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      #shop {
-        background-color: green;
-        color: white;
-        font-size: 24px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-      }
-      #item-list {
+      /* Styles for the modal container */
+      .modal {
         display: none;
-        position: absolute;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      .item {
-        background-color: lightgray;
-        padding: 10px;
-        margin: 10px;
-        border-radius: 5px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        width: 300px;
       }
-      .item button {
+
+      /* Styles for the modal content */
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+
+      /* Button to close the modal */
+      #close-modal {
         background-color: green;
         color: white;
         border: none;
         border-radius: 5px;
         padding: 5px 10px;
         cursor: pointer;
-      }
-      .item img {
-        height: 50px;
-        margin-right: 10px;
       }
     </style>
   </head>
@@ -64,27 +42,17 @@
     <button id="money-maker">Money Maker 💸</button>
     <button id="shop">Shop 💸</button>
     <div id="item-list">
-      <div class="item">
-        <img src="sebastian.png" alt="Sebastian">
-        <span>Sebastian</span>
-        <button class="buy" data-price="0">Buy 💸0</button>
-      </div>
-      <div class="item">
-        <img src="food.png" alt="Food">
-        <span>Food</span>
-        <button class="buy" data-price="10">Buy 💸10</button>
-      </div>
-      <div class="item">
-        <img src="computer.png" alt="Computer">
-        <span>Computer</span>
-        <button class="buy" data-price="100">Buy 💸100</button>
-      </div>
-      <div class="item">
-        <img src="felix.png" alt="Felix">
-        <span>Felix</span>
-        <button class="buy" data-price="1000000">Buy 💸1000000</button>
+      <!-- Your item list goes here -->
+    </div>
+
+    <!-- Modal container -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span id="modal-text">This is your alert message!</span>
+        <button id="close-modal">OK</button>
       </div>
     </div>
+
     <script>
       let money = 1000000;
       const moneyDisplay = document.getElementById('money');
@@ -99,10 +67,29 @@
         moneyDisplay.innerText = money + ' 💸';
       }
 
+      function showAlert(message) {
+        const modal = document.getElementById('modal');
+        const modalText = document.getElementById('modal-text');
+        modalText.innerText = message;
+        modal.style.display = 'block';
+      }
+
+      document.getElementById('close-modal').addEventListener('click', function () {
+        const modal = document.getElementById('modal');
+        modal.style.display = 'none';
+      });
+
       function buyItem(e) {
         const price = parseInt(e.target.dataset.price);
         if (money >= price) {
           money -= price;
           moneyDisplay.innerText = money + ' 💸';
-          alert('
+          showAlert('Item purchased successfully!');
+        } else {
+          showAlert('Not enough money to buy this item.');
+        }
+      }
+    </script>
+  </body>
+</html>
 
