@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    
+    button {
+      background-color: red;
+      color: white;
+      font-size: 24px;
+      padding: 20px 40px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    #message {
+      display: none;
+      text-align: center;
+      font-size: 36px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <button id="winButton">Click me!</button>
+  <div id="message">Congrats, you won nothing</div>
+
+  <script>
+    const winButton = document.getElementById('winButton');
+    const message = document.getElementById('message');
+
+    winButton.addEventListener('click', () => {
+      winButton.style.display = 'none';
+      message.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
