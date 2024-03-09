@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matpat is Gone</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #matpat-text {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    #pay-respect-button {
+      margin-top: 10px;
+    }
+
+    #respect-count {
+      font-size: 24px;
+    }
+
+    #super-respect-button {
+      display: none;
+      margin-top: 10px;
+      padding: 15px;
+      font-size: 18px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="matpat-text">Matpat is gone</div>
+
+  <button id="pay-respect-button" onclick="payRespect()">Click to Pay Respect</button>
+
+  <div id="respect-count">Number of Respects: <span id="count">0</span></div>
+
+  <button id="super-respect-button" onclick="superRespect()">Super Respect</button>
+
+  <script>
+    let respectCount = 0;
+
+    function payRespect() {
+      respectCount++;
+      document.getElementById('count').innerText = respectCount;
+
+      if (respectCount === 1000) {
+        document.getElementById('super-respect-button').style.display = 'block';
+      }
+    }
+
+    function superRespect() {
+      respectCount += 1000;
+      document.getElementById('count').innerText = respectCount;
+      document.getElementById('super-respect-button').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
