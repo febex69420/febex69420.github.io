@@ -26,6 +26,7 @@
             margin-bottom: 20px;
             width: 300px;
             font-size: 18px;
+            transition: background-color 0.5s ease;
         }
 
         #hintDisplay {
@@ -34,6 +35,12 @@
         }
 
         #hintButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #enterButton {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -61,6 +68,10 @@
         .correct-background {
             background-color: lightgreen;
         }
+
+        .wrong-background {
+            background-color: lightcoral;
+        }
     </style>
 </head>
 
@@ -68,6 +79,7 @@
     <div id="container">
         <h1>Welcome to Mezteren - Guess the Random Word</h1>
         <input type="text" id="wordInput" placeholder="Enter the random word">
+        <button id="enterButton" onclick="checkWord()">Enter</button>
         <div id="hintDisplay">Hints will appear here...</div>
         <button id="hintButton" onclick="showHint()">Get Hint</button>
         <div id="message">YOU GUESSED THE WORD</div>
@@ -111,6 +123,9 @@
                 document.body.classList.add('correct-background');
                 document.getElementById('backButton').style.display = 'block';
                 document.getElementById('correctMessage').style.display = 'block';
+                document.getElementById('wordInput').classList.remove('wrong-background');
+            } else {
+                document.getElementById('wordInput').classList.add('wrong-background');
             }
         }
 
@@ -126,6 +141,7 @@
             hintIndex = 0;
             document.getElementById('hintButton').disabled = false;
             document.getElementById('hintDisplay').innerText = "Hints will appear here...";
+            document.getElementById('wordInput').classList.remove('wrong-background');
         }
     </script>
 </body>
