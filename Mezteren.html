@@ -27,6 +27,8 @@
             width: 300px;
             font-size: 18px;
             transition: background-color 0.5s ease;
+            border-radius: 20px; /* Rounded edges */
+            border: none; /* Remove border */
         }
 
         #hintDisplay {
@@ -34,16 +36,32 @@
             margin-bottom: 20px;
         }
 
-        #hintButton {
+        .button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
+            border-radius: 20px; /* Rounded edges */
+            border: none; /* Remove border */
         }
 
         #enterButton {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        #enterButton:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        #hintButton {
+            background-color: #008CBA; /* Blue */
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        #hintButton:hover {
+            background-color: #0073e6; /* Darker blue on hover */
         }
 
         #message {
@@ -79,12 +97,12 @@
     <div id="container">
         <h1>Welcome to Mezteren - Guess the Random Word</h1>
         <input type="text" id="wordInput" placeholder="Enter the random word">
-        <button id="enterButton" onclick="checkWord()">Enter</button>
+        <button class="button" id="enterButton" onclick="checkWord()">Enter</button>
         <div id="hintDisplay">Hints will appear here...</div>
-        <button id="hintButton" onclick="showHint()">Get Hint</button>
+        <button class="button" id="hintButton" onclick="showHint()">Get Hint</button>
         <div id="message">YOU GUESSED THE WORD</div>
         <div id="correctMessage">You Guessed the Correct Word!</div>
-        <button id="backButton" onclick="restartGame()">Go Back to Game</button>
+        <button class="button" id="backButton" onclick="restartGame()">Go Back to Game</button>
     </div>
 
     <script>
