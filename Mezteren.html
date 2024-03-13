@@ -198,6 +198,14 @@
                 document.getElementById('backButton').style.display = 'block';
                 document.getElementById('correctMessage').style.display = 'block';
                 document.getElementById('wordInput').classList.remove('wrong-background');
+
+                // Get a new word and hints
+                randomIndex = Math.floor(Math.random() * words.length);
+                correctWord = words[randomIndex];
+                currentHints = hints[correctWord];
+                hintIndex = 0;
+                document.getElementById('hintButton').disabled = false;
+                document.getElementById('hintDisplay').innerText = "Hints will appear here...";
             } else {
                 document.getElementById('wordInput').classList.add('wrong-background');
             }
@@ -221,4 +229,5 @@
 </body>
 
 </html>
+
 
