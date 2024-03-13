@@ -105,13 +105,30 @@
     </div>
 
     <script>
-        let words = ["apple", "banana", "orange", "grape", "watermelon"];
+        let words = [
+            "apple",
+            "banana",
+            "orange",
+            "grape",
+            "watermelon",
+            "pineapple",
+            "strawberry",
+            "kiwi",
+            "peach",
+            "pear"
+        ];
+
         let hints = {
             "apple": ["Hint 1: It's a type of fruit.", "Hint 2: It's usually red or green."],
             "banana": ["Hint 1: It's a type of fruit.", "Hint 2: It's yellow when ripe."],
             "orange": ["Hint 1: It's a type of fruit.", "Hint 2: It's round and orange."],
             "grape": ["Hint 1: It's a type of fruit.", "Hint 2: It's small and usually purple or green."],
-            "watermelon": ["Hint 1: It's a type of fruit.", "Hint 2: It's large and has a green rind."]
+            "watermelon": ["Hint 1: It's a type of fruit.", "Hint 2: It's large and has a green rind."],
+            "pineapple": ["Hint 1: It's a type of fruit.", "Hint 2: It has a spiky exterior and sweet interior."],
+            "strawberry": ["Hint 1: It's a type of fruit.", "Hint 2: It's small and red with seeds on the outside."],
+            "kiwi": ["Hint 1: It's a type of fruit.", "Hint 2: It has brown fuzzy skin and green flesh."],
+            "peach": ["Hint 1: It's a type of fruit.", "Hint 2: It's fuzzy-skinned and has a soft, juicy interior."],
+            "pear": ["Hint 1: It's a type of fruit.", "Hint 2: It's shaped like a teardrop and has a sweet flavor."]
         };
 
         let randomIndex = Math.floor(Math.random() * words.length);
@@ -164,3 +181,4 @@
 </body>
 
 </html>
+
