@@ -90,11 +90,34 @@
         .wrong-background {
             background-color: lightcoral;
         }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
     </style>
 </head>
 
 <body>
     <div id="container">
+        <h1>Welcome to Fruit Guesser</h1>
         <input type="text" id="wordInput" placeholder="Enter the random word">
         <button class="button" id="enterButton" onclick="checkWord()">Enter</button>
         <div id="hintDisplay">Hints will appear here...</div>
@@ -103,6 +126,13 @@
         <div id="correctMessage">You Guessed the Correct Word!</div>
         <button class="button" id="backButton" onclick="restartGame()">Go Back to Game</button>
     </div>
+
+    <div class="popup" id="popup" style="display: none;">
+        <h2>Uh-oh!</h2>
+        <p>You've guessed all the words. Looks like you've wasted your time!</p>
+        <button class="button" onclick="closePopup()">OK</button>
+    </div>
+    <div class="overlay" id="overlay" style="display: none;"></div>
 
     <script>
         let words = [
@@ -171,6 +201,8 @@
             "pumpkin": ["Hint 1: It's a type of vegetable.", "Hint 2: It's large and orange, often carved during Halloween."]
         };
 
+        let guessedWords = [];
+
         let randomIndex = Math.floor(Math.random() * words.length);
         let correctWord = words[randomIndex];
         let currentHints = hints[correctWord];
@@ -198,14 +230,20 @@
                 document.getElementById('backButton').style.display = 'block';
                 document.getElementById('correctMessage').style.display = 'block';
                 document.getElementById('wordInput').classList.remove('wrong-background');
+                guessedWords.push(correctWord);
 
-                // Get a new word and hints
-                randomIndex = Math.floor(Math.random() * words.length);
-                correctWord = words[randomIndex];
-                currentHints = hints[correctWord];
-                hintIndex = 0;
-                document.getElementById('hintButton').disabled = false;
-                document.getElementById('hintDisplay').innerText = "Hints will appear here...";
+                if (guessedWords.length === words.length) {
+                    document.getElementById('popup').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                } else {
+                    // Get a new word and hints
+                    randomIndex = Math.floor(Math.random() * words.length);
+                    correctWord = words[randomIndex];
+                    currentHints = hints[correctWord];
+                    hintIndex = 0;
+                    document.getElementById('hintButton').disabled = false;
+                    document.getElementById('hintDisplay').innerText = "Hints will appear here...";
+                }
             } else {
                 document.getElementById('wordInput').classList.add('wrong-background');
             }
@@ -225,9 +263,13 @@
             document.getElementById('hintDisplay').innerText = "Hints will appear here...";
             document.getElementById('wordInput').classList.remove('wrong-background');
         }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
     </script>
 </body>
 
 </html>
-
 
