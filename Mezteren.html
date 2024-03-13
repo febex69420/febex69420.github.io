@@ -49,6 +49,17 @@
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
+            display: none;
+        }
+
+        #correctMessage {
+            font-size: 24px;
+            color: green;
+            display: none;
+        }
+
+        .correct-background {
+            background-color: lightgreen;
         }
     </style>
 </head>
@@ -60,22 +71,28 @@
         <div id="hintDisplay">Hints will appear here...</div>
         <button id="hintButton" onclick="showHint()">Get Hint</button>
         <div id="message">YOU GUESSED THE WORD</div>
-        <button id="backButton" onclick="goBack()" style="display: none;">Go Back to Game</button>
+        <div id="correctMessage">You Guessed the Correct Word!</div>
+        <button id="backButton" onclick="restartGame()">Go Back to Game</button>
     </div>
 
     <script>
-        let hints = [
-            "Hint 1: Think of something related to nature.",
-            "Hint 2: It's a common item found in households.",
-            "Hint 3: Often used in cooking."
-        ];
+        let words = ["apple", "banana", "orange", "grape", "watermelon"];
+        let hints = {
+            "apple": ["Hint 1: It's a type of fruit.", "Hint 2: It's usually red or green."],
+            "banana": ["Hint 1: It's a type of fruit.", "Hint 2: It's yellow when ripe."],
+            "orange": ["Hint 1: It's a type of fruit.", "Hint 2: It's round and orange."],
+            "grape": ["Hint 1: It's a type of fruit.", "Hint 2: It's small and usually purple or green."],
+            "watermelon": ["Hint 1: It's a type of fruit.", "Hint 2: It's large and has a green rind."]
+        };
 
+        let randomIndex = Math.floor(Math.random() * words.length);
+        let correctWord = words[randomIndex];
+        let currentHints = hints[correctWord];
         let hintIndex = 0;
-        let correctWord = "apple"; // Change this to your desired correct word
 
         function showHint() {
-            if (hintIndex < hints.length) {
-                document.getElementById('hintDisplay').innerText = hints[hintIndex];
+            if (hintIndex < currentHints.length) {
+                document.getElementById('hintDisplay').innerText = currentHints[hintIndex];
                 hintIndex++;
             } else {
                 document.getElementById('hintDisplay').innerText = "No more hints available.";
@@ -91,17 +108,27 @@
             let guess = document.getElementById('wordInput').value.trim().toLowerCase();
             if (guess === correctWord) {
                 document.getElementById('message').style.display = 'block';
-                document.body.style.backgroundColor = 'lightgreen';
+                document.body.classList.add('correct-background');
                 document.getElementById('backButton').style.display = 'block';
+                document.getElementById('correctMessage').style.display = 'block';
             }
         }
 
-        function goBack() {
+        function restartGame() {
             document.getElementById('message').style.display = 'none';
-            document.body.style.backgroundColor = 'lightblue';
+            document.body.classList.remove('correct-background');
             document.getElementById('backButton').style.display = 'none';
+            document.getElementById('correctMessage').style.display = 'none';
+            document.getElementById('wordInput').value = "";
+            randomIndex = Math.floor(Math.random() * words.length);
+            correctWord = words[randomIndex];
+            currentHints = hints[correctWord];
+            hintIndex = 0;
+            document.getElementById('hintButton').disabled = false;
+            document.getElementById('hintDisplay').innerText = "Hints will appear here...";
         }
     </script>
 </body>
 
 </html>
+
