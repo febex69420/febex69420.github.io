@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .button {
+      padding: 20px 40px;
+      background-color: green;
+      color: white;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+
+<div class="center">
+  <button class="button" onclick="document.getElementById('popup').style.display='block'">Click me!</button>
+</div>
+
+<div id="popup" class="popup">
+  <p>skibidibid</p>
+</div>
+
+</body>
+</html>
