@@ -7,123 +7,94 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
         background-color: #f0f0f0;
     }
-    #container {
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         text-align: center;
     }
-    #guessInput {
+    .title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .input-bar {
+        width: 70%;
         padding: 10px;
-        border-radius: 10px;
-        border: 2px solid #ccc;
-        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
         margin-bottom: 10px;
-        width: 300px;
     }
-    #guessButton {
+    .button {
         padding: 10px 20px;
-        border-radius: 10px;
-        background-color: #4CAF50;
-        color: white;
         border: none;
-        font-size: 16px;
+        border-radius: 5px;
+        background-color: green;
+        color: #fff;
         cursor: pointer;
-        transition: background-color 0.3s;
     }
-    #guessButton:hover {
-        background-color: #45a049;
-    }
-    #hintButton {
-        font-size: 14px;
+    .hint-button {
+        margin-top: 10px;
         cursor: pointer;
         color: blue;
         text-decoration: underline;
-        margin-top: 10px;
     }
 </style>
 </head>
 <body>
-
-<div id="container">
-    <h1>Mezterens Word Guesser</h1>
-    <input type="text" id="guessInput" placeholder="Enter your guess...">
-    <button id="guessButton" onclick="checkGuess()">Enter</button>
-    <p id="hintText"></p>
-    <button id="hintButton">Hint</button>
+<div class="container">
+    <h1 class="title">Mezterens Word Guesser</h1>
+    <input type="text" id="wordInput" class="input-bar" placeholder="Type your guess here...">
+    <button onclick="checkGuess()" class="button">Enter</button>
+    <div id="hint" class="hint-button" onclick="showHint()">Hint</div>
 </div>
 
 <script>
     const words = [
-        'apple', 'banana', 'orange', 'grape', 'pineapple', 'carrot', 'broccoli', 'potato', 'tomato', 'cucumber',
-        'onion', 'garlic', 'lettuce', 'spinach', 'pepper', 'celery', 'corn', 'peas', 'beans', 'squash', 'zucchini',
-        'eggplant', 'radish', 'beet', 'turnip', 'rutabaga', 'asparagus', 'artichoke', 'bell pepper', 'chili pepper',
-        'jalapeno', 'habanero', 'mushroom', 'cabbage', 'cauliflower', 'brussels sprouts', 'kale', 'parsley',
-        'cilantro', 'rosemary', 'thyme', 'oregano', 'basil', 'sage', 'mint', 'dill', 'coriander', 'lavender', 'chive',
-        'lemongrass', 'ginger', 'turmeric', 'cinnamon', 'nutmeg', 'clove', 'cardamom', 'allspice', 'paprika', 'cumin',
-        'fennel', 'anise', 'mustard', 'honey', 'sugar', 'salt', 'pepper', 'vinegar', 'olive oil', 'coconut oil',
-        'butter', 'cream', 'cheese', 'yogurt', 'milk', 'egg', 'chicken', 'beef', 'pork', 'lamb', 'fish', 'shrimp',
-        'lobster', 'crab', 'octopus', 'squid', 'scallop', 'clam', 'mussel', 'oyster', 'snail', 'duck', 'goose',
-        'turkey', 'quail', 'rabbit', 'deer', 'elk', 'moose', 'bear', 'fox', 'wolf', 'coyote', 'lion', 'tiger',
-        'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'puma', 'cougar', 'elephant', 'rhinoceros',
-        'hippopotamus', 'giraffe', 'zebra', 'donkey', 'horse', 'cow', 'bull', 'buffalo', 'goat', 'sheep', 'pig',
-        'hamster', 'guinea pig', 'rabbit', 'mouse', 'rat', 'squirrel', 'chipmunk', 'raccoon', 'opossum', 'skunk',
-        'badger', 'weasel', 'ferret', 'otter', 'beaver', 'seal', 'sea lion', 'walrus', 'dolphin', 'whale', 'shark',
-        'eel', 'ray', 'turtle', 'tortoise', 'crocodile', 'alligator', 'lizard', 'gecko', 'iguana', 'chameleon',
-        'frog', 'toad', 'newt', 'salamander', 'snake', 'python', 'boa', 'anaconda', 'viper', 'cobra', 'rattlesnake',
-        'garter snake', 'king snake', 'corn snake', 'milk snake', 'water snake', 'gopher snake', 'black rat snake',
-        'green tree python', 'ball python', 'burmese python', 'reticulated python', 'rock python', 'indian python',
-        'amethystine python', 'carpet python', 'olive python', 'timor python', 'childrens python', 'spotted python',
-        'western hognose snake', 'eastern hognose snake', 'mexican hognose snake', 'southwestern speckled rattlesnake',
-        'mohave rattlesnake', 'western diamondback rattlesnake', 'texas coral snake', 'sonoran coral snake',
-        'arizona coral snake', 'eastern coral snake', 'florida cottonmouth', 'western cottonmouth', 'texas cottonmouth',
-        'banded water snake', 'common garter snake'
+        { word: "apple", hint: "A fruit that is red or green and grows on trees." },
+        { word: "banana", hint: "A long, curved fruit that is yellow when ripe." },
+        { word: "orange", hint: "A round citrus fruit with a tough bright reddish-yellow rind." },
+        { word: "grape", hint: "A small, juicy fruit with a smooth skin, typically green, purple, or red." },
+        { word: "kiwi", hint: "A small, oval fruit with brown fuzzy skin, green flesh, and black seeds." },
+        // Add more words with hints here
+        { word: "dog", hint: "A common four-legged animal kept as a pet or for work." },
+        { word: "cat", hint: "A small domesticated carnivorous mammal with soft fur." },
+        { word: "elephant", hint: "A very large animal with a long nose called a trunk." },
+        // Continue adding more words with hints
     ];
-    let currentWord = '';
-    let hintIndex = 0;
 
-    function getRandomWord() {
-        return words[Math.floor(Math.random() * words.length)];
-    }
-
-    function displayHint() {
-        if (currentWord) {
-            const hint = currentWord.substring(0, hintIndex + 1);
-            document.getElementById('hintText').innerText = `Hint: ${hint}`;
-            hintIndex++;
-        }
-    }
-
-    function resetGame() {
-        document.getElementById('guessInput').value = '';
-        document.getElementById('guessInput').style.backgroundColor = '';
-        hintIndex = 0;
-        currentWord = getRandomWord();
-        displayHint();
-    }
+    let currentWordIndex = Math.floor(Math.random() * words.length);
+    let currentWord = words[currentWordIndex].word;
 
     function checkGuess() {
-        const guess = document.getElementById('guessInput').value.toLowerCase();
+        const guess = document.getElementById('wordInput').value.toLowerCase();
         if (guess === currentWord) {
-            document.getElementById('guessInput').style
-.backgroundColor = 'lightgreen';
-            setTimeout(resetGame, 1000);
-        } else {
-            document.getElementById('guessInput').style.backgroundColor = 'red';
+            document.getElementById('wordInput').style.backgroundColor = 'green';
             setTimeout(() => {
-                document.getElementById('guessInput').style.backgroundColor = '';
+                document.getElementById('wordInput').style.backgroundColor = '#fff';
+                getNextWord();
+            }, 1000);
+        } else {
+            document.getElementById('wordInput').style.backgroundColor = 'red';
+            setTimeout(() => {
+                document.getElementById('wordInput').style.backgroundColor = '#fff';
             }, 2000);
         }
     }
 
-    // Add event listener for the "Hint" button click event
-    document.getElementById('hintButton').addEventListener('click', displayHint);
+    function getNextWord() {
+        currentWordIndex = Math.floor(Math.random() * words.length);
+        currentWord = words[currentWordIndex].word;
+        document.getElementById('wordInput').value = '';
+    }
 
+    function showHint() {
+        alert(`Hint: ${words[currentWordIndex].hint}`);
+    }
 </script>
 </body>
 </html>
