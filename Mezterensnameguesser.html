@@ -55,7 +55,7 @@
     <input type="text" id="guessInput" placeholder="Enter your guess...">
     <button id="guessButton" onclick="checkGuess()">Enter</button>
     <p id="hintText"></p>
-    <button id="hintButton" onclick="displayHint()">Hint</button>
+    <button id="hintButton">Hint</button>
 </div>
 
 <script>
@@ -110,7 +110,8 @@
     function checkGuess() {
         const guess = document.getElementById('guessInput').value.toLowerCase();
         if (guess === currentWord) {
-            document.getElementById('guessInput').style.backgroundColor = 'lightgreen';
+            document.getElementById('guessInput').style
+.backgroundColor = 'lightgreen';
             setTimeout(resetGame, 1000);
         } else {
             document.getElementById('guessInput').style.backgroundColor = 'red';
@@ -120,6 +121,10 @@
         }
     }
 
+    // Add event listener for the "Hint" button click event
+    document.getElementById('hintButton').addEventListener('click', displayHint);
+
 </script>
 </body>
 </html>
+
