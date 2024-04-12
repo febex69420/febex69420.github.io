@@ -35,11 +35,13 @@
       background-color: #2196f3;
       color: white;
     }
-    .board {
+    .board-container {
       margin: 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+    .board {
       display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
       gap: 2px;
     }
     .cell {
@@ -68,8 +70,10 @@
     <button class="button board-button" onclick="startGame(10)">10x10</button>
   </div>
 
-  <div id="board" class="board">
-    <!-- Cells will be generated dynamically here -->
+  <div class="board-container">
+    <div id="board" class="board">
+      <!-- Cells will be generated dynamically here -->
+    </div>
   </div>
 
   <script>
@@ -85,6 +89,8 @@
       boardSize = size;
       const board = document.getElementById('board');
       board.innerHTML = '';
+      board.style.gridTemplateColumns = `repeat(${size}, 100px)`;
+      board.style.gridTemplateRows = `repeat(${size}, 100px)`;
       for (let i = 0; i < size * size; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
