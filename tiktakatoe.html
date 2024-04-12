@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kryds og Bolle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .board-screen {
+      display: none;
+    }
+    .button {
+      font-size: 24px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .green-button {
+      background-color: #4caf50;
+      color: white;
+    }
+    .board-button {
+      background-color: #2196f3;
+      color: white;
+    }
+    .board {
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 2px;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="start-screen">
+    <h1>Welcome to Kryds og Bolle</h1>
+    <button class="button green-button" onclick="showBoardScreen()">Start Game</button>
+  </div>
+
+  <div class="board-screen">
+    <h1>Select Board Size</h1>
+    <button class="button board-button" onclick="startGame(3)">3x3</button>
+    <button class="button board-button" onclick="startGame(5)">5x5</button>
+    <button class="button board-button" onclick="startGame(10)">10x10</button>
+  </div>
+
+  <div id="board" class="board">
+    <!-- Cells will be generated dynamically here -->
+  </div>
+
+  <script>
+    let currentPlayer = 'X';
+    let boardSize = 0;
+
+    function showBoardScreen() {
+      document.querySelector('.start-screen').style.display = 'none';
+      document.querySelector('.board-screen').style.display = 'block';
+    }
+
+    function startGame(size) {
+      boardSize = size;
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      for (let i = 0; i < size * size; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.onclick = function() {
+          if (!this.textContent) {
+            this.textContent = currentPlayer;
+            checkWin();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          }
+        };
+        board.appendChild(cell);
+      }
+      document.querySelector('.board-screen').style.display = 'none';
+    }
+
+    function checkWin() {
+      const cells = document.querySelectorAll('.cell');
+      // Horizontal check
+      for (let i = 0; i < boardSize; i++) {
+        let row = '';
+        for (let j = 0; j < boardSize; j++) {
+          row += cells[i * boardSize + j].textContent;
+        }
+        if (row === 'X'.repeat(boardSize) || row === 'O'.repeat(boardSize)) {
+          alert(`${currentPlayer} wins!`);
+          resetGame();
+          return;
+        }
+      }
+      // Vertical check
+      for (let i = 0; i < boardSize; i++) {
+        let col = '';
+        for (let j = 0; j < boardSize; j++) {
+          col += cells[j * boardSize + i].textContent;
+        }
+        if (col === 'X'.repeat(boardSize) || col === 'O'.repeat(boardSize)) {
+          alert(`${currentPlayer} wins!`);
+          resetGame();
+          return;
+        }
+      }
+      // Diagonal check
+      let diag1 = '';
+      let diag2 = '';
+      for (let i = 0; i < boardSize; i++) {
+        diag1 += cells[i * boardSize + i].textContent;
+        diag2 += cells[i * boardSize + (boardSize - 1 - i)].textContent;
+      }
+      if (diag1 === 'X'.repeat(boardSize) || diag1 === 'O'.repeat(boardSize) ||
+          diag2 === 'X'.repeat(boardSize) || diag2 === 'O'.repeat(boardSize)) {
+        alert(`${currentPlayer} wins!`);
+        resetGame();
+        return;
+      }
+      // Check for draw
+      let draw = true;
+      for (const cell of cells) {
+        if (!cell.textContent) {
+          draw = false;
+          break;
+        }
+      }
+      if (draw) {
+        alert('It\'s a draw!');
+        resetGame();
+      }
+    }
+
+    function resetGame() {
+      currentPlayer = 'X';
+      startGame(boardSize);
+    }
+  </script>
+</body>
+</html>
