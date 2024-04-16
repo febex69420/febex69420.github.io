@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Board</title>
+<style>
+  .chessboard {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .square {
+    width: 50px;
+    height: 50px;
+    background-color: #eee;
+    border: 1px solid #333;
+    box-sizing: border-box;
+  }
+
+  .square.black {
+    background-color: #769656;
+  }
+</style>
+</head>
+<body>
+
+<div class="chessboard">
+  <!-- Loop for creating 64 squares -->
+  <?php
+  $letters = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+  for ($i = 8; $i >= 1; $i--) {
+    for ($j = 0; $j < 8; $j++) {
+      $class = (($i + $j) % 2 == 0) ? 'black' : '';
+      echo "<div class='square $class' data-row='$i' data-col='{$letters[$j]}'></div>";
+    }
+  }
+  ?>
+</div>
+
+</body>
+</html>
