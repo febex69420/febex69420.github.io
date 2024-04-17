@@ -27,10 +27,36 @@
     background-color: #eee;
     border: 1px solid #333;
     box-sizing: border-box;
+    position: relative;
   }
 
   .square.black {
     background-color: #769656;
+  }
+
+  .piece {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* Sample pieces */
+  .white-king {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg');
+  }
+
+  .black-king {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg');
+  }
+
+  /* Adjustments for piece sizes */
+  .piece {
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
   }
 </style>
 </head>
@@ -39,77 +65,11 @@
 <div class="chessboard">
   <!-- Loop for creating 64 squares -->
   <!-- 8 rows -->
-  <div class="square"></div>
+  <div class="square"><div class="piece white-king"></div></div>
   <div class="square black"></div>
   <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
-  <div class="square black"></div>
-  <div class="square"></div>
+  <div class="square black"><div class="piece black-king"></div></div>
+  <!-- Add the rest of the squares and pieces -->
 </div>
 
 </body>
