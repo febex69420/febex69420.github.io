@@ -48,6 +48,7 @@
 
     .piece {
         font-size: 40px;
+        cursor: pointer; /* Change cursor to pointer when hovering over a piece */
     }
 </style>
 </head>
@@ -110,10 +111,7 @@
                     square.innerHTML = piece;
                     square.classList.add('piece');
                     // Add event listener to handle drag and drop
-                    square.draggable = true;
                     square.addEventListener('dragstart', (event) => handleDragStart(event, i, j));
-                    square.addEventListener('dragover', (event) => handleDragOver(event));
-                    square.addEventListener('drop', (event) => handleDrop(event, i, j));
                 }
 
                 chessboard.appendChild(square);
@@ -124,11 +122,6 @@
     // Function to handle drag start
     function handleDragStart(event, row, col) {
         event.dataTransfer.setData('text/plain', `${row},${col}`);
-    }
-
-    // Function to handle drag over
-    function handleDragOver(event) {
-        event.preventDefault();
     }
 
     // Function to handle drop
@@ -152,3 +145,4 @@
 </script>
 </body>
 </html>
+
