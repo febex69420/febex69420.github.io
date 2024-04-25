@@ -146,16 +146,28 @@
         const toRow = parseInt(event.target.dataset.row);
         const toCol = parseInt(event.target.dataset.col);
 
-        // Move the piece to the new position
-        const piece = board[fromRow][fromCol];
-        board[fromRow][fromCol] = '';
-        board[toRow][toCol] = piece;
+        // Check if the move is valid
+        if (isValidMove(fromRow, fromCol, toRow, toCol)) {
+            // Move the piece to the new position
+            const piece = board[fromRow][fromCol];
+            board[fromRow][fromCol] = '';
+            board[toRow][toCol] = piece;
 
-        // Toggle current player
-        currentPlayer = (currentPlayer === 'white') ? 'black' : 'white';
+            // Toggle current player
+            currentPlayer = (currentPlayer === 'white') ? 'black' : 'white';
 
-        // Render the updated board
-        renderBoard();
+            // Render the updated board
+            renderBoard();
+        } else {
+            alert('Invalid Move! Please select a valid square.');
+        }
+    }
+
+    // Function to check if a move is valid
+    function isValidMove(fromRow, fromCol, toRow, toCol) {
+        // Implement your logic for checking valid moves here
+        // For now, we'll just return true
+        return true;
     }
 
     // Render the initial chessboard
