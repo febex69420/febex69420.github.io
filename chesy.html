@@ -6,9 +6,16 @@
 <title>Chess Game</title>
 <style>
     /* Styling for the chessboard */
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
     .chessboard {
-        width: 400px;
-        height: 400px;
+        width: 600px;
+        height: 600px;
         border: 2px solid black;
         display: grid;
         grid-template-columns: repeat(8, 1fr);
@@ -16,8 +23,8 @@
     }
 
     .square {
-        width: 50px;
-        height: 50px;
+        width: 75px;
+        height: 75px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -40,23 +47,25 @@
     }
 
     .piece {
-        font-size: 30px;
+        font-size: 40px;
     }
 </style>
 </head>
 <body>
-<div class="chessboard">
-    <!-- Rows -->
-    <!-- Loop through each row -->
-    <!-- Even rows start with a black square -->
-    <!-- Odd rows start with a white square -->
-    <!-- Within each row, loop through each column and create a square -->
-    <!-- Apply appropriate class to each square based on its position -->
-    <!-- Add data attributes to identify row and column index -->
-    <!-- Add an event listener to handle click on each square -->
-    <!-- Display chess pieces based on the initial board setup -->
-    <!-- Use appropriate Unicode characters for chess pieces -->
-    <!-- Add classes to style the pieces -->
+<div class="container">
+    <div class="chessboard">
+        <!-- Rows -->
+        <!-- Loop through each row -->
+        <!-- Even rows start with a black square -->
+        <!-- Odd rows start with a white square -->
+        <!-- Within each row, loop through each column and create a square -->
+        <!-- Apply appropriate class to each square based on its position -->
+        <!-- Add data attributes to identify row and column index -->
+        <!-- Add an event listener to handle click on each square -->
+        <!-- Display chess pieces based on the initial board setup -->
+        <!-- Use appropriate Unicode characters for chess pieces -->
+        <!-- Add classes to style the pieces -->
+    </div>
 </div>
 
 <script>
@@ -64,14 +73,14 @@
 
     // Initialize the chessboard
     const board = [
-        ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-        ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+        ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
+        ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+        ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],
+        ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']
     ];
 
     // Function to render the chessboard
@@ -100,64 +109,42 @@
                 if (piece !== '') {
                     square.innerHTML = piece;
                     square.classList.add('piece');
+                    // Add event listener to handle drag and drop
+                    square.draggable = true;
+                    square.addEventListener('dragstart', (event) => handleDragStart(event, i, j));
+                    square.addEventListener('dragover', (event) => handleDragOver(event));
+                    square.addEventListener('drop', (event) => handleDrop(event, i, j));
                 }
-
-                // Add event listener to handle click on each square
-                square.addEventListener('click', () => handleSquareClick(i, j));
 
                 chessboard.appendChild(square);
             }
         }
     }
 
-    // Function to handle click on each square
-    function handleSquareClick(row, col) {
-        // Clear previous valid/invalid move indicators
-        clearMoveIndicators();
-
-        // Check if there's a piece on the clicked square
-        const piece = board[row][col];
-        if (piece === '') {
-            // No piece on the clicked square
-            return;
-        }
-
-        // Mark the clicked square as selected
-        const selectedSquare = document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
-        selectedSquare.classList.add('selected');
-
-        // Highlight valid moves for the selected piece
-        highlightValidMoves(row, col);
+    // Function to handle drag start
+    function handleDragStart(event, row, col) {
+        event.dataTransfer.setData('text/plain', `${row},${col}`);
     }
 
-    // Function to highlight valid moves for the selected piece
-    function highlightValidMoves(row, col) {
-        // Code to calculate valid moves goes here
-        // For now, let's just highlight the adjacent squares as valid moves
-
-        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]; // Up, down, left, right
-
-        directions.forEach(([dx, dy]) => {
-            const newRow = row + dx;
-            const newCol = col + dy;
-            if (isValidSquare(newRow, newCol)) {
-                const square = document.querySelector(`.square[data-row="${newRow}"][data-col="${newCol}"]`);
-                square.classList.add('valid-move');
-            }
-        });
+    // Function to handle drag over
+    function handleDragOver(event) {
+        event.preventDefault();
     }
 
-    // Function to check if a square is valid (within the board boundaries)
-    function isValidSquare(row, col) {
-        return row >= 0 && row < 8 && col >= 0 && col < 8;
-    }
+    // Function to handle drop
+    function handleDrop(event, toRow, toCol) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData('text/plain').split(',');
+        const fromRow = parseInt(data[0]);
+        const fromCol = parseInt(data[1]);
 
-    // Function to clear previous valid/invalid move indicators
-    function clearMoveIndicators() {
-        const squares = document.querySelectorAll('.square');
-        squares.forEach(square => {
-            square.classList.remove('selected', 'valid-move', 'invalid-move');
-        });
+        // Move the piece to the new position
+        const piece = board[fromRow][fromCol];
+        board[fromRow][fromCol] = '';
+        board[toRow][toCol] = piece;
+
+        // Render the updated board
+        renderBoard();
     }
 
     // Render the initial chessboard
