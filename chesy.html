@@ -73,6 +73,7 @@
     // JavaScript to handle chess logic and interaction
 
     let currentPlayer = 'white'; // Set initial player to white
+    let selectedPiecePosition = null; // Track selected piece position
 
     // Initialize the chessboard
     const board = [
@@ -132,42 +133,57 @@
                 selectedPiece.classList.remove('selected');
             }
             event.target.classList.add('selected');
-            event.target.addEventListener('click', () => handleMove(event, row, col));
+            selectedPiecePosition = { row, col };
+            renderValidMoves(row, col);
         }
     }
 
+    // Function to render valid moves for the selected piece
+    function renderValidMoves(row, col) {
+        const selectedSquare = document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
+        const selectedPiece = board[row][col];
+        const validMoves = calculateValidMoves(row, col);
+
+        // Remove previous valid move indicators
+        const validMoveIndicators = document.querySelectorAll('.valid-move');
+        validMoveIndicators.forEach(indicator => indicator.classList.remove('valid-move'));
+
+        // Render valid move indicators
+        validMoves.forEach(move => {
+            const [toRow, toCol] = move;
+            const targetSquare = document.querySelector(`.square[data-row="${toRow}"][data-col="${toCol}"]`);
+            targetSquare.classList.add('valid-move');
+            targetSquare.addEventListener('click', () => handleMove(toRow, toCol));
+        });
+    }
+
+    // Function to calculate valid moves for the selected piece
+    function calculateValidMoves(fromRow, fromCol) {
+        // Implement your logic to calculate valid moves here
+        // For now, we'll just return an empty array
+        return [];
+    }
+
     // Function to handle move
-    function handleMove(event, fromRow, fromCol) {
+    function handleMove(toRow, toCol) {
         const selectedPiece = document.querySelector('.selected');
         if (selectedPiece) {
             selectedPiece.classList.remove('selected');
         }
 
-        const toRow = parseInt(event.target.dataset.row);
-        const toCol = parseInt(event.target.dataset.col);
+        // Move the piece to the new position
+        const piece = board[selectedPiecePosition.row][selectedPiecePosition.col];
+        board[selectedPiecePosition.row][selectedPiecePosition.col] = '';
+        board[toRow][toCol] = piece;
 
-        // Check if the move is valid
-        if (isValidMove(fromRow, fromCol, toRow, toCol)) {
-            // Move the piece to the new position
-            const piece = board[fromRow][fromCol];
-            board[fromRow][fromCol] = '';
-            board[toRow][toCol] = piece;
+        // Toggle current player
+        currentPlayer = (currentPlayer === 'white') ? 'black' : 'white';
 
-            // Toggle current player
-            currentPlayer = (currentPlayer === 'white') ? 'black' : 'white';
+        // Reset selected piece position
+        selectedPiecePosition = null;
 
-            // Render the updated board
-            renderBoard();
-        } else {
-            alert('Invalid Move! Please select a valid square.');
-        }
-    }
-
-    // Function to check if a move is valid
-    function isValidMove(fromRow, fromCol, toRow, toCol) {
-        // Implement your logic for checking valid moves here
-        // For now, we'll just return true
-        return true;
+        // Render the updated board
+        renderBoard();
     }
 
     // Render the initial chessboard
