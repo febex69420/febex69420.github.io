@@ -159,9 +159,16 @@
 
     // Function to calculate valid moves for the selected piece
     function calculateValidMoves(fromRow, fromCol) {
-        // Implement your logic to calculate valid moves here
-        // For now, we'll just return an empty array
-        return [];
+        const validMoves = [];
+
+        // Dummy logic for now
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                validMoves.push([i, j]);
+            }
+        }
+
+        return validMoves;
     }
 
     // Function to handle move
