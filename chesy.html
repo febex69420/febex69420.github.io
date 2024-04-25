@@ -72,6 +72,8 @@
 <script>
     // JavaScript to handle chess logic and interaction
 
+    let currentPlayer = 'white'; // Set initial player to white
+
     // Initialize the chessboard
     const board = [
         ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
@@ -110,8 +112,8 @@
                 if (piece !== '') {
                     square.innerHTML = piece;
                     square.classList.add('piece');
-                    // Add event listener to handle drag and drop
-                    square.addEventListener('dragstart', (event) => handleDragStart(event, i, j));
+                    // Add event listener to handle piece click
+                    square.addEventListener('click', (event) => handlePieceClick(event, i, j));
                 }
 
                 chessboard.appendChild(square);
@@ -119,22 +121,38 @@
         }
     }
 
-    // Function to handle drag start
-    function handleDragStart(event, row, col) {
-        event.dataTransfer.setData('text/plain', `${row},${col}`);
+    // Function to handle piece click
+    function handlePieceClick(event, row, col) {
+        const piece = board[row][col];
+
+        if ((currentPlayer === 'white' && piece.toUpperCase() === piece) ||
+            (currentPlayer === 'black' && piece.toLowerCase() === piece)) {
+            const selectedPiece = document.querySelector('.selected');
+            if (selectedPiece) {
+                selectedPiece.classList.remove('selected');
+            }
+            event.target.classList.add('selected');
+            event.target.addEventListener('click', () => handleMove(event, row, col));
+        }
     }
 
-    // Function to handle drop
-    function handleDrop(event, toRow, toCol) {
-        event.preventDefault();
-        const data = event.dataTransfer.getData('text/plain').split(',');
-        const fromRow = parseInt(data[0]);
-        const fromCol = parseInt(data[1]);
+    // Function to handle move
+    function handleMove(event, fromRow, fromCol) {
+        const selectedPiece = document.querySelector('.selected');
+        if (selectedPiece) {
+            selectedPiece.classList.remove('selected');
+        }
+
+        const toRow = parseInt(event.target.dataset.row);
+        const toCol = parseInt(event.target.dataset.col);
 
         // Move the piece to the new position
         const piece = board[fromRow][fromCol];
         board[fromRow][fromCol] = '';
         board[toRow][toCol] = piece;
+
+        // Toggle current player
+        currentPlayer = (currentPlayer === 'white') ? 'black' : 'white';
 
         // Render the updated board
         renderBoard();
@@ -145,4 +163,3 @@
 </script>
 </body>
 </html>
-
