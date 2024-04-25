@@ -159,12 +159,15 @@
 
     // Function to calculate valid moves for the selected piece
     function calculateValidMoves(fromRow, fromCol) {
+        const selectedPiece = board[fromRow][fromCol];
         const validMoves = [];
 
-        // Dummy logic for now
+        // Dummy logic for now (only allow moving to empty squares)
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                validMoves.push([i, j]);
+                if (board[i][j] === '' || (currentPlayer === 'white' && board[i][j].toUpperCase() !== selectedPiece.toUpperCase()) || (currentPlayer === 'black' && board[i][j].toLowerCase() !== selectedPiece.toLowerCase())) {
+                    validMoves.push([i, j]);
+                }
             }
         }
 
