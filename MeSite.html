@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tychoon's Personal Webpage</title>
+    <title>Tychoon</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,24 +52,38 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Tychoon's Personal Webpage</h1>
+        <h1>Tychoon</h1>
     </header>
     <nav>
+        <a href="#home">Home</a>
         <a href="#about">About</a>
         <a href="#interests">Interests</a>
         <a href="#contact">Contact</a>
     </nav>
+    <section id="home">
+        <h2>Welcome to Tychoon's Website</h2>
+        <p>Click on the links above to explore more!</p>
+    </section>
     <section id="about">
-        <h2>About Me</h2>
+        <h2>About Tychoon</h2>
         <p>Hi, I'm Tychoon. Welcome to my personal webpage. I'm passionate about gaming and all things tech!</p>
     </section>
     <section id="interests">
-        <h2>Interests</h2>
+        <h2>Tychoon's Interests</h2>
         <p>My hobbies include gaming, exploring the latest in technology, and diving into the world of coding.</p>
     </section>
     <section id="contact">
-        <h2>Contact Me</h2>
-        <p>Feel free to reach out to me via email at tychoon@example.com.</p>
+        <h2>Contact Tychoon</h2>
+        <p>Feel free to reach out to me via the form below:</p>
+        <form>
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email"><br>
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+            <input type="submit" value="Submit">
+        </form>
     </section>
     <footer>
         <p>&copy; 2024 Tychoon. All rights reserved.</p>
