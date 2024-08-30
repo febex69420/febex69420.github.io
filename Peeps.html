@@ -15,6 +15,7 @@
             height: 100vh;
             background-color: #e6ecf0;
             color: #333;
+            overflow: hidden;
         }
         .container {
             display: grid;
@@ -115,9 +116,56 @@
             width: 50px;
             height: 50px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
         .file-input {
             display: none;
+        }
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .slider {
+            width: 100%;
+            margin-top: 20px;
+        }
+        /* Close Button */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
         }
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
@@ -152,8 +200,8 @@
     <!-- Right Sidebar: Post Peeps -->
     <div class="post-box">
         <div class="profile">
-            <input type="file" class="file-input" id="file-input" accept="image/*" onchange="changeProfilePicture(event)">
-            <img src="https://via.placeholder.com/50" alt="Profile Picture" id="profile-picture" onclick="document.getElementById('file-input').click();">
+            <input type="file" class="file-input" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+            <img src="https://via.placeholder.com/50" alt="Profile Picture" id="profile-picture" onclick="openModal()">
         </div>
         <h3>Post a Peep</h3>
         <textarea id="peep-content" maxlength="280" placeholder="What's on your mind?"></textarea>
@@ -161,7 +209,22 @@
     </div>
 </div>
 
+<!-- Modal for Profile Picture Adjustment -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Adjust Your Profile Picture</h3>
+        <img id="modal-profile-picture" src="https://via.placeholder.com/150" alt="Profile Picture">
+        <input type="range" class="slider" id="zoom-slider" min="1" max="3" step="0.1" value="1" oninput="zoomImage()">
+        <button class="file-input" id="file-input" accept="image/*" onchange="changeProfilePicture(event)">
+            Upload New Picture
+        </button>
+    </div>
+</div>
+
 <script>
+    let zoomLevel = 1;
+
     // Load stored peeps and profile picture from localStorage
     window.onload = function() {
         loadPeeps();
@@ -205,58 +268,78 @@
         const newPeep = document.createElement('div');
         newPeep.className = 'peep';
         newPeep.innerHTML = `
-            <img src="${peep.profilePicture}" alt="PFP">
+            <img src="${peep.profilePicture}" alt="Profile Picture">
             <div>${peep.content}</div>
-            <span class="like-button" onclick="likePeep(this)">❤️ ${peep.likes}</span>
+            <div class="like-button" onclick="likePeep(this)">Like (${peep.likes})</div>
         `;
-        peepsBox.prepend(newPeep);
+        peepsBox.appendChild(newPeep);
     }
 
-    function likePeep(likeButton) {
-        let likes = parseInt(likeButton.textContent.split(' ')[1]) || 0;
-        likes += 1;
-        likeButton.textContent = `❤️ ${likes}`;
-
-        // Update likes in localStorage
-        const peeps = JSON.parse(localStorage.getItem('peeps')) || [];
-        const peepContent = likeButton.previousElementSibling.textContent;
-        const peep = peeps.find(p => p.content === peepContent);
-        if (peep) {
-            peep.likes = likes;
-            localStorage.setItem('peeps', JSON.stringify(peeps));
-        }
+    function likePeep(button) {
+        const peepDiv = button.parentElement;
+        const index = Array.from(peepDiv.parentElement.children).indexOf(peepDiv);
+        let peeps = JSON.parse(localStorage.getItem('peeps'));
+        peeps[index].likes++;
+        button.textContent = `Like (${peeps[index].likes})`;
+        localStorage.setItem('peeps', JSON.stringify(peeps));
     }
 
-    function loadFollowedUsers() {
-        // Dummy data for followed users
-        const followedUsers = ['Alice', 'Bob', 'Charlie'];
-        const followedUsersDiv = document.getElementById('followed-users');
-        followedUsers.forEach(user => {
-            const userDiv = document.createElement('div');
-            userDiv.className = 'followed-user';
-            userDiv.textContent = user;
-            followedUsersDiv.appendChild(userDiv);
-        });
+    function openModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.add('show');
+        const profilePicture = localStorage.getItem('profilePicture') || 'https://via.placeholder.com/150';
+        document.getElementById('modal-profile-picture').src = profilePicture;
     }
 
-    function changeProfilePicture(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const profilePicture = reader.result;
-            document.getElementById('profile-picture').src = profilePicture;
-            localStorage.setItem('profilePicture', profilePicture);
-        };
-        reader.readAsDataURL(event.target.files[0]);
+    function closeModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.remove('show');
     }
 
     function loadProfilePicture() {
-        const profilePicture = localStorage.getItem('profilePicture');
-        if (profilePicture) {
-            document.getElementById('profile-picture').src = profilePicture;
+        const profilePicture = localStorage.getItem('profilePicture') || 'https://via.placeholder.com/50';
+        document.getElementById('profile-picture').src = profilePicture;
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('modal-profile-picture').src = e.target.result;
+                zoomLevel = 1;
+                document.getElementById('zoom-slider').value = zoomLevel;
+            };
+            reader.readAsDataURL(file);
         }
+    }
+
+    function zoomImage() {
+        const slider = document.getElementById('zoom-slider');
+        const img = document.getElementById('modal-profile-picture');
+        zoomLevel = slider.value;
+        img.style.transform = `scale(${zoomLevel})`;
+    }
+
+    function changeProfilePicture() {
+        const modalProfilePicture = document.getElementById('modal-profile-picture').src;
+        const profilePicture = document.getElementById('profile-picture');
+        profilePicture.src = modalProfilePicture;
+        localStorage.setItem('profilePicture', modalProfilePicture);
+        closeModal();
+    }
+
+    function loadFollowedUsers() {
+        const followedUsers = ['User1', 'User2', 'User3']; // Example followed users
+        const followedUsersDiv = document.getElementById('followed-users');
+        followedUsers.forEach(user => {
+            const div = document.createElement('div');
+            div.className = 'followed-user';
+            div.textContent = user;
+            followedUsersDiv.appendChild(div);
+        });
     }
 </script>
 
 </body>
 </html>
-
