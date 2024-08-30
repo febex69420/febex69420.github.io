@@ -143,17 +143,26 @@
         .modal-content {
             background-color: #fff;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 24px;
             text-align: center;
             position: relative;
-            width: 400px;
+            width: 350px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        .modal-content img {
+        .modal-content .pfp-wrapper {
             width: 150px;
             height: 150px;
             border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 4px solid #1da1f2;
+            position: relative;
+        }
+        .modal-content img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            transform-origin: center;
         }
         .slider {
             width: 100%;
@@ -214,7 +223,9 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h3>Adjust Your Profile Picture</h3>
-        <img id="modal-profile-picture" src="https://via.placeholder.com/150" alt="Profile Picture">
+        <div class="pfp-wrapper">
+            <img id="modal-profile-picture" src="https://via.placeholder.com/150" alt="Profile Picture">
+        </div>
         <input type="range" class="slider" id="zoom-slider" min="1" max="3" step="0.1" value="1" oninput="zoomImage()">
         <button class="file-input" id="file-input" accept="image/*" onchange="changeProfilePicture(event)">
             Upload New Picture
@@ -257,10 +268,8 @@
     }
 
     function loadPeeps() {
-        const peeps = JSON.parse(localStorage.getItem('peeps')) || [];
-        peeps.forEach(peep => {
-            displayPeep(peep);
-        });
+        let peeps = JSON.parse(localStorage.getItem('peeps')) || [];
+        peeps.forEach(displayPeep);
     }
 
     function displayPeep(peep) {
@@ -309,6 +318,7 @@
                 document.getElementById('modal-profile-picture').src = e.target.result;
                 zoomLevel = 1;
                 document.getElementById('zoom-slider').value = zoomLevel;
+                document.getElementById('modal-profile-picture').style.transform = `scale(${zoomLevel})`;
             };
             reader.readAsDataURL(file);
         }
