@@ -18,10 +18,10 @@
         }
         .container {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-columns: 1.5fr 3fr 1.5fr;
             gap: 20px;
             width: 90%;
-            max-width: 1200px;
+            max-width: 1400px;
             height: 80vh;
         }
         .sidebar, .peeps-box, .post-box {
@@ -65,15 +65,36 @@
         .peep {
             width: 100%;
             padding: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             background-color: #f5f8fa;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             word-wrap: break-word;
             font-size: 16px;
+            display: flex;
+            align-items: flex-start;
+            position: relative;
         }
-        .peep:last-child {
-            margin-bottom: 0;
+        .peep img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+        .like-button {
+            position: absolute;
+            bottom: 10px;
+            left: 70px;
+            display: none;
+            color: #1da1f2;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .like-button:hover {
+            color: #1991da;
+        }
+        .peep:hover .like-button {
+            display: block;
         }
         .followed-user {
             padding: 10px 0;
@@ -83,6 +104,20 @@
         }
         .followed-user:last-child {
             border-bottom: none;
+        }
+        /* Profile Picture Change */
+        .profile {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .profile img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+        .file-input {
+            display: none;
         }
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
@@ -116,6 +151,10 @@
 
     <!-- Right Sidebar: Post Peeps -->
     <div class="post-box">
+        <div class="profile">
+            <input type="file" class="file-input" id="file-input" accept="image/*" onchange="changeProfilePicture(event)">
+            <img src="https://via.placeholder.com/50" alt="Profile Picture" id="profile-picture" onclick="document.getElementById('file-input').click();">
+        </div>
         <h3>Post a Peep</h3>
         <textarea id="peep-content" maxlength="280" placeholder="What's on your mind?"></textarea>
         <button onclick="postPeep()">Peep</button>
@@ -123,18 +162,22 @@
 </div>
 
 <script>
-    // Load stored peeps from localStorage
+    // Load stored peeps and profile picture from localStorage
     window.onload = function() {
         loadPeeps();
         loadFollowedUsers();
+        loadProfilePicture();
     };
 
     function postPeep() {
         const content = document.getElementById('peep-content').value;
+        const profilePicture = localStorage.getItem('profilePicture') || 'https://via.placeholder.com/50';
         if (content) {
             const peep = {
                 content: content,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                profilePicture: profilePicture,
+                likes: 0
             };
             savePeep(peep);
             document.getElementById('peep-content').value = '';
@@ -161,8 +204,27 @@
         const peepsBox = document.getElementById('peeps');
         const newPeep = document.createElement('div');
         newPeep.className = 'peep';
-        newPeep.textContent = peep.content;
+        newPeep.innerHTML = `
+            <img src="${peep.profilePicture}" alt="PFP">
+            <div>${peep.content}</div>
+            <span class="like-button" onclick="likePeep(this)">❤️ ${peep.likes}</span>
+        `;
         peepsBox.prepend(newPeep);
+    }
+
+    function likePeep(likeButton) {
+        let likes = parseInt(likeButton.textContent.split(' ')[1]) || 0;
+        likes += 1;
+        likeButton.textContent = `❤️ ${likes}`;
+
+        // Update likes in localStorage
+        const peeps = JSON.parse(localStorage.getItem('peeps')) || [];
+        const peepContent = likeButton.previousElementSibling.textContent;
+        const peep = peeps.find(p => p.content === peepContent);
+        if (peep) {
+            peep.likes = likes;
+            localStorage.setItem('peeps', JSON.stringify(peeps));
+        }
     }
 
     function loadFollowedUsers() {
@@ -176,7 +238,25 @@
             followedUsersDiv.appendChild(userDiv);
         });
     }
+
+    function changeProfilePicture(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const profilePicture = reader.result;
+            document.getElementById('profile-picture').src = profilePicture;
+            localStorage.setItem('profilePicture', profilePicture);
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function loadProfilePicture() {
+        const profilePicture = localStorage.getItem('profilePicture');
+        if (profilePicture) {
+            document.getElementById('profile-picture').src = profilePicture;
+        }
+    }
 </script>
 
 </body>
 </html>
+
