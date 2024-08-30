@@ -6,93 +6,100 @@
     <title>Peeper - Twitter-like App</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            background-color: #f5f8fa;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e6ecf0;
             color: #333;
         }
         .container {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
         }
         .sidebar, .peeps-box, .post-box {
             background-color: #fff;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .sidebar {
-            width: 20%;
-            min-width: 200px;
-            max-width: 250px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 100%;
         }
         .peeps-box {
-            width: 55%;
-        }
-        .post-box {
-            width: 20%;
-            min-width: 200px;
-            max-width: 250px;
-        }
-        .peep {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-        }
-        .peep:last-child {
-            border-bottom: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .post-box textarea {
             width: 100%;
-            height: 100px;
+            height: 150px;
             margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #ccd6dd;
+            border-radius: 8px;
+            font-size: 16px;
             resize: none;
         }
         .post-box button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #1da1f2;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
         }
-        .login {
-            text-align: center;
-            margin: 20px;
+        .post-box button:hover {
+            background-color: #1991da;
         }
-        .login button {
-            padding: 10px 20px;
-            background-color: #333;
-            border: none;
-            border-radius: 4px;
-            color: white;
+        .peep {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f5f8fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word;
             font-size: 16px;
-            cursor: pointer;
+        }
+        .peep:last-child {
+            margin-bottom: 0;
         }
         .followed-user {
             padding: 10px 0;
+            margin-bottom: 10px;
             border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+        .followed-user:last-child {
+            border-bottom: none;
+        }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-<div class="login">
-    <h2>Welcome to Peeper</h2>
-    <button onclick="githubLogin()">Login with GitHub</button>
-</div>
-
 <div class="container">
     <!-- Left Sidebar: Followed Users -->
     <div class="sidebar" id="sidebar">
+        <h2>Peeper</h2>
         <h3>Followed Users</h3>
         <div id="followed-users">
             <!-- Followed users will be listed here -->
@@ -116,48 +123,59 @@
 </div>
 
 <script>
-    function githubLogin() {
-        // Redirect to GitHub for OAuth login
-        window.location.href = 'https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&scope=user';
-    }
+    // Load stored peeps from localStorage
+    window.onload = function() {
+        loadPeeps();
+        loadFollowedUsers();
+    };
 
     function postPeep() {
         const content = document.getElementById('peep-content').value;
         if (content) {
-            const peepsBox = document.getElementById('peeps');
-            const newPeep = document.createElement('div');
-            newPeep.className = 'peep';
-            newPeep.textContent = content;
-            peepsBox.prepend(newPeep);
+            const peep = {
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+            savePeep(peep);
             document.getElementById('peep-content').value = '';
+            displayPeep(peep);
+        } else {
+            alert('Peep content cannot be empty!');
         }
     }
 
-    // Dummy data for followed users and peeps
-    const followedUsers = ['Alice', 'Bob', 'Charlie'];
-    const recentPeeps = [
-        'This is a peep from Alice!',
-        'Bob just posted a peep.',
-        'Charlie says hello!'
-    ];
+    function savePeep(peep) {
+        let peeps = JSON.parse(localStorage.getItem('peeps')) || [];
+        peeps.unshift(peep); // Add new peep at the beginning of the array
+        localStorage.setItem('peeps', JSON.stringify(peeps));
+    }
 
-    // Populate followed users
-    const followedUsersDiv = document.getElementById('followed-users');
-    followedUsers.forEach(user => {
-        const userDiv = document.createElement('div');
-        userDiv.className = 'followed-user';
-        userDiv.textContent = user;
-        followedUsersDiv.appendChild(userDiv);
-    });
+    function loadPeeps() {
+        const peeps = JSON.parse(localStorage.getItem('peeps')) || [];
+        peeps.forEach(peep => {
+            displayPeep(peep);
+        });
+    }
 
-    // Populate recent peeps
-    const peepsDiv = document.getElementById('peeps');
-    recentPeeps.forEach(peep => {
-        const peepDiv = document.createElement('div');
-        peepDiv.className = 'peep';
-        peepDiv.textContent = peep;
-        peepsDiv.appendChild(peepDiv);
-    });
+    function displayPeep(peep) {
+        const peepsBox = document.getElementById('peeps');
+        const newPeep = document.createElement('div');
+        newPeep.className = 'peep';
+        newPeep.textContent = peep.content;
+        peepsBox.prepend(newPeep);
+    }
+
+    function loadFollowedUsers() {
+        // Dummy data for followed users
+        const followedUsers = ['Alice', 'Bob', 'Charlie'];
+        const followedUsersDiv = document.getElementById('followed-users');
+        followedUsers.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'followed-user';
+            userDiv.textContent = user;
+            followedUsersDiv.appendChild(userDiv);
+        });
+    }
 </script>
 
 </body>
