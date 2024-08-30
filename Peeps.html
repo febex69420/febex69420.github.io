@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peeper - Twitter-like App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f5f8fa;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .sidebar, .peeps-box, .post-box {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .sidebar {
+            width: 20%;
+            min-width: 200px;
+            max-width: 250px;
+        }
+        .peeps-box {
+            width: 55%;
+        }
+        .post-box {
+            width: 20%;
+            min-width: 200px;
+            max-width: 250px;
+        }
+        .peep {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .peep:last-child {
+            border-bottom: none;
+        }
+        .post-box textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+        }
+        .post-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1da1f2;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login {
+            text-align: center;
+            margin: 20px;
+        }
+        .login button {
+            padding: 10px 20px;
+            background-color: #333;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .followed-user {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login">
+    <h2>Welcome to Peeper</h2>
+    <button onclick="githubLogin()">Login with GitHub</button>
+</div>
+
+<div class="container">
+    <!-- Left Sidebar: Followed Users -->
+    <div class="sidebar" id="sidebar">
+        <h3>Followed Users</h3>
+        <div id="followed-users">
+            <!-- Followed users will be listed here -->
+        </div>
+    </div>
+
+    <!-- Main Content: Peeps -->
+    <div class="peeps-box" id="peeps-box">
+        <h3>Recent Peeps</h3>
+        <div id="peeps">
+            <!-- Peeps will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Right Sidebar: Post Peeps -->
+    <div class="post-box">
+        <h3>Post a Peep</h3>
+        <textarea id="peep-content" maxlength="280" placeholder="What's on your mind?"></textarea>
+        <button onclick="postPeep()">Peep</button>
+    </div>
+</div>
+
+<script>
+    function githubLogin() {
+        // Redirect to GitHub for OAuth login
+        window.location.href = 'https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&scope=user';
+    }
+
+    function postPeep() {
+        const content = document.getElementById('peep-content').value;
+        if (content) {
+            const peepsBox = document.getElementById('peeps');
+            const newPeep = document.createElement('div');
+            newPeep.className = 'peep';
+            newPeep.textContent = content;
+            peepsBox.prepend(newPeep);
+            document.getElementById('peep-content').value = '';
+        }
+    }
+
+    // Dummy data for followed users and peeps
+    const followedUsers = ['Alice', 'Bob', 'Charlie'];
+    const recentPeeps = [
+        'This is a peep from Alice!',
+        'Bob just posted a peep.',
+        'Charlie says hello!'
+    ];
+
+    // Populate followed users
+    const followedUsersDiv = document.getElementById('followed-users');
+    followedUsers.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'followed-user';
+        userDiv.textContent = user;
+        followedUsersDiv.appendChild(userDiv);
+    });
+
+    // Populate recent peeps
+    const peepsDiv = document.getElementById('peeps');
+    recentPeeps.forEach(peep => {
+        const peepDiv = document.createElement('div');
+        peepDiv.className = 'peep';
+        peepDiv.textContent = peep;
+        peepsDiv.appendChild(peepDiv);
+    });
+</script>
+
+</body>
+</html>
