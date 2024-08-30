@@ -176,6 +176,23 @@
             font-size: 24px;
             cursor: pointer;
         }
+        /* Save Button */
+        .save-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1da1f2;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        .save-button:hover {
+            background-color: #1991da;
+        }
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -227,9 +244,7 @@
             <img id="modal-profile-picture" src="https://via.placeholder.com/150" alt="Profile Picture">
         </div>
         <input type="range" class="slider" id="zoom-slider" min="1" max="3" step="0.1" value="1" oninput="zoomImage()">
-        <button class="file-input" id="file-input" accept="image/*" onchange="changeProfilePicture(event)">
-            Upload New Picture
-        </button>
+        <button class="save-button" onclick="saveProfilePicture()">Save</button>
     </div>
 </div>
 
@@ -298,6 +313,9 @@
         modal.classList.add('show');
         const profilePicture = localStorage.getItem('profilePicture') || 'https://via.placeholder.com/150';
         document.getElementById('modal-profile-picture').src = profilePicture;
+        zoomLevel = 1;
+        document.getElementById('zoom-slider').value = zoomLevel;
+        document.getElementById('modal-profile-picture').style.transform = `scale(${zoomLevel})`;
     }
 
     function closeModal() {
@@ -331,7 +349,7 @@
         img.style.transform = `scale(${zoomLevel})`;
     }
 
-    function changeProfilePicture() {
+    function saveProfilePicture() {
         const modalProfilePicture = document.getElementById('modal-profile-picture').src;
         const profilePicture = document.getElementById('profile-picture');
         profilePicture.src = modalProfilePicture;
