@@ -29,53 +29,47 @@
 
     #map:target,
     body:not(:has(:target)) #map {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
+      display: block;
     }
 
     .map {
-      width: 1000px;
-      height: 700px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
       background: linear-gradient(to bottom right, #c9b58e, #8c7b5b);
-      position: relative;
       border-radius: 15px;
       border: 3px solid #3e2b1f;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .zone {
-      position: absolute;
-      width: 220px;
-      height: 140px;
-      background-color: rgba(102, 51, 0, 0.75);
+      background-color: rgba(102, 51, 0, 0.85);
       border: 2px solid #2f1b0d;
       border-radius: 10px;
       color: white;
       text-decoration: none;
-      padding: 10px;
+      padding: 20px;
       text-align: center;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-      transition: transform 0.2s;
+      transition: transform 0.2s, background-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 150px;
     }
 
     .zone:hover {
       transform: scale(1.05);
-      background-color: rgba(130, 70, 10, 0.9);
+      background-color: rgba(130, 70, 10, 0.95);
     }
 
     .zone h2 {
       margin-top: 0;
       font-size: 1.2em;
     }
-
-    .fact1 { top: 60px; left: 80px; }
-    .fact2 { top: 180px; left: 340px; }
-    .fact3 { top: 340px; left: 180px; }
-    .fact4 { top: 240px; left: 600px; }
-    .fact5 { top: 420px; left: 450px; }
-    .fact6 { top: 100px; left: 720px; }
 
     img {
       max-width: 80%;
@@ -118,27 +112,27 @@
 <!-- Kort -->
 <div id="map" class="section">
   <div class="map">
-    <a href="#screen1" class="zone fact1">
+    <a href="#screen1" class="zone">
       <h2>Tro og Overtro</h2>
       <p>Gud, ånder og dårlig luft</p>
     </a>
-    <a href="#screen2" class="zone fact2">
+    <a href="#screen2" class="zone">
       <h2>Karantæne</h2>
       <p>Lukning af byens porte</p>
     </a>
-    <a href="#screen3" class="zone fact3">
+    <a href="#screen3" class="zone">
       <h2>Forbrænding</h2>
       <p>Syges ting brændes</p>
     </a>
-    <a href="#screen4" class="zone fact4">
+    <a href="#screen4" class="zone">
       <h2>Afspærring</h2>
       <p>Vogne og områder lukkes af</p>
     </a>
-    <a href="#screen5" class="zone fact5">
+    <a href="#screen5" class="zone">
       <h2>Pesthus</h2>
       <p>Syge flyttes væk fra byen</p>
     </a>
-    <a href="#screen6" class="zone fact6">
+    <a href="#screen6" class="zone">
       <h2>Massegrave</h2>
       <p>Lig brændes udenfor byen</p>
     </a>
