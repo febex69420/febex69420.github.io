@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8">
-  <title>Den Sorte Død i Romerriget</title>
+  <title>Den Sorte Død i Vallensbæk</title>
   <style>
     body {
       font-family: Georgia, serif;
@@ -11,7 +11,7 @@
     }
 
     header {
-      background-color: #5c3d2e;
+      background-color: #3d2c23;
       color: white;
       padding: 20px;
       text-align: center;
@@ -37,15 +37,15 @@
 
     .map {
       width: 1000px;
-      height: 600px;
-      background: linear-gradient(to bottom right, #d1bfa4, #94836d);
+      height: 700px;
+      background: linear-gradient(to bottom right, #c9b58e, #8c7b5b);
       position: relative;
       border-radius: 15px;
       border: 3px solid #3e2b1f;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .city {
+    .zone {
       position: absolute;
       width: 220px;
       height: 140px;
@@ -60,20 +60,22 @@
       transition: transform 0.2s;
     }
 
-    .city:hover {
+    .zone:hover {
       transform: scale(1.05);
       background-color: rgba(130, 70, 10, 0.9);
     }
 
-    .city h2 {
+    .zone h2 {
       margin-top: 0;
       font-size: 1.2em;
     }
 
-    .fact1 { top: 60px; left: 100px; }
-    .fact2 { top: 180px; left: 350px; }
-    .fact3 { top: 340px; left: 200px; }
+    .fact1 { top: 60px; left: 80px; }
+    .fact2 { top: 180px; left: 340px; }
+    .fact3 { top: 340px; left: 180px; }
     .fact4 { top: 240px; left: 600px; }
+    .fact5 { top: 420px; left: 450px; }
+    .fact6 { top: 100px; left: 720px; }
 
     img {
       max-width: 80%;
@@ -98,7 +100,7 @@
     }
 
     .footer {
-      background-color: #5c3d2e;
+      background-color: #3d2c23;
       color: white;
       text-align: center;
       padding: 10px;
@@ -109,59 +111,79 @@
 <body>
 
 <header>
-  <h1>Hvis Den Sorte Død Ramte En By i Romerriget</h1>
-  <p>Klik på en bydel for at lære mere</p>
+  <h1>Den Sorte Død i Vallensbæk</h1>
+  <p>Se hvad man gjorde for at håndtere pesten</p>
 </header>
 
-<!-- Kortvisning -->
+<!-- Kort -->
 <div id="map" class="section">
   <div class="map">
-    <a href="#screen1" class="city fact1">
-      <h2>Tro og overtro</h2>
-      <p>Man troede, det var Guds straf og dårlig luft.</p>
+    <a href="#screen1" class="zone fact1">
+      <h2>Tro og Overtro</h2>
+      <p>Gud, ånder og dårlig luft</p>
     </a>
-    <a href="#screen2" class="city fact2">
+    <a href="#screen2" class="zone fact2">
       <h2>Karantæne</h2>
-      <p>Byporte blev lukket og folk sat i isolation.</p>
+      <p>Lukning af byens porte</p>
     </a>
-    <a href="#screen3" class="city fact3">
+    <a href="#screen3" class="zone fact3">
       <h2>Forbrænding</h2>
-      <p>Ejendele og huse blev brændt for at stoppe smitte.</p>
+      <p>Syges ting brændes</p>
     </a>
-    <a href="#screen4" class="city fact4">
+    <a href="#screen4" class="zone fact4">
       <h2>Afspærring</h2>
-      <p>Områder lukket af, og lig brændt udenfor byen.</p>
+      <p>Vogne og områder lukkes af</p>
+    </a>
+    <a href="#screen5" class="zone fact5">
+      <h2>Pesthus</h2>
+      <p>Syge flyttes væk fra byen</p>
+    </a>
+    <a href="#screen6" class="zone fact6">
+      <h2>Massegrave</h2>
+      <p>Lig brændes udenfor byen</p>
     </a>
   </div>
 </div>
 
-<!-- Skærme -->
+<!-- Informationsskærme -->
 <div id="screen1" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Flagellants_painting.jpg/800px-Flagellants_painting.jpg" alt="Tro og overtro">
-  <p>Mange troede pesten var en straf fra Gud. Andre mente, det var onde ånder eller dårlig luft. Folk bad, piskede sig selv eller flygtede i panik.</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Flagellants_painting.jpg" alt="Tro og overtro">
+  <p>I middelalderens Vallensbæk troede man, at pesten var Guds straf, eller forårsaget af dårlig luft og onde ånder. Folk bad og piskede sig selv for at undgå sygdommen.</p>
   <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
 </div>
 
 <div id="screen2" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Plague_quarantine_station.jpg/800px-Plague_quarantine_station.jpg" alt="Karantæne">
-  <p>For at undgå smitte blev byporte lukket, og folk måtte vente i karantæne i ugevis. Vagter sikrede, at ingen kom ind uden tilladelse.</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Plague_quarantine_station.jpg" alt="Karantæne">
+  <p>Byens porte blev lukket, og ingen måtte komme ind uden at være i karantæne i flere uger. Vagter stod ved indgangen til Vallensbæk.</p>
   <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
 </div>
 
 <div id="screen3" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg/800px-Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg" alt="Forbrænding">
-  <p>Tøj og ejendele fra syge blev brændt, og nogle gange også hele huse. Det var et forsøg på at fjerne alt, der kunne bære sygdommen.</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg" alt="Forbrænding">
+  <p>Man brændte tøj, senge og endda hele huse, hvis de tilhørte syge. I Vallensbæk blev der etableret bålpladser til dette formål.</p>
   <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
 </div>
 
 <div id="screen4" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Plague_Pit.jpg/800px-Plague_Pit.jpg" alt="Afspærring">
-  <p>Ramte områder blev lukket af. Lig blev samlet i massegrave og brændt uden for byerne. Vogne med varer blev desinficeret.</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Plague_Pit.jpg" alt="Afspærring">
+  <p>De områder hvor mange var syge blev afspærret. Vogne med varer blev desinficeret, og folk fik ikke lov at rejse ud eller ind.</p>
+  <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
+</div>
+
+<div id="screen5" class="section">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Plague_House.jpg" alt="Pesthus">
+  <p>De syge blev ikke behandlet i byen men flyttet til særlige pesthuse uden for Vallensbæk. Dette skulle mindske smitten blandt de raske.</p>
+  <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
+</div>
+
+<div id="screen6" class="section">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Medieval_mass_grave.jpg" alt="Massegrave">
+  <p>Lig blev brændt eller begravet i massegrave langt fra byen. Det var vigtigt, at døde ikke blev liggende for længe i gaderne.</p>
   <a href="#map" class="back-link">⬅ Tilbage til kortet</a>
 </div>
 
 <div class="footer">
-  <p>&copy; 2025 - Historisk Simulation af Den Sorte Død</p>
+  <p>&copy; 2025 – Vallensbæk under Den Sorte Død</p>
 </div>
 
 </body>
