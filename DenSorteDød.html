@@ -9,29 +9,24 @@
       background-color: #f4f1e7;
       margin: 0;
     }
-
     header {
       background-color: #3d2c23;
       color: white;
       padding: 20px;
       text-align: center;
     }
-
     .section {
       display: none;
       padding: 30px;
       text-align: center;
     }
-
     .section:target {
       display: block;
     }
-
     #map:target,
     body:not(:has(:target)) #map {
       display: block;
     }
-
     .map {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -44,7 +39,6 @@
       border: 3px solid #3e2b1f;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
-
     .zone {
       background-color: rgba(102, 51, 0, 0.85);
       border: 2px solid #2f1b0d;
@@ -60,17 +54,14 @@
       justify-content: center;
       height: 150px;
     }
-
     .zone:hover {
       transform: scale(1.05);
       background-color: rgba(130, 70, 10, 0.95);
     }
-
     .zone h2 {
       margin-top: 0;
       font-size: 1.2em;
     }
-
     img {
       max-width: 80%;
       border: 4px solid #3e2b1f;
@@ -78,7 +69,6 @@
       margin-bottom: 20px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
-
     .back-link {
       display: inline-block;
       margin-top: 20px;
@@ -88,11 +78,9 @@
       text-decoration: none;
       border-radius: 8px;
     }
-
     .back-link:hover {
       background-color: #7a5138;
     }
-
     .footer {
       background-color: #3d2c23;
       color: white;
@@ -109,6 +97,7 @@
   <p>Her er hvad jeg ville gøre, hvis jeg levede dengang</p>
 </header>
 
+<!-- Kort -->
 <div id="map" class="section">
   <div class="map">
     <a href="#screen1" class="zone"><h2>Tro og Overtro</h2><p>Gud og onde ånder</p></a>
@@ -122,50 +111,51 @@
   </div>
 </div>
 
+<!-- Informationsskærme -->
 <div id="screen1" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Flagellants_painting.jpg" alt="Tro og overtro">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Flagellants_painting.jpg" alt="Tro og overtro" />
   <p>Hvis jeg boede i Vallensbæk dengang, ville jeg nok tro, at Gud var sur eller at onde ånder gjorde os syge. Jeg ville nok be meget og håbe på at overleve.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen2" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Plague_quarantine_station.jpg" alt="Karantæne">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Plague_quarantine_station.jpg" alt="Karantæne" />
   <p>Jeg ville få folk til at lukke portene ind til Vallensbæk. Ingen må komme ind uden at være i karantæne i fx 40 dage, så vi ikke bliver smittet.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen3" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg" alt="Forbrænding">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg" alt="Forbrænding" />
   <p>Hvis nogen blev syge, ville jeg sørge for, at deres tøj og ting blev brændt. Det er bedre at miste sine ting end at alle dør.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen4" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Plague_Pit.jpg" alt="Afspærring">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Plague_Pit.jpg" alt="Afspærring" />
   <p>Jeg ville spærre de smittede områder af og sætte vagter til at passe på, at folk ikke rejser ind eller ud med sygdommen.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen5" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Plague_House.jpg" alt="Pesthus">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Plague_House.jpg" alt="Pesthus" />
   <p>Jeg ville bygge pesthuse udenfor byen og flytte syge derhen, så de raske ikke bliver smittet. Der skulle være folk til at passe på dem.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen6" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Medieval_mass_grave.jpg" alt="Massegrave">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Medieval_mass_grave.jpg" alt="Massegrave" />
   <p>Hvis folk døde, ville jeg sørge for, at de blev gravet ned hurtigt og langt væk fra byen – måske i en massegrav, så det ikke smitter videre.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen7" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Plague_doctor_drawing.png/640px-Plague_doctor_drawing.png" alt="Læge">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Plague_doctor_drawing.png" alt="Læge" />
   <p>Hvis jeg var læge, ville jeg tage en maske på med urter i næsen, og prøve at hjælpe folk uden at røre dem. Jeg ville prøve alt – også hvis det lyder mærkeligt.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen8" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Black_Death_migration_map.png/640px-Black_Death_migration_map.png" alt="Overlevelse">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Black_Death_migration_map.png" alt="Overlevelse" />
   <p>Jeg ville nok prøve at blive hjemme, undgå at se nogen og vaske hænder (hvis de vidste det dengang). Jeg ville også gemme mig, hvis det blev farligt.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
