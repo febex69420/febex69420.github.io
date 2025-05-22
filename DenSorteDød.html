@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Den Sorte Død i Romerriget</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #f4f1e7;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #5c3d2e;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .map-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .map {
+      width: 800px;
+      height: 500px;
+      background: linear-gradient(to bottom right, #d1bfa4, #94836d);
+      position: relative;
+      border: 3px solid #3e2b1f;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .city {
+      position: absolute;
+      width: 140px;
+      height: 100px;
+      background-color: rgba(102, 51, 0, 0.7);
+      border: 2px solid #2f1b0d;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .city:hover {
+      transform: scale(1.05);
+      background-color: rgba(130, 70, 10, 0.9);
+    }
+
+    .fact1 { top: 50px; left: 100px; }
+    .fact2 { top: 150px; left: 300px; }
+    .fact3 { top: 300px; left: 200px; }
+    .fact4 { top: 200px; left: 550px; }
+
+    .footer {
+      margin-top: 50px;
+      background-color: #5c3d2e;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hvis Den Sorte Død Ramte En By i Romerriget</h1>
+  <p>Et interaktivt historisk kort</p>
+</header>
+
+<div class="map-container">
+  <div class="map">
+    <div class="city fact1">
+      <h2>Tro og overtro</h2>
+      <p>Man troede, pesten kom fra dårlig luft, onde ånder og som straf fra Gud.</p>
+    </div>
+    <div class="city fact2">
+      <h2>Karantæne</h2>
+      <p>Byporte blev lukket, og karantænestationer blev oprettet uden for byen.</p>
+    </div>
+    <div class="city fact3">
+      <h2>Forbrænding</h2>
+      <p>Tøj og huse blev brændt. Syge blev sendt til pesthuse udenfor byen.</p>
+    </div>
+    <div class="city fact4">
+      <h2>Afspærring</h2>
+      <p>Områder blev lukket, lig brændt i massegrave udenfor byen.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>&copy; 2025 - Historisk Simulation af Den Sorte Død i Romerriget</p>
+</div>
+
+</body>
+</html>
