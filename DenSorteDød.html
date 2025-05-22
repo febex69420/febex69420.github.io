@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Hvis Vallensbæk fik Den Sorte Død</title>
   <style>
     body {
@@ -18,7 +18,12 @@
     .section {
       display: none;
       padding: 30px;
-      text-align: center;
+      max-width: 700px;
+      margin: 20px auto;
+      background-color: #fff9f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      line-height: 1.5;
     }
     .section:target {
       display: block;
@@ -29,10 +34,10 @@
     }
     .map {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
       padding: 40px;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: auto;
       background: linear-gradient(to bottom right, #c9b58e, #8c7b5b);
       border-radius: 15px;
@@ -45,29 +50,20 @@
       border-radius: 10px;
       color: white;
       text-decoration: none;
-      padding: 20px;
+      padding: 25px 15px;
       text-align: center;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
       transition: transform 0.2s, background-color 0.2s;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      height: 150px;
+      height: 130px;
+      font-weight: bold;
+      font-size: 1.1em;
     }
     .zone:hover {
       transform: scale(1.05);
       background-color: rgba(130, 70, 10, 0.95);
-    }
-    .zone h2 {
-      margin-top: 0;
-      font-size: 1.2em;
-    }
-    img {
-      max-width: 80%;
-      border: 4px solid #3e2b1f;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
     .back-link {
       display: inline-block;
@@ -77,6 +73,7 @@
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      font-weight: bold;
     }
     .back-link:hover {
       background-color: #7a5138;
@@ -100,63 +97,78 @@
 <!-- Kort -->
 <div id="map" class="section">
   <div class="map">
-    <a href="#screen1" class="zone"><h2>Tro og Overtro</h2><p>Gud og onde ånder</p></a>
-    <a href="#screen2" class="zone"><h2>Karantæne</h2><p>Lukke byen af</p></a>
-    <a href="#screen3" class="zone"><h2>Forbrænding</h2><p>Brænde smittet ting</p></a>
-    <a href="#screen4" class="zone"><h2>Afspærring</h2><p>Stoppe folk i at rejse</p></a>
-    <a href="#screen5" class="zone"><h2>Pesthus</h2><p>Sende syge væk</p></a>
-    <a href="#screen6" class="zone"><h2>Massegrave</h2><p>Grave lig ned</p></a>
-    <a href="#screen7" class="zone"><h2>Læger</h2><p>Hvis jeg skulle helbrede</p></a>
-    <a href="#screen8" class="zone"><h2>Overlevelse</h2><p>Sådan ville jeg undgå det</p></a>
+    <a href="#screen1" class="zone">Tro og Overtro</a>
+    <a href="#screen2" class="zone">Karantæne</a>
+    <a href="#screen3" class="zone">Forbrænding</a>
+    <a href="#screen4" class="zone">Afspærring</a>
+    <a href="#screen5" class="zone">Pesthus</a>
+    <a href="#screen6" class="zone">Massegrave</a>
+    <a href="#screen7" class="zone">Læger</a>
+    <a href="#screen8" class="zone">Overlevelse</a>
+    <a href="#screen9" class="zone">Rotters rolle</a>
+    <a href="#screen10" class="zone">Historien om pesten</a>
   </div>
 </div>
 
 <!-- Informationsskærme -->
+
 <div id="screen1" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Flagellants_painting.jpg" alt="Tro og overtro" />
-  <p>Hvis jeg boede i Vallensbæk dengang, ville jeg nok tro, at Gud var sur eller at onde ånder gjorde os syge. Jeg ville nok be meget og håbe på at overleve.</p>
+  <h2>Tro og Overtro</h2>
+  <p>Dengang troede folk, at pesten kom fra dårlig luft kaldet "miasma" eller fra onde ånder. Mange tænkte også, at det var en straf fra Gud, fordi folk ikke opførte sig ordentligt. Derfor bad man meget og lavede processioner for at få Gud til at tilgive.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen2" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Plague_quarantine_station.jpg" alt="Karantæne" />
-  <p>Jeg ville få folk til at lukke portene ind til Vallensbæk. Ingen må komme ind uden at være i karantæne i fx 40 dage, så vi ikke bliver smittet.</p>
+  <h2>Karantæne</h2>
+  <p>For at stoppe pesten ville jeg lukke Vallensbæks byporte og holde folk ude. Folk, der ville ind, skulle blive i karantæne i mindst 40 dage, så vi var sikre på, at de ikke havde sygdommen. Det var en måde at holde sygdommen væk på, selvom man ikke vidste, at det var lopper på rotter, der smittede.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen3" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Burning_of_Plague_House%2C_Dubrovnik%2C_Croatia.jpg" alt="Forbrænding" />
-  <p>Hvis nogen blev syge, ville jeg sørge for, at deres tøj og ting blev brændt. Det er bedre at miste sine ting end at alle dør.</p>
+  <h2>Forbrænding</h2>
+  <p>Hvis nogen blev syge, ville jeg sørge for, at deres tøj og ting blev brændt. Nogle gange blev hele huse med syge brændt ned for at forhindre, at pesten spredte sig. Det var hårdt, men folk tænkte, det var nødvendigt for at stoppe smitten.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen4" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Plague_Pit.jpg" alt="Afspærring" />
-  <p>Jeg ville spærre de smittede områder af og sætte vagter til at passe på, at folk ikke rejser ind eller ud med sygdommen.</p>
+  <h2>Afspærring</h2>
+  <p>Jeg ville spærre de områder, hvor der var mange syge, af, så ingen kunne rejse ud eller ind derfra. Vogne og varer skulle desinficeres for at undgå, at sygdommen blev spredt med tingene. Det var vigtigt at stoppe folk i at rejse med pesten.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen5" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Plague_House.jpg" alt="Pesthus" />
-  <p>Jeg ville bygge pesthuse udenfor byen og flytte syge derhen, så de raske ikke bliver smittet. Der skulle være folk til at passe på dem.</p>
+  <h2>Pesthus</h2>
+  <p>Jeg ville bygge særlige pesthuse uden for Vallensbæk, hvor de syge kunne blive isoleret. Så kunne raske mennesker bedre undgå at blive smittet, og de syge kunne få mad og pleje, selvom man ikke forstod sygdommen rigtig.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen6" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Medieval_mass_grave.jpg" alt="Massegrave" />
-  <p>Hvis folk døde, ville jeg sørge for, at de blev gravet ned hurtigt og langt væk fra byen – måske i en massegrav, så det ikke smitter videre.</p>
+  <h2>Massegrave</h2>
+  <p>Når mange døde, kunne man ikke begrave alle som normalt. Derfor lavede man store massegrave uden for byen. Det var vigtigt at grave ligene hurtigt ned for at forhindre smitte, selvom det var en trist og svær tid.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen7" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Plague_doctor_drawing.png" alt="Læge" />
-  <p>Hvis jeg var læge, ville jeg tage en maske på med urter i næsen, og prøve at hjælpe folk uden at røre dem. Jeg ville prøve alt – også hvis det lyder mærkeligt.</p>
+  <h2>Læger</h2>
+  <p>Læger brugte masker med lange næb fyldt med urter og krydderier, fordi de troede, det kunne beskytte dem mod den dårlige luft. De prøvede at hjælpe de syge, men vidste ikke, hvordan man stoppede pesten. De gjorde deres bedste.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
 <div id="screen8" class="section">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Black_Death_migration_map.png" alt="Overlevelse" />
-  <p>Jeg ville nok prøve at blive hjemme, undgå at se nogen og vaske hænder (hvis de vidste det dengang). Jeg ville også gemme mig, hvis det blev farligt.</p>
+  <h2>Overlevelse</h2>
+  <p>Hvis jeg skulle overleve pesten, ville jeg prøve at holde mig væk fra andre, blive hjemme, og vaske hænder så godt jeg kunne. Selvom man ikke vidste det dengang, var det en god måde at undgå smitte på.</p>
+  <a href="#map" class="back-link">⬅ Tilbage</a>
+</div>
+
+<div id="screen9" class="section">
+  <h2>Rotters rolle</h2>
+  <p>Det man ikke vidste dengang, var, at pesten blev spredt af lopper, som boede på rotter. Rotter gik rundt i byerne, og når de døde, hoppede lopperne over på mennesker og smittede dem. Det var faktisk sådan pesten spredte sig.</p>
+  <a href="#map" class="back-link">⬅ Tilbage</a>
+</div>
+
+<div id="screen10" class="section">
+  <h2>Historien om pesten</h2>
+  <p>Den Sorte Død kom til Europa i midten af 1300-tallet og dræbte omkring en tredjedel af befolkningen. Den spredte sig hurtigt og var meget farlig, fordi man ikke forstod sygdommen eller hvordan man skulle stoppe den.</p>
   <a href="#map" class="back-link">⬅ Tilbage</a>
 </div>
 
