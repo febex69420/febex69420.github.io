@@ -1,0 +1,474 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#root{position:relative;width:100%;background:#07060f;border-radius:10px;overflow:hidden;font-family:'Impact','Arial Black',sans-serif;touch-action:none}
+#hud{position:relative;z-index:5;display:flex;align-items:center;gap:0;background:#0c0b18;border-bottom:2px solid #3a2a00;flex-wrap:wrap}
+.hstat{padding:5px 12px;font-size:12px;letter-spacing:.5px;border-right:1px solid #1a1830;color:#ccc;font-family:monospace}
+.hstat b{color:#ffc600}
+#gc{display:block;width:100%;height:460px;cursor:default}
+#cmdpanel{position:absolute;right:0;top:36px;width:148px;bottom:24px;background:rgba(8,7,18,0.95);border-left:2px solid #1a1030;z-index:4;overflow-y:auto;padding:8px 6px}
+.cmd-sec{color:#555;font-size:9px;letter-spacing:2px;margin:10px 0 4px;font-family:monospace}
+.cmd-btn{display:block;width:100%;text-align:left;padding:6px 8px;background:#0f0e1f;border:1px solid #1e1c3a;color:#8899cc;font-size:10px;cursor:pointer;border-radius:3px;margin-bottom:3px;letter-spacing:.5px;font-family:monospace;transition:all .15s}
+.cmd-btn:hover{background:#1a1840;color:#aabbff;border-color:#3344aa}
+.cmd-btn.red{color:#cc4444;border-color:#330a0a}
+.cmd-btn.red:hover{background:#1a0808;color:#ff6666}
+.cmd-btn.gold{color:#cc9900;border-color:#332200}
+.cmd-btn.gold:hover{background:#1a1200;color:#ffcc00}
+#nticker{position:absolute;bottom:0;left:0;right:0;height:24px;background:#0c0b18;border-top:1px solid #1a1030;display:flex;align-items:center;z-index:5;overflow:hidden}
+#tklabel{color:#cc2200;font-size:10px;padding:0 10px;white-space:nowrap;border-right:1px solid #2a1a1a;letter-spacing:1px;font-family:monospace}
+#tktext{color:#888;font-size:10px;white-space:nowrap;font-family:monospace;padding-left:16px}
+#toast{position:absolute;top:48px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);color:#ffc600;font-size:12px;padding:7px 18px;border-radius:20px;z-index:25;pointer-events:none;opacity:0;transition:opacity .3s;border:1px solid #3a2a00;white-space:nowrap;font-family:monospace;letter-spacing:.5px}
+#intro{position:absolute;inset:0;background:rgba(7,6,15,.97);z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.wm-modal,.ev-modal{position:absolute;inset:0;background:rgba(0,0,0,.92);z-index:40;display:none;align-items:center;justify-content:center}
+.wm-inner{background:#0c0b18;border:2px solid #3a2a00;border-radius:8px;padding:14px;width:94%;max-width:760px}
+.ev-inner{background:#0c0b18;border:2px solid #8b1a1a;border-radius:8px;padding:20px;width:90%;max-width:460px}
+.ev-btn{display:block;width:100%;text-align:left;padding:9px 12px;background:#0f0e1f;border:1px solid #2a2040;color:#aabbff;font-size:11px;cursor:pointer;border-radius:4px;margin-bottom:6px;font-family:monospace;letter-spacing:.3px;transition:all .15s}
+.ev-btn:hover{background:#1a1840;color:#ccdeff}
+</style>
+
+<h2 class="sr-only">Supreme Dictator — a side-scrolling sandbox where you rule the world. Arrow keys or WASD to move, Space to jump, E to interact with characters, M for world map.</h2>
+
+<div id="root">
+<div id="hud">
+  <span style="color:#ffc600;font-size:13px;padding:5px 14px;letter-spacing:2px;border-right:1px solid #2a1800;white-space:nowrap">★ SUPREME DICTATOR</span>
+  <div class="hstat">POWER <b id="sPow">87</b>%</div>
+  <div class="hstat">TREASURY <b id="sTrea">$120K</b></div>
+  <div class="hstat">LOYALTY <b id="sLoy">58</b>%</div>
+  <div class="hstat">FEAR <b id="sFear">42</b>%</div>
+  <div class="hstat">NATIONS <b id="sNat">1</b>/12</div>
+  <div class="hstat">DAY <b id="sDay">1</b></div>
+  <div style="margin-left:auto;display:flex;gap:6px;padding:4px 8px">
+    <button onclick="openWM()" style="font-size:10px;padding:3px 10px;background:#0f0e1f;border:1px solid #334;color:#8899cc;border-radius:3px;cursor:pointer;font-family:monospace;letter-spacing:.5px">[M] WORLD MAP</button>
+    <button onclick="S.paused=!S.paused;this.textContent=S.paused?'[P] RESUME':'[P] PAUSE'" id="btnP" style="font-size:10px;padding:3px 10px;background:#0f0e1f;border:1px solid #334;color:#666;border-radius:3px;cursor:pointer;font-family:monospace">[P] PAUSE</button>
+  </div>
+</div>
+
+<canvas id="gc"></canvas>
+
+<div id="cmdpanel">
+  <div style="color:#ffc600;font-size:11px;letter-spacing:2px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #1a1030">COMMANDS</div>
+  <div class="cmd-sec">◆ CIVIL</div>
+  <button class="cmd-btn gold" onclick="doCmd('prop')">📢 Propaganda</button>
+  <button class="cmd-btn" onclick="doCmd('taxes')">💰 Raise Taxes</button>
+  <button class="cmd-btn" onclick="doCmd('purge')">🔪 Purge Officials</button>
+  <button class="cmd-btn" onclick="doCmd('curfew')">🚫 Declare Curfew</button>
+  <button class="cmd-btn" onclick="doCmd('statue')">🗿 Build Statue</button>
+  <div class="cmd-sec">◆ MILITARY</div>
+  <button class="cmd-btn" onclick="doCmd('guards')">🪖 Deploy Guards</button>
+  <button class="cmd-btn red" onclick="doCmd('execute')">⚔️ Execute Prisoner</button>
+  <button class="cmd-btn red" onclick="doCmd('airstrike')">✈️ Airstrike</button>
+  <button class="cmd-btn red" style="font-weight:bold;letter-spacing:1px" onclick="doCmd('nuke')">☢ LAUNCH NUKE</button>
+  <button class="cmd-btn" onclick="doCmd('invade')">🚀 Invade Country</button>
+  <div class="cmd-sec">◆ GUARDS</div>
+  <button class="cmd-btn" onclick="doCmd('gattack')">⚔ Order Attack</button>
+  <button class="cmd-btn" onclick="doCmd('gpatrol')">👣 Set Patrol</button>
+  <button class="cmd-btn gold" onclick="doCmd('gcome')">📣 Guards, Come!</button>
+</div>
+
+<div id="nticker"><span id="tklabel">BREAKING</span><div id="tktext"></div></div>
+<div id="toast"></div>
+
+<div class="wm-modal" id="wmModal">
+  <div class="wm-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="color:#ffc600;font-size:13px;letter-spacing:2px">STRATEGIC WAR ROOM</span>
+      <button onclick="closeWM()" style="background:none;border:1px solid #444;color:#888;padding:2px 10px;border-radius:3px;cursor:pointer;font-size:11px;font-family:monospace">CLOSE</button>
+    </div>
+    <canvas id="wmc" width="720" height="360" style="display:block;width:100%;border-radius:4px;cursor:crosshair;border:1px solid #222"></canvas>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center">
+      <button class="cmd-btn" style="width:auto;padding:5px 12px" onclick="wmAct('airstrike')">✈ Airstrike</button>
+      <button class="cmd-btn red" style="width:auto;padding:5px 12px" onclick="wmAct('nuke')">☢ Nuclear Strike</button>
+      <button class="cmd-btn" style="width:auto;padding:5px 12px" onclick="wmAct('invade')">⚔ Invade</button>
+      <button class="cmd-btn" style="width:auto;padding:5px 12px" onclick="wmAct('blockade')">🚢 Blockade</button>
+      <span id="wmTarget" style="color:#88aacc;font-size:11px;font-family:monospace;margin-left:8px"></span>
+    </div>
+  </div>
+</div>
+
+<div class="ev-modal" id="evModal">
+  <div class="ev-inner">
+    <div id="evTitle" style="color:#ffc600;font-size:14px;letter-spacing:1px;margin-bottom:8px"></div>
+    <div id="evDesc" style="color:#aaa;font-size:12px;line-height:1.6;margin-bottom:14px;font-family:monospace"></div>
+    <div id="evChoices"></div>
+  </div>
+</div>
+
+<div id="intro">
+  <div style="color:#ffc600;font-size:28px;letter-spacing:4px;text-align:center">★ SUPREME DICTATOR ★</div>
+  <div style="color:#666;font-size:11px;letter-spacing:3px;margin-top:-8px">WORLD DOMINATION SANDBOX</div>
+  <div style="color:#aaa;font-size:11px;font-family:monospace;line-height:2;text-align:center;margin-top:8px">
+    [A/D] or [←/→] MOVE &nbsp;|&nbsp; [SPACE] JUMP &nbsp;|&nbsp; [E] INTERACT<br>
+    [M] WORLD MAP &nbsp;|&nbsp; Commands panel on the right
+  </div>
+  <button onclick="startGame()" style="margin-top:10px;padding:12px 40px;background:#1a0800;border:2px solid #cc4400;color:#ff6600;font-size:14px;letter-spacing:3px;cursor:pointer;border-radius:4px;font-family:'Impact',sans-serif">BEGIN YOUR REIGN</button>
+  <div style="color:#444;font-size:9px;font-family:monospace;margin-top:10px">Your guards await. The world is watching.</div>
+</div>
+</div>
+
+<script>
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+canvas.width = 900; canvas.height = 460;
+const W = 900, H = 460;
+const WW = 2800;
+
+const S = {
+  power:87,treasury:120000,loyalty:58,fear:42,nations:1,day:1,
+  guards:4,prisoners:5,paused:false,started:false,
+  shake:0,shakeX:0,shakeY:0,
+  effects:[],particles:[],
+  guardMode:'follow',
+  lastEvent:Date.now(),eventInterval:45000,
+  ticker:0,tickerX:900,
+  time:0,gameTime:0
+};
+
+const keys={};
+document.addEventListener('keydown',e=>{
+  keys[e.code]=true;
+  if(e.code==='KeyM'&&S.started){openWM();e.preventDefault();}
+  if(e.code==='KeyP'){S.paused=!S.paused;document.getElementById('btnP').textContent=S.paused?'[P] RESUME':'[P] PAUSE';}
+  if(e.code==='KeyE'&&S.started)tryInteract();
+  if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
+});
+document.addEventListener('keyup',e=>{keys[e.code]=false;});
+
+const cam={x:800,y:0,tx:800};
+
+const player={
+  x:1100,y:360,vx:0,vy:0,w:26,h:44,
+  onGround:false,facing:1,walkFrame:0,walkTimer:0,
+  interacting:false,talkCooldown:0
+};
+
+const platforms=[
+  {x:0,y:430,w:WW,h:30},
+  {x:0,y:48,w:WW,h:8},
+  {x:900,y:362,w:460,h:8},
+  {x:70,y:300,w:280,h:8},
+  {x:1430,y:300,w:280,h:8},
+  {x:2100,y:320,w:240,h:8},
+];
+
+const walls=[
+  {x:0,y:48,w:8,h:390},{x:WW-8,y:48,w:8,h:390},
+  {x:480,y:48,w:8,h:390},{x:488,y:48,w:8,h:330},
+  {x:900,y:48,w:8,h:390},{x:1400,y:48,w:8,h:390},
+  {x:1900,y:48,w:8,h:390},{x:2400,y:48,w:8,h:390},
+];
+
+const ROOMS=[
+  {x:0,name:'WAR ROOM',color:'#1a1428'},
+  {x:488,name:'ARMORY',color:'#0e1820'},
+  {x:900,name:'THRONE ROOM',color:'#1a0c00'},
+  {x:1400,name:'TREASURY',color:'#0e1408'},
+  {x:1900,name:'BARRACKS',color:'#0e1020'},
+  {x:2400,name:'PRISON',color:'#180808'},
+];
+
+const NPCS=[
+  {x:220,y:390,name:'General Kovacs',role:'Your top general',color:'#2a4a2a',
+   lines:["The eastern front is ready, Comrade Leader.","I can mobilize troops at your command.","Your enemies tremble at our might."]},
+  {x:680,y:390,name:'Capt. Volkov',role:'Guard Captain',color:'#1a3a1a',
+   lines:["All 4 guards present and armed, sir.","On your orders, we eliminate anyone.","The palace is secure, Leader."]},
+  {x:1100,y:390,name:'Vizier Khan',role:'Royal Adviser',color:'#3a2010',
+   lines:["Your wisdom is matched only by your glory.","The people fear AND love you... mostly fear.","Shall I prepare the afternoon executions?"]},
+  {x:1650,y:390,name:'Minister Geld',role:'Treasurer',color:'#102a10',
+   lines:["The treasury overflows, as you commanded.","Taxes are... enthusiastically collected.","Your economic policy is perfect, naturally."]},
+  {x:2150,y:390,name:'Warden Steele',role:'Prison Warden',color:'#2a1010',
+   lines:["We have room for more, Leader.","The prisoners speak only your name.","Interrogations are going very productively."]},
+  {x:2480,y:390,name:'Prisoner #47',role:'Dissident',color:'#3a3a3a',
+   lines:["P-please, I have a family...","I only wrote one protest sign!","I'll confess to anything, just..."]},
+  {x:2560,y:390,name:'Prisoner #112',role:'Former General',color:'#333',
+   lines:["You can't do this to me!","I was your most loyal officer!","...I'll never betray you again, I swear."]},
+  {x:2640,y:390,name:'Prisoner #203',role:'Journalist',color:'#2a2a2a',
+   lines:["Freedom of press is a basic right!","History will remember—","...Actually, forget I said anything."]},
+];
+
+let activeTalk=null;
+let talkBox=null;
+
+const guards=[];
+for(let i=0;i<4;i++){
+  guards.push({
+    x:player.x-(60+i*38),y:player.y,
+    vx:0,vy:0,onGround:false,
+    facing:1,walkFrame:0,walkTimer:0,
+    mode:'follow',patrolDir:1,patrolTimer:0,
+    attacking:false,attackTarget:null,
+    id:i
+  });
+}
+
+const particles=[];
+const explosions=[];
+
+function addParticle(x,y,color,type='spark'){
+  for(let i=0;i<(type==='confetti'?12:6);i++){
+    const a=Math.random()*Math.PI*2;
+    const sp=type==='confetti'?Math.random()*3+1:Math.random()*4+2;
+    particles.push({
+      x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(type==='confetti'?2:0),
+      life:1,decay:type==='confetti'?0.015:0.025,
+      color,size:type==='confetti'?4:2,type
+    });
+  }
+}
+
+function addExplosion(x,y,size=1){
+  explosions.push({x,y,r:0,maxR:80*size,life:1,size});
+  addParticle(x,y,'#ff6600','spark');
+  addParticle(x,y,'#ffcc00','spark');
+  S.shake=size>1?20:8;
+}
+
+function collidesRect(px,py,pw,ph,rx,ry,rw,rh){
+  return px<rx+rw&&px+pw>rx&&py<ry+rh&&py+ph>ry;
+}
+
+function resolveEntity(ent){
+  ent.vy+=0.55;
+  ent.x+=ent.vx;
+  ent.y+=ent.vy;
+  ent.onGround=false;
+  const allPlat=[...platforms,...walls];
+  for(const p of allPlat){
+    if(collidesRect(ent.x,ent.y,ent.w,ent.h,p.x,p.y,p.w,p.h)){
+      const overlapL=ent.x+ent.w-p.x;
+      const overlapR=p.x+p.w-ent.x;
+      const overlapT=ent.y+ent.h-p.y;
+      const overlapB=p.y+p.h-ent.y;
+      const minH=Math.min(overlapL,overlapR);
+      const minV=Math.min(overlapT,overlapB);
+      if(minV<minH){
+        if(overlapT<overlapB){ent.y=p.y-ent.h;ent.vy=0;ent.onGround=true;}
+        else{ent.y=p.y+p.h;ent.vy=0;}
+      } else {
+        if(overlapL<overlapR){ent.x=p.x-ent.w;}
+        else{ent.x=p.x+p.w;}
+        ent.vx=0;
+      }
+    }
+  }
+  ent.x=Math.max(8,Math.min(WW-8-ent.w,ent.x));
+}
+
+function updateGuardAI(g,i){
+  if(g.mode==='follow'||S.guardMode==='follow'){
+    const targetX=player.x-(55+i*38)*player.facing;
+    const dx=targetX-g.x;
+    if(Math.abs(dx)>8){
+      g.vx=Math.sign(dx)*Math.min(Math.abs(dx)*0.1,4);
+      g.facing=Math.sign(dx)||1;
+    } else {g.vx*=0.7;}
+    if(Math.abs(player.y-g.y)>60&&g.onGround){g.vy=-9;}
+  } else if(g.mode==='patrol'){
+    g.patrolTimer++;
+    if(g.patrolTimer>80){g.patrolDir*=-1;g.patrolTimer=0;}
+    g.vx=g.patrolDir*2;
+    g.facing=g.patrolDir;
+  }
+  if(keys['Space']&&player.onGround===false&&g.onGround&&Math.abs(g.x-player.x)<200){
+    if(Math.random()<0.3)g.vy=-9;
+  }
+  resolveEntity(g);
+  g.walkTimer++;
+  if(Math.abs(g.vx)>0.5&&g.walkTimer%8===0)g.walkFrame=(g.walkFrame+1)%4;
+}
+
+function update(){
+  const MOVE_SPEED = 3.5;
+  if(S.paused||!S.started)return;
+  S.time++;
+  S.gameTime++;
+  if(S.gameTime%1800===0){S.day++;document.getElementById('sDay').textContent=S.day;}
+  if(Date.now()-S.lastEvent>S.eventInterval){triggerEvent();S.lastEvent=Date.now();}
+
+  let moveX=0;
+  if(keys['ArrowLeft']||keys['KeyA'])moveX=-1;
+  if(keys['ArrowRight']||keys['KeyD'])moveX=1;
+  player.vx=moveX*MOVE_SPEED;
+  if((keys['Space']||keys['ArrowUp']||keys['KeyW'])&&player.onGround){player.vy=-11;player.onGround=false;}
+  if(moveX!==0)player.facing=moveX;
+  resolveEntity(player);
+  player.walkTimer++;
+  if(Math.abs(player.vx)>0.5&&player.walkTimer%7===0)player.walkFrame=(player.walkFrame+1)%4;
+
+  for(let i=0;i<guards.length;i++)updateGuardAI(guards[i],i);
+
+  cam.tx=player.x-W/2+72;
+  cam.tx=Math.max(0,Math.min(WW-W,cam.tx));
+  cam.x+=(cam.tx-cam.x)*0.1;
+
+  if(S.shake>0){
+    S.shakeX=(Math.random()-0.5)*S.shake;
+    S.shakeY=(Math.random()-0.5)*S.shake;
+    S.shake*=0.85;
+    if(S.shake<0.5){S.shake=0;S.shakeX=0;S.shakeY=0;}
+  }
+
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=p.decay;
+    if(p.life<=0)particles.splice(i,1);
+  }
+  for(let i=explosions.length-1;i>=0;i--){
+    const e=explosions[i];
+    e.r+=e.maxR*0.08;e.life-=0.05;
+    if(e.r>=e.maxR||e.life<=0)explosions.splice(i,1);
+  }
+
+  const MOVE_SPEED=3.5;
+}
+
+function wx(x){return x-cam.x+S.shakeX;}
+function wy(y){return y+S.shakeY;}
+
+function drawBg(){
+  const cx=Math.floor(cam.x/WW*100);
+  ctx.fillStyle='#06050e';
+  ctx.fillRect(0,0,W,H);
+  for(let i=0;i<6;i++){
+    const room=ROOMS[i];
+    const nextX=i<5?ROOMS[i+1].x:WW;
+    const sx=wx(room.x);const ex=wx(nextX);
+    if(ex<0||sx>W)continue;
+    ctx.fillStyle=room.color;
+    ctx.fillRect(Math.max(0,sx),56,Math.min(W,ex)-Math.max(0,sx),375);
+    if(sx>0&&sx<W){
+      ctx.fillStyle='#111';
+      ctx.fillRect(sx-4,48,8,384);
+    }
+    const ly=85;
+    if(sx+50>0&&sx+150<W){
+      ctx.fillStyle='#0a0818';
+      ctx.font='bold 10px monospace';
+      ctx.letterSpacing='3px';
+      ctx.fillStyle='#333';
+      ctx.fillText(room.name,Math.max(10,sx+20),ly);
+    }
+  }
+  ctx.fillStyle='#0a0816';
+  ctx.fillRect(0,0,W,56);
+  ctx.fillStyle='#1a1030';
+  ctx.fillRect(0,48,W,10);
+}
+
+function drawDecorations(){
+  for(let px=80;px<WW;px+=180){
+    const sx=wx(px);
+    if(sx<-20||sx>W+20)continue;
+    ctx.fillStyle='#1a1428';
+    ctx.fillRect(sx-10,56,20,376);
+    ctx.fillStyle='#2a1a40';
+    ctx.fillRect(sx-8,58,16,14);
+    ctx.fillStyle='#3a2a50';
+    ctx.fillRect(sx-6,60,12,10);
+  }
+  for(let px=130;px<WW;px+=220){
+    const sx=wx(px);
+    if(sx<-20||sx>W+20)continue;
+    const flicker=0.8+Math.sin(S.time*0.15+px)*0.2+Math.random()*0.1;
+    ctx.fillStyle=`rgba(180,80,0,${flicker*0.8})`;
+    ctx.fillRect(sx-3,58,6,8);
+    ctx.fillStyle=`rgba(255,160,20,${flicker})`;
+    ctx.beginPath();
+    ctx.ellipse(sx,57,5,8,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle=`rgba(255,220,100,${flicker*0.6})`;
+    ctx.beginPath();
+    ctx.ellipse(sx,56,3,5,0,0,Math.PI*2);
+    ctx.fill();
+  }
+  for(let px=490;px<WW;px+=900){
+    const sx=wx(px);
+    if(sx<-40||sx>W+40)continue;
+    ctx.fillStyle='#8b0000';
+    ctx.fillRect(sx-20,60,40,90);
+    ctx.fillStyle='#cc0000';
+    ctx.fillRect(sx-18,62,36,86);
+    ctx.fillStyle='#ffc600';
+    ctx.font='bold 20px Impact';
+    ctx.textAlign='center';
+    ctx.fillText('★',sx,110);
+  }
+  const tx=wx(1095);
+  if(tx>-100&&tx<W+100){
+    ctx.fillStyle='#3a1500';
+    ctx.fillRect(tx-6,390,12,40);
+    ctx.fillRect(tx-40,388,80,8);
+    ctx.fillStyle='#1a0a00';
+    ctx.fillRect(tx-38,334,76,56);
+    ctx.fillStyle='#8b0000';
+    ctx.fillRect(tx-36,336,72,52);
+    ctx.fillStyle='#aa2200';
+    ctx.fillRect(tx-34,338,68,48);
+    ctx.fillStyle='#ffc600';
+    ctx.font='bold 11px monospace';
+    ctx.textAlign='center';
+    ctx.fillText('SUPREME',tx,362);
+    ctx.fillText('LEADER',tx,374);
+  }
+  const mx=wx(195);
+  if(mx>-120&&mx<W+120){
+    ctx.fillStyle='#0a1a2a';
+    ctx.fillRect(mx-50,120,100,70);
+    ctx.strokeStyle='#1a3a5a';ctx.lineWidth=2;
+    ctx.strokeRect(mx-50,120,100,70);
+    ctx.fillStyle='#0e2a3a';
+    ctx.fillRect(mx-45,125,90,60);
+    ctx.fillStyle='#1a4a6a';
+    for(let i=0;i<3;i++){
+      ctx.fillRect(mx-40+i*28,130,24,16);
+    }
+    ctx.fillStyle='#cc2200';
+    ctx.fillRect(mx-42,125,8,56);
+    ctx.fillStyle='#0a5a0a';
+    ctx.fillRect(mx-42+10,125,12,56);
+    ctx.fillStyle='#1a3a8a';
+    ctx.fillRect(mx-42+24,125,8,56);
+  }
+}
+
+function drawFloors(){
+  ctx.fillStyle='#1a1528';
+  ctx.fillRect(0,wy(430),W,30);
+  for(let x=0;x<W;x+=40){
+    ctx.fillStyle=x%80===0?'#1e1930':'#161224';
+    ctx.fillRect(x,wy(430),40,6);
+  }
+  const tpx=wx(900);
+  if(tpx<W&&tpx+460>0){
+    ctx.fillStyle='#2a1500';
+    ctx.fillRect(Math.max(0,tpx),wy(362),460-(Math.max(0,tpx)-tpx),8);
+    ctx.fillStyle='#8b0000';
+    ctx.fillRect(Math.max(0,tpx+4),wy(362),Math.min(W,tpx+460)-Math.max(0,tpx+4),3);
+  }
+  const b1x=wx(70);
+  if(b1x<W&&b1x+280>0){
+    ctx.fillStyle='#1a1528';
+    ctx.fillRect(Math.max(0,b1x),wy(300),280,8);
+  }
+  const b2x=wx(1430);
+  if(b2x<W&&b2x+280>0){
+    ctx.fillStyle='#1a1528';
+    ctx.fillRect(Math.max(0,b2x),wy(300),280,8);
+  }
+  ctx.fillStyle='#1a1528';
+  ctx.fillRect(0,wy(48),W,8);
+}
+
+function drawNPCs(){
+  for(const n of NPCS){
+    const sx=wx(n.x);
+    if(sx<-30||sx>W+30)continue;
+    const isClose=Math.abs(n.x-player.x)<60;
+    drawPerson(sx,wy(n.y),n.color,false,0,1,n.name,isClose);
+    if(isClose){
+      ctx.fillStyle='rgba(255,198,0,0.9)';
+      ctx.font='bold 9px monospace';
+      ctx.textAlign='center';
+      ctx.fillText('[E] TALK',sx,wy(n.y)-n.h-30 < 0 ? 20 : wy(n.y)-52);
+    }
+  }
+}
