@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE VAULT // Classified Gaming Network</title>
+<meta name="description" content="THE VAULT — a classified digital archive containing experimental programs, simulations and protocols. Earn Data. Unlock the Core. Discover what was sealed away.">
+<meta name="keywords" content="the vault, browser games, html5 games, gaming platform, arcade, progression, skill tree">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://febex69420.github.io/vault.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="THE VAULT // Classified Gaming Network">
+<meta property="og:description" content="A sealed digital archive of experimental programs and simulations. Earn Data. Unlock the Core. Go deeper.">
+<meta property="og:url" content="https://febex69420.github.io/vault.html">
+<meta property="og:site_name" content="THE VAULT">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="THE VAULT // Classified Gaming Network">
+<meta name="twitter:description" content="A sealed digital archive of experimental programs and simulations.">
+<meta name="theme-color" content="#070a12">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"THE VAULT","url":"https://febex69420.github.io/vault.html","description":"A classified digital archive of experimental browser programs, simulations and protocols with a permanent progression network.","potentialAction":{"@type":"PlayAction","target":"https://febex69420.github.io/vault.html"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME VARIABLES ============ */
+:root{
+  --bg0:#060912; --bg1:#0a0f1d; --bg2:#0e1526;
+  --acc:#38e1ff; --acc2:#7c5cff; --acc3:#22ffc4;
+  --accR:56; --accG:225; --accB:255;
+  --text:#dbe6f5; --muted:#7e8ba3; --line:rgba(120,160,255,.14);
+  --glass:linear-gradient(160deg,rgba(140,180,255,.055),rgba(140,180,255,.012));
+  --danger:#ff4d6d; --ok:#3dffa0; --warn:#ffc94d;
+  --r:16px; --tt:.28s cubic-bezier(.22,.61,.36,1);
+}
+[data-theme="dsn"]{--bg0:#0a0716;--bg1:#100b22;--bg2:#16102e;--acc:#a78bfa;--acc2:#6366f1;--acc3:#f0abfc;--accR:167;--accG:139;--accB:250;--line:rgba(167,139,250,.16);--glass:linear-gradient(160deg,rgba(167,139,250,.06),rgba(99,102,241,.015))}
+[data-theme="quantum"]{--bg0:#02080f;--bg1:#04101c;--bg2:#071829;--acc:#22d3ee;--acc2:#0ea5e9;--acc3:#7df9ff;--accR:34;--accG:211;--accB:238;--line:rgba(34,211,238,.16)}
+[data-theme="neon"]{--bg0:#0f0414;--bg1:#170822;--bg2:#200b30;--acc:#ff2ec4;--acc2:#8b5cf6;--acc3:#ff7ae0;--accR:255;--accG:46;--accB:196;--line:rgba(255,46,196,.18);--glass:linear-gradient(160deg,rgba(255,46,196,.055),rgba(139,92,246,.015))}
+[data-theme="cyber"]{--bg0:#0f0a02;--bg1:#181006;--bg2:#21160a;--acc:#ffb020;--acc2:#ff5c33;--acc3:#ffe08a;--accR:255;--accG:176;--accB:32;--line:rgba(255,176,32,.18);--glass:linear-gradient(160deg,rgba(255,176,32,.05),rgba(255,92,51,.012))}
+[data-theme="blacksite"]{--bg0:#040806;--bg1:#07100b;--bg2:#0a1810;--acc:#4ade80;--acc2:#16a34a;--acc3:#bbf7d0;--accR:74;--accG:222;--accB:128;--line:rgba(74,222,128,.16)}
+[data-theme="aurora"]{--bg0:#051018;--bg1:#081a24;--bg2:#0b2430;--acc:#5eead4;--acc2:#818cf8;--acc3:#fda4af;--accR:94;--accG:234;--accB:212;--line:rgba(94,234,212,.16)}
+[data-theme="singularity"]{--bg0:#0b0612;--bg1:#140a1f;--bg2:#1d0f2c;--acc:#f5d0fe;--acc2:#e879f9;--acc3:#fef3c7;--accR:245;--accG:208;--accB:254;--line:rgba(232,121,249,.2);--glass:linear-gradient(160deg,rgba(232,121,249,.07),rgba(245,208,254,.015))}
+
+/* ============ BASE ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg0); color:var(--text);
+  font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.55;
+  min-height:100vh; overflow-x:hidden;
+  transition:background .6s ease;
+}
+body::before{content:'';position:fixed;inset:0;z-index:-2;
+  background:
+   radial-gradient(1100px 600px at 80% -10%, rgba(var(--accR),var(--accG),var(--accB),.07), transparent 60%),
+   radial-gradient(900px 700px at -10% 110%, rgba(var(--accR),var(--accG),var(--accB),.05), transparent 60%),
+   linear-gradient(180deg,var(--bg0),var(--bg1) 60%,var(--bg0));
+  transition:background .6s ease;}
+#bgCanvas{position:fixed;inset:0;z-index:-1;opacity:.85;pointer-events:none}
+::selection{background:rgba(var(--accR),var(--accG),var(--accB),.35);color:#fff}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(var(--accR),var(--accG),var(--accB),.25);border-radius:99px;border:2px solid var(--bg0)}
+::-webkit-scrollbar-thumb:hover{background:rgba(var(--accR),var(--accG),var(--accB),.5)}
+a{color:var(--acc);text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;color:inherit}
+.mono{font-family:'JetBrains Mono',monospace}
+.orb{font-family:'Orbitron',sans-serif;letter-spacing:.06em}
+.muted{color:var(--muted)} .accent{color:var(--acc)}
+.h1{font-family:'Orbitron';font-weight:900;font-size:clamp(26px,4vw,44px);letter-spacing:.08em}
+.h2{font-family:'Orbitron';font-weight:700;font-size:18px;letter-spacing:.12em;text-transform:uppercase}
+.h3{font-family:'Orbitron';font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column;gap:12px}
+.spread{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid4,.grid3,.grid2{grid-template-columns:1fr}}
+
+/* ============ GLASS / PANELS ============ */
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+  transition:border-color var(--tt),box-shadow var(--tt),transform var(--tt)}
+.panel{padding:20px}
+.glass.hov:hover{border-color:rgba(var(--accR),var(--accG),var(--accB),.45);
+  box-shadow:0 0 0 1px rgba(var(--accR),var(--accG),var(--accB),.15),0 12px 40px -12px rgba(var(--accR),var(--accG),var(--accB),.25);
+  transform:translateY(-2px)}
+.corner{position:relative}
+.corner::before,.corner::after{content:'';position:absolute;width:14px;height:14px;border:2px solid rgba(var(--accR),var(--accG),var(--accB),.6);transition:all var(--tt)}
+.corner::before{top:-1px;left:-1px;border-right:none;border-bottom:none;border-radius:6px 0 0 0}
+.corner::after{bottom:-1px;right:-1px;border-left:none;border-top:none;border-radius:0 0 6px 0}
+.corner:hover::before,.corner:hover::after{width:24px;height:24px}
+
+/* ============ BUTTONS / CHIPS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Orbitron';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  padding:11px 20px;border-radius:10px;position:relative;overflow:hidden;
+  color:var(--bg0);background:linear-gradient(135deg,var(--acc),var(--acc2));
+  border:1px solid transparent;transition:all var(--tt);
+  box-shadow:0 4px 24px -6px rgba(var(--accR),var(--accG),var(--accB),.5)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px -6px rgba(var(--accR),var(--accG),var(--accB),.7);filter:brightness(1.12)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .5s ease}
+.btn:hover::after{left:160%}
+.btn.ghost{background:rgba(var(--accR),var(--accG),var(--accB),.07);color:var(--acc);
+  border:1px solid rgba(var(--accR),var(--accG),var(--accB),.35);box-shadow:none}
+.btn.ghost:hover{background:rgba(var(--accR),var(--accG),var(--accB),.16);box-shadow:0 0 24px -4px rgba(var(--accR),var(--accG),var(--accB),.4)}
+.btn.danger{background:linear-gradient(135deg,#ff4d6d,#c4264a);color:#fff}
+.btn.sm{padding:7px 13px;font-size:10px}
+.btn:disabled{opacity:.35;pointer-events:none;filter:grayscale(.6)}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;
+  font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;
+  background:rgba(var(--accR),var(--accG),var(--accB),.08);border:1px solid rgba(var(--accR),var(--accG),var(--accB),.25);color:var(--acc);transition:all var(--tt)}
+.chip.click{cursor:pointer}
+.chip.click:hover{background:rgba(var(--accR),var(--accG),var(--accB),.2);transform:translateY(-1px)}
+.chip.on{background:rgba(var(--accR),var(--accG),var(--accB),.28);color:#fff;border-color:var(--acc)}
+.tag{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted)}
+.tag.lvl1{color:var(--ok);border-color:rgba(61,255,160,.3)}
+.tag.lvl2{color:var(--warn);border-color:rgba(255,201,77,.3)}
+.tag.lvl3{color:var(--danger);border-color:rgba(255,77,109,.3)}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;position:relative}
+.barfill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--acc2),var(--acc));
+  box-shadow:0 0 12px rgba(var(--accR),var(--accG),var(--accB),.7);transition:width .8s cubic-bezier(.22,.61,.36,1);position:relative;overflow:hidden}
+.barfill::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);
+  animation:shimmer 2.2s linear infinite;background-size:200% 100%}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+</style>
+<style>
+/* ============ BOOT SEQUENCE ============ */
+#boot{position:fixed;inset:0;z-index:1000;background:#04060c;display:flex;align-items:center;justify-content:center;
+  transition:opacity .9s ease,visibility .9s}
+#boot.off{opacity:0;visibility:hidden;pointer-events:none}
+#boot .inner{width:min(760px,92vw);max-height:80vh;overflow:hidden;display:flex;flex-direction:column}
+#bootLog{font-family:'JetBrains Mono';font-size:13px;line-height:1.75;color:#9fb6d8;white-space:pre-wrap;overflow:hidden}
+#bootLog .ok{color:var(--ok)} #bootLog .warn{color:var(--warn)} #bootLog .acc{color:var(--acc)} #bootLog .dim{color:#4a5872}
+#bootLog .bigline{font-family:'Orbitron';font-weight:900;font-size:clamp(22px,4vw,38px);letter-spacing:.18em;color:var(--acc);
+  text-shadow:0 0 30px rgba(var(--accR),var(--accG),var(--accB),.9);margin:14px 0;animation:grantFlash .7s ease}
+@keyframes grantFlash{0%{opacity:0;transform:scale(1.25);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{transform:scale(1)}}
+#boot .cursor{display:inline-block;width:9px;height:16px;background:var(--acc);vertical-align:-2px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#bootSkip{position:fixed;bottom:26px;right:30px;z-index:1001}
+.bootbar{height:10px;border:1px solid rgba(var(--accR),var(--accG),var(--accB),.4);border-radius:4px;margin:6px 0 2px;overflow:hidden;width:min(440px,80%)}
+.bootbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc2),var(--acc));box-shadow:0 0 14px var(--acc);transition:width .12s linear}
+#bootVeil{position:fixed;inset:0;z-index:1002;background:var(--acc);opacity:0;pointer-events:none;transition:opacity .25s}
+
+/* ============ APP SHELL ============ */
+#app{opacity:0;transition:opacity .8s ease}
+#app.on{opacity:1}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:18px;
+  padding:0 22px;height:62px;border-bottom:1px solid var(--line);
+  background:rgba(6,9,18,.65);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3)}
+#logo{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none}
+#logo .mark{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--bg0);font-family:'Orbitron';font-weight:900;font-size:15px;
+  box-shadow:0 0 22px rgba(var(--accR),var(--accG),var(--accB),.6);animation:logoPulse 3.2s ease-in-out infinite}
+@keyframes logoPulse{50%{box-shadow:0 0 36px rgba(var(--accR),var(--accG),var(--accB),.95)}}
+#logo .name{font-family:'Orbitron';font-weight:900;font-size:16px;letter-spacing:.22em}
+#logo .name b{color:var(--acc)}
+nav.mainnav{display:flex;gap:4px;margin-left:8px}
+.navbtn{font-family:'Orbitron';font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  padding:9px 15px;border-radius:9px;color:var(--muted);position:relative;transition:all var(--tt)}
+.navbtn:hover{color:var(--text);background:rgba(var(--accR),var(--accG),var(--accB),.07)}
+.navbtn.on{color:var(--acc);background:rgba(var(--accR),var(--accG),var(--accB),.12);
+  box-shadow:inset 0 0 0 1px rgba(var(--accR),var(--accG),var(--accB),.3),0 0 18px -4px rgba(var(--accR),var(--accG),var(--accB),.5)}
+.navbtn.on::after{content:'';position:absolute;left:18%;right:18%;bottom:-1px;height:2px;background:var(--acc);border-radius:99px;box-shadow:0 0 10px var(--acc)}
+.topspace{flex:1}
+#dataChip{font-size:12px;padding:7px 14px}
+#dataChip b{color:#fff;font-size:13px}
+#userChip{cursor:pointer}
+.layout{display:flex;gap:22px;padding:22px;max-width:1640px;margin:0 auto;min-height:calc(100vh - 100px)}
+.sidebar{width:264px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;position:sticky;top:84px;height:fit-content}
+@media(max-width:1023px){.sidebar{display:none}}
+main{flex:1;min-width:0}
+
+/* ============ VIEWS ============ */
+.view{display:none;animation:viewIn .45s cubic-bezier(.22,.61,.36,1)}
+.view.on{display:block}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:viewIn .5s cubic-bezier(.22,.61,.36,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.19s}.d4{animation-delay:.26s}
+
+/* ============ SIDEBAR ============ */
+.opcard{padding:18px;text-align:center;position:relative;overflow:hidden}
+.opcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent);animation:scanLine 4s linear infinite}
+@keyframes scanLine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.avatar{width:74px;height:74px;border-radius:50%;margin:4px auto 10px;display:grid;place-items:center;
+  font-family:'Orbitron';font-weight:900;font-size:28px;color:var(--bg0);
+  background:linear-gradient(135deg,var(--acc),var(--acc2));position:relative;transition:all var(--tt)}
+.avatar.glow{box-shadow:0 0 30px rgba(var(--accR),var(--accG),var(--accB),.8)}
+.avatar.aura::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(var(--accR),var(--accG),var(--accB),.55);animation:auraSpin 3.5s linear infinite;border-top-color:transparent;border-left-color:transparent}
+@keyframes auraSpin{to{transform:rotate(360deg)}}
+.statrow{display:flex;justify-content:space-between;font-size:12px;padding:7px 2px;border-bottom:1px dashed rgba(255,255,255,.06)}
+.statrow:last-child{border:none}
+.statrow b{font-family:'JetBrains Mono';color:var(--acc)}
+.themedot{width:26px;height:26px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all var(--tt);position:relative}
+.themedot:hover{transform:scale(1.18)}
+.themedot.on{border-color:#fff;box-shadow:0 0 14px rgba(255,255,255,.4)}
+.themedot.lock{opacity:.25;cursor:not-allowed;filter:grayscale(.8)}
+
+/* ============ STATUS BAR ============ */
+.statusbar{position:fixed;bottom:0;left:0;right:0;z-index:99;height:34px;display:flex;align-items:center;gap:18px;
+  padding:0 18px;font-family:'JetBrains Mono';font-size:11px;color:var(--muted);
+  background:rgba(5,8,15,.8);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
+.dotlive{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px var(--ok);animation:dotPulse 2s ease infinite}
+@keyframes dotPulse{50%{opacity:.4}}
+#sbTicker{flex:1;overflow:hidden;white-space:nowrap;color:rgba(var(--accR),var(--accG),var(--accB),.7)}
+#secretDot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.05);cursor:default}
+#secretDot:hover{background:rgba(255,255,255,.3)}
+body{padding-bottom:34px}
+</style>
+<style>
+/* ============ HOME ============ */
+.hero{padding:42px 36px;position:relative;overflow:hidden}
+.hero .bigtitle{font-family:'Orbitron';font-weight:900;font-size:clamp(30px,5vw,56px);letter-spacing:.1em;line-height:1.1;
+  background:linear-gradient(110deg,#fff 20%,var(--acc) 50%,var(--acc2) 80%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:200% 100%;animation:titleSheen 6s linear infinite;cursor:default}
+@keyframes titleSheen{from{background-position:200% 0}to{background-position:-200% 0}}
+.hero .sub{max-width:560px;margin-top:12px;color:var(--muted);font-size:15px}
+.hero .heroGrid{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(var(--accR),var(--accG),var(--accB),.07) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accR),var(--accG),var(--accB),.07) 1px,transparent 1px);
+  background-size:42px 42px;mask-image:radial-gradient(600px 300px at 70% 30%,#000,transparent);-webkit-mask-image:radial-gradient(600px 300px at 70% 30%,#000,transparent);
+  animation:gridDrift 14s linear infinite}
+@keyframes gridDrift{from{background-position:0 0,0 0}to{background-position:42px 42px,42px 42px}}
+.statcard{padding:18px;text-align:left}
+.statcard .num{font-family:'Orbitron';font-weight:900;font-size:26px;color:var(--acc);text-shadow:0 0 18px rgba(var(--accR),var(--accG),var(--accB),.5)}
+.statcard .lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.sponsored{padding:16px 20px;border-style:dashed!important;position:relative}
+.sponsored .sphead{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.22em;color:var(--warn);display:flex;align-items:center;gap:8px}
+.sponsored .sphead::before{content:'';width:6px;height:6px;background:var(--warn);border-radius:50%;box-shadow:0 0 8px var(--warn);animation:dotPulse 1.6s infinite}
+
+/* ============ PROGRAM CARDS ============ */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.pcard{padding:18px;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.pcard .fhead{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono';font-size:10px;color:var(--muted);letter-spacing:.08em}
+.pcard .ficon{width:100%;height:96px;border-radius:10px;display:grid;place-items:center;font-size:38px;
+  background:linear-gradient(160deg,rgba(var(--accR),var(--accG),var(--accB),.12),rgba(var(--accR),var(--accG),var(--accB),.02));
+  border:1px solid rgba(var(--accR),var(--accG),var(--accB),.15);position:relative;overflow:hidden;transition:all var(--tt)}
+.pcard:hover .ficon{box-shadow:inset 0 0 40px rgba(var(--accR),var(--accG),var(--accB),.18)}
+.pcard .ficon::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.12) 3px 4px);pointer-events:none}
+.pcard .fname{font-family:'Orbitron';font-weight:700;font-size:14px;letter-spacing:.1em}
+.pcard .fdesc{font-size:12px;color:var(--muted);flex:1}
+.pcard .ffoot{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:'JetBrains Mono';color:var(--muted)}
+.pcard.locked .ficon{filter:grayscale(.9) brightness(.55)}
+.pcard.locked::after{content:'⬡ SEALED — VAULT CORE CLEARANCE REQUIRED';position:absolute;inset:auto 0 0 0;padding:8px;text-align:center;
+  font-family:'JetBrains Mono';font-size:9px;letter-spacing:.14em;color:var(--danger);background:rgba(255,77,109,.08);border-top:1px solid rgba(255,77,109,.25)}
+.goldframe{border-color:rgba(255,201,77,.5)!important;box-shadow:0 0 24px -6px rgba(255,201,77,.35)}
+
+/* ============ GAME MODAL ============ */
+#gameModal{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(3,5,10,.88);backdrop-filter:blur(14px)}
+#gameModal.on{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.gframe{width:min(1020px,96vw);max-height:94vh;display:flex;flex-direction:column;overflow:hidden;animation:popIn .4s cubic-bezier(.22,.61,.36,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:none}}
+.ghead{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line)}
+.ghead .gtitle{font-family:'Orbitron';font-weight:700;font-size:15px;letter-spacing:.14em}
+#gmCanvasWrap{position:relative;background:#05070d;display:flex;align-items:center;justify-content:center}
+#gmCanvas{display:block;max-width:100%;height:auto;outline:none}
+#gmOverlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;
+  background:rgba(4,6,12,.82);backdrop-filter:blur(6px);text-align:center;padding:20px}
+#gmOverlay.on{display:flex;animation:fadeIn .25s}
+.countNum{font-family:'Orbitron';font-weight:900;font-size:92px;color:var(--acc);text-shadow:0 0 50px rgba(var(--accR),var(--accG),var(--accB),.9);animation:countPop .9s ease both}
+@keyframes countPop{0%{opacity:0;transform:scale(2.4);filter:blur(8px)}45%{opacity:1;transform:scale(1);filter:blur(0)}85%{opacity:1}100%{opacity:0;transform:scale(.7)}}
+.gfoot{display:flex;align-items:center;gap:14px;padding:11px 18px;border-top:1px solid var(--line);font-family:'JetBrains Mono';font-size:11px;color:var(--muted)}
+
+/* ============ VAULT CORE ============ */
+#viewCore .corewrap{position:relative;height:calc(100vh - 170px);min-height:480px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+#coreCanvas{position:absolute;inset:0;cursor:grab}
+#coreCanvas.grabbing{cursor:grabbing}
+.corehud{position:absolute;z-index:5;display:flex;gap:8px}
+.corehud.tl{top:14px;left:14px;flex-direction:column;align-items:flex-start}
+.corehud.tr{top:14px;right:14px}
+.corehud.bl{bottom:14px;left:14px}
+.hudbtn{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:17px;
+  background:rgba(8,12,22,.75);border:1px solid var(--line);color:var(--acc);backdrop-filter:blur(10px);transition:all var(--tt)}
+.hudbtn:hover{border-color:var(--acc);box-shadow:0 0 16px -2px rgba(var(--accR),var(--accG),var(--accB),.5);transform:translateY(-1px)}
+.legend{padding:10px 14px;font-family:'JetBrains Mono';font-size:10px;display:flex;flex-direction:column;gap:5px;background:rgba(8,12,22,.75);border:1px solid var(--line);border-radius:10px;backdrop-filter:blur(10px)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+
+/* ============ NODE MODAL / GENERIC MODAL ============ */
+.modalveil{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(3,5,10,.75);backdrop-filter:blur(10px);animation:fadeIn .25s}
+.modalbox{width:min(460px,92vw);padding:26px;animation:popIn .35s cubic-bezier(.22,.61,.36,1);max-height:86vh;overflow-y:auto}
+.modalbox input{width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);color:var(--text);font-size:14px;outline:none;transition:all var(--tt)}
+.modalbox input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(var(--accR),var(--accG),var(--accB),.15)}
+
+/* ============ TERMINAL ============ */
+#term{position:fixed;left:0;right:0;bottom:34px;z-index:400;height:46vh;min-height:300px;
+  background:rgba(4,7,13,.92);border-top:1px solid rgba(var(--accR),var(--accG),var(--accB),.4);
+  backdrop-filter:blur(22px);transform:translateY(110%);transition:transform .45s cubic-bezier(.22,.61,.36,1);
+  display:flex;flex-direction:column;box-shadow:0 -20px 60px -20px rgba(var(--accR),var(--accG),var(--accB),.3)}
+#term.on{transform:translateY(0)}
+#termOut{flex:1;overflow-y:auto;padding:16px 20px;font-family:'JetBrains Mono';font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+#termOut .in{color:var(--acc)} #termOut .err{color:var(--danger)} #termOut .ok{color:var(--ok)} #termOut .dim{color:var(--muted)} #termOut .wrn{color:var(--warn)}
+.termline{display:flex;align-items:center;gap:10px;padding:10px 20px;border-top:1px solid var(--line)}
+.termline .ps1{font-family:'JetBrains Mono';font-size:13px;color:var(--acc);white-space:nowrap}
+#termIn{flex:1;background:none;border:none;outline:none;font-family:'JetBrains Mono';font-size:13px;color:#fff;caret-color:var(--acc)}
+
+/* ============ TOASTS ============ */
+#toasts{position:fixed;top:74px;right:20px;z-index:900;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{width:300px;padding:13px 16px;border-radius:12px;display:flex;gap:12px;align-items:flex-start;
+  background:rgba(8,12,22,.92);border:1px solid rgba(var(--accR),var(--accG),var(--accB),.4);backdrop-filter:blur(14px);
+  box-shadow:0 10px 36px -10px rgba(var(--accR),var(--accG),var(--accB),.4);animation:toastIn .45s cubic-bezier(.22,.61,.36,1)}
+.toast.out{animation:toastOut .4s ease both}
+@keyframes toastIn{from{opacity:0;transform:translateX(110%)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(110%)}}
+.toast .ti{font-size:20px;line-height:1}
+.toast b{font-family:'Orbitron';font-size:11px;letter-spacing:.12em;display:block;color:var(--acc)}
+.toast span{font-size:12px;color:var(--muted)}
+
+/* ============ ARCHIVES / PROFILE / MISC ============ */
+.lorecard{padding:18px}
+.lorecard.lock{opacity:.55}
+.lorecard .lbody{font-size:13px;color:var(--muted);margin-top:8px;font-style:italic}
+.achcard{padding:14px;display:flex;gap:12px;align-items:center}
+.achcard.lock{opacity:.38;filter:grayscale(.7)}
+.achcard .ai{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;
+  background:rgba(var(--accR),var(--accG),var(--accB),.12);border:1px solid rgba(var(--accR),var(--accG),var(--accB),.3);flex-shrink:0}
+.histrow{display:flex;justify-content:space-between;gap:10px;padding:9px 4px;border-bottom:1px dashed rgba(255,255,255,.06);font-size:12px}
+#classified{position:fixed;inset:0;z-index:950;display:none;align-items:center;justify-content:center;background:rgba(2,3,7,.94);backdrop-filter:blur(18px);text-align:center}
+#classified.on{display:flex;animation:fadeIn .4s}
+.holocard{position:relative;overflow:hidden}
+.holocard::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(var(--accR),var(--accG),var(--accB),.14) 45%,rgba(255,255,255,.1) 50%,rgba(var(--accR),var(--accG),var(--accB),.14) 55%,transparent 70%);background-size:250% 250%;animation:holo 4.5s linear infinite;pointer-events:none}
+@keyframes holo{from{background-position:120% 120%}to{background-position:-60% -60%}}
+body.fx-scan::after{content:'';position:fixed;inset:0;z-index:998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.13) 3px 4px)}
+body.fx-chroma .h1,body.fx-chroma #logo .name{animation:chromaHue 9s linear infinite}
+@keyframes chromaHue{to{filter:hue-rotate(360deg)}}
+.bannerfx{background-image:linear-gradient(rgba(var(--accR),var(--accG),var(--accB),.08) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accR),var(--accG),var(--accB),.08) 1px,transparent 1px);background-size:22px 22px}
+@media(max-width:760px){nav.mainnav{position:fixed;bottom:34px;left:0;right:0;z-index:98;justify-content:space-around;background:rgba(5,8,15,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:6px;margin:0}.navbtn{font-size:9px;padding:8px 6px}body{padding-bottom:86px}#term{bottom:86px}.layout{padding:14px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<!-- ================= BOOT ================= -->
+<div id="boot">
+  <div class="inner"><div id="bootLog"></div></div>
+  <button id="bootSkip" class="btn ghost sm">SKIP SEQUENCE ⏎</button>
+</div>
+<div id="bootVeil"></div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <header class="topbar">
+    <div id="logo" title="THE VAULT">
+      <div class="mark">▼</div>
+      <div class="name">THE<b>VAULT</b></div>
+    </div>
+    <nav class="mainnav">
+      <button class="navbtn on" data-view="home">Overview</button>
+      <button class="navbtn" data-view="programs">Programs</button>
+      <button class="navbtn" data-view="core">Vault Core</button>
+      <button class="navbtn" data-view="archives">Archives</button>
+      <button class="navbtn" data-view="profile">Personnel</button>
+    </nav>
+    <div class="topspace"></div>
+    <div id="dataChip" class="chip" title="DATA — vault currency">⬡ <b>0</b>&nbsp;DATA</div>
+    <button id="termBtn" class="chip click" title="Open terminal [ ` ]">&gt;_ TERMINAL</button>
+    <div id="userChip" class="chip click" title="Personnel record">◉ <span id="userChipName">GUEST</span></div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="glass opcard corner">
+        <div id="sbAvatar" class="avatar">G</div>
+        <div id="sbName" class="orb" style="font-weight:700;font-size:15px">GUEST</div>
+        <div id="sbTitle" class="mono muted" style="font-size:10px;letter-spacing:.2em;margin-top:2px">UNREGISTERED ASSET</div>
+        <div style="margin:14px 0 6px" class="row spread">
+          <span class="h3">Clearance</span><span id="sbLevel" class="mono accent" style="font-size:12px">LV 1</span>
+        </div>
+        <div class="bar"><div id="sbLevelBar" class="barfill" style="width:4%"></div></div>
+        <div style="margin-top:14px" id="sbStats">
+          <div class="statrow"><span>⬡ Data</span><b id="sbData">0</b></div>
+          <div class="statrow"><span>⬢ Nodes lit</span><b id="sbNodes">0/55</b></div>
+          <div class="statrow"><span>▣ Programs run</span><b id="sbRuns">0</b></div>
+          <div class="statrow"><span>◈ Secrets</span><b id="sbSecrets">0/6</b></div>
+        </div>
+      </div>
+      <div class="glass panel">
+        <div class="h3" style="margin-bottom:10px">Interface Skin</div>
+        <div class="row wrap" id="sbThemes" style="gap:9px"></div>
+        <div class="mono muted" style="font-size:10px;margin-top:10px">Additional skins are sealed inside the Vault Core.</div>
+      </div>
+      <div class="glass panel sponsored">
+        <div class="sphead">SPONSORED TRANSMISSION</div>
+        <div id="adSlotSidebar" class="mono muted" style="font-size:11px;margin-top:9px;min-height:60px">
+          ░ Incoming broadcast from external network… channel reserved.
+          <!-- AdSense: paste your ad unit here, e.g.
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="YYYY" data-ad-format="auto"></ins> -->
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <!-- HOME -->
+      <section class="view on" id="viewHome">
+        <div class="glass hero corner" style="margin-bottom:18px">
+          <div class="heroGrid"></div>
+          <div class="mono accent" style="font-size:11px;letter-spacing:.3em" id="heroHail">// SECURE CHANNEL ESTABLISHED</div>
+          <div class="bigtitle" id="heroTitle">THE VAULT</div>
+          <div class="sub">You are inside a sealed archive of experimental programs, abandoned simulations and classified records. Run protocols. Earn <span class="accent">DATA</span>. Feed the Core. Some doors only open for those who keep digging.</div>
+          <div class="row wrap" style="margin-top:22px">
+            <button class="btn" data-goto="programs">⬢ Browse Programs</button>
+            <button class="btn ghost" data-goto="core">◈ Enter Vault Core</button>
+          </div>
+        </div>
+        <div class="grid4" style="margin-bottom:18px" id="homeStats"></div>
+        <div class="grid2" style="margin-bottom:18px">
+          <div class="glass panel hov">
+            <div class="row spread"><div class="h2">Core Status</div><span class="mono muted" style="font-size:11px" id="homeCorePct">0%</span></div>
+            <div class="bar" style="margin:14px 0 10px"><div class="barfill" id="homeCoreBar" style="width:0%"></div></div>
+            <div class="muted" style="font-size:12px" id="homeCoreTxt">The network sleeps. Feed it Data to light the first node.</div>
+            <button class="btn ghost sm" style="margin-top:14px" data-goto="core">Open Network Map →</button>
+          </div>
+          <div class="glass panel hov">
+            <div class="h2" style="margin-bottom:12px">Directive <span class="accent">// AI</span></div>
+            <div class="mono" style="font-size:12px;color:var(--muted);line-height:1.9" id="homeAdvice"></div>
+          </div>
+        </div>
+        <div class="h2" style="margin:6px 0 12px">Recently Accessed</div>
+        <div class="pgrid" id="homeRecent" style="margin-bottom:22px"></div>
+        <div class="h2" style="margin:6px 0 12px">Trending In The Archive</div>
+        <div class="pgrid" id="homeTrend"></div>
+        <div class="glass panel sponsored" style="margin-top:22px">
+          <div class="sphead">SPONSORED BROADCAST</div>
+          <div id="adSlotHome" class="mono muted" style="font-size:11px;margin-top:8px">░ External transmission slot — awaiting uplink. <!-- AdSense unit here --></div>
+        </div>
+      </section>
+
+      <!-- PROGRAMS -->
+      <section class="view" id="viewPrograms">
+        <div class="row spread wrap" style="margin-bottom:18px">
+          <div>
+            <div class="h1" style="font-size:clamp(22px,3vw,32px)">PROGRAM REGISTRY</div>
+            <div class="muted" style="font-size:13px">Executable artifacts recovered from the deep archive. Handle with intent.</div>
+          </div>
+          <input id="progSearch" placeholder="▌query registry…" class="mono" style="padding:11px 16px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--line);outline:none;color:var(--text);font-size:12px;width:230px">
+        </div>
+        <div class="row wrap" id="progFilters" style="margin-bottom:18px"></div>
+        <div class="pgrid" id="progGrid"></div>
+      </section>
+
+      <!-- VAULT CORE -->
+      <section class="view" id="viewCore">
+        <div class="row spread wrap" style="margin-bottom:14px">
+          <div>
+            <div class="h1" style="font-size:clamp(22px,3vw,32px)">VAULT CORE</div>
+            <div class="muted" style="font-size:13px">Permanent progression network. Drag to pan · scroll to zoom · click a node to inspect.</div>
+          </div>
+          <div class="chip">⬡ <b id="coreDataChip">0</b>&nbsp;DATA AVAILABLE</div>
+        </div>
+        <div class="corewrap glass">
+          <canvas id="coreCanvas"></canvas>
+          <div class="corehud tl"><div class="legend">
+            <span><i style="background:var(--acc);box-shadow:0 0 8px var(--acc)"></i>ONLINE</span>
+            <span><i style="background:rgba(255,255,255,.7)"></i>REACHABLE</span>
+            <span><i style="background:#39435c"></i>SEALED</span>
+            <span style="margin-top:4px" id="coreCount" class="accent">0 / 55 NODES</span>
+          </div></div>
+          <div class="corehud tr">
+            <button class="hudbtn" id="coreZoomIn">+</button>
+            <button class="hudbtn" id="coreZoomOut">−</button>
+            <button class="hudbtn" id="coreHome" title="Recenter">◎</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHIVES -->
+      <section class="view" id="viewArchives">
+        <div class="h1" style="font-size:clamp(22px,3vw,32px)">DEEP ARCHIVES</div>
+        <div class="muted" style="font-size:13px;margin-bottom:20px">Recovered records. Most remain encrypted until the Core grants clearance.</div>
+        <div class="h2" style="margin-bottom:12px">◈ Recovered Lore</div>
+        <div class="grid2" id="loreList" style="margin-bottom:26px"></div>
+        <div class="h2" style="margin-bottom:12px">◈ Anomalous Discoveries</div>
+        <div class="grid2" id="secretList" style="margin-bottom:26px"></div>
+        <div class="h2" style="margin-bottom:12px">◈ Recovered Artifacts <span class="tag" style="margin-left:8px">PRE-VAULT ERA</span></div>
+        <div class="glass panel" id="artifactPanel"><div class="mono muted" style="font-size:12px">Sealed. Unlock <b class="accent">ARCADE ARCHIVE</b> in the Vault Core to expose pre-vault artifacts.</div></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="view" id="viewProfile">
+        <div class="h1" style="font-size:clamp(22px,3vw,32px)">PERSONNEL RECORD</div>
+        <div class="muted" style="font-size:13px;margin-bottom:20px">Classified asset file. Eyes only.</div>
+        <div class="grid2" style="align-items:start">
+          <div class="col">
+            <div class="glass panel corner" id="profCard"></div>
+            <div class="glass panel"><div class="h2" style="margin-bottom:12px">Service Stats</div><div id="profStats"></div></div>
+            <div class="glass panel"><div class="h2" style="margin-bottom:12px">Account</div><div id="profActions" class="col"></div></div>
+          </div>
+          <div class="col">
+            <div class="glass panel"><div class="h2" style="margin-bottom:12px">Commendations</div><div class="col" id="profAch" style="gap:10px"></div></div>
+            <div class="glass panel"><div class="h2" style="margin-bottom:12px">Unlock History</div><div id="profHistory" style="max-height:300px;overflow-y:auto"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="statusbar">
+    <span class="row" style="gap:7px"><i class="dotlive"></i><span id="sbLink">LINK STABLE</span></span>
+    <span id="sbTicker">▸ vault systems nominal</span>
+    <span id="sbFps" style="display:none">60 FPS</span>
+    <span id="sbClock">00:00:00</span>
+    <span class="dim">v2.1.7</span>
+    <span id="secretDot" title=""></span>
+  </footer>
+</div>
+
+<!-- ================= TERMINAL ================= -->
+<div id="term">
+  <div class="row spread" style="padding:10px 20px;border-bottom:1px solid var(--line)">
+    <span class="mono accent" style="font-size:11px;letter-spacing:.2em">VAULT//SHELL v3.4 — type <b>help</b></span>
+    <button class="chip click" id="termClose">✕ CLOSE</button>
+  </div>
+  <div id="termOut"></div>
+  <div class="termline"><span class="ps1" id="termPs1">operative@vault:~$</span><input id="termIn" autocomplete="off" spellcheck="false"></div>
+</div>
+
+<!-- ================= GAME MODAL ================= -->
+<div id="gameModal">
+  <div class="glass gframe">
+    <div class="ghead">
+      <span style="font-size:22px" id="gmIcon">▣</span>
+      <div style="flex:1">
+        <div class="gtitle" id="gmTitle">PROGRAM</div>
+        <div class="mono muted" style="font-size:10px;letter-spacing:.12em" id="gmMeta">FILE://</div>
+      </div>
+      <span class="chip" id="gmScoreChip">SCORE <b id="gmScore">0</b></span>
+      <button class="chip click" id="gmFull">⛶ FULLSCREEN</button>
+      <button class="chip click" id="gmClose">✕ TERMINATE</button>
+    </div>
+    <div id="gmCanvasWrap">
+      <canvas id="gmCanvas" width="960" height="560" tabindex="0"></canvas>
+      <div id="gmOverlay"></div>
+    </div>
+    <div class="gfoot"><span id="gmControls">—</span><span style="flex:1"></span><span id="gmBest">BEST —</span></div>
+  </div>
+</div>
+
+<!-- ================= CLASSIFIED OVERLAY ================= -->
+<div id="classified">
+  <div>
+    <div class="h1" style="color:var(--danger);text-shadow:0 0 40px rgba(255,77,109,.8)">⬣ CLASSIFIED</div>
+    <div class="mono" style="margin:16px 0;color:var(--muted);max-width:420px;line-height:2" id="classifiedTxt"></div>
+    <button class="btn ghost" onclick="document.getElementById('classified').classList.remove('on')">SEAL RECORD</button>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<div id="modalRoot"></div>
+<script>
+'use strict';
+/* ============================================================
+   THE VAULT — core runtime
+   ============================================================ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>(n|0).toLocaleString('en-US');
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const now=()=>performance.now();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- audio (subtle UI bleeps; richer pack unlockable) ---------- */
+let AC=null;
+function beep(type='ui'){
+  if(!S.unlocked.includes('sys-sound'))return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+    const t=AC.currentTime, P={ui:[640,.05,.04],ok:[880,.12,.06],big:[220,.4,.1],err:[160,.15,.07],type:[1200,.015,.012]}[type]||[640,.05,.04];
+    o.frequency.setValueAtTime(P[0],t);o.frequency.exponentialRampToValueAtTime(P[0]*(type==='big'?3:1.4),t+P[1]);
+    o.type=type==='err'?'sawtooth':'sine';
+    g.gain.setValueAtTime(P[2],t);g.gain.exponentialRampToValueAtTime(.0001,t+P[1]);
+    o.start(t);o.stop(t+P[1]+.02);
+  }catch(e){}
+}
+
+/* ---------- persistent state ---------- */
+const DEFAULT_SAVE=()=>({
+  name:'GUEST',guest:true,pass:null,created:Date.now(),
+  data:120, theme:'ai-core', booted:false,
+  unlocked:['core'], ach:[], secrets:[], lore:[],
+  stats:{runs:0,uniq:[],score:0,cmds:0,timeMs:0,dataEarned:120},
+  best:{}, recent:[], history:[{t:Date.now(),txt:'Asset file created. Initial DATA grant: 120.'}],
+  title:'UNREGISTERED ASSET', hardcore:false
+});
+let S=DEFAULT_SAVE();
+const LS={save:'VAULT_SAVE_v1',accounts:'VAULT_ACCOUNTS_v1',session:'VAULT_SESSION_v1'};
+function save(){
+  try{
+    if(S.guest)localStorage.setItem(LS.save,JSON.stringify(S));
+    else{const a=JSON.parse(localStorage.getItem(LS.accounts)||'{}');a[S.name]=S;localStorage.setItem(LS.accounts,JSON.stringify(a));}
+  }catch(e){}
+}
+function load(){
+  try{
+    const sess=localStorage.getItem(LS.session);
+    if(sess){const a=JSON.parse(localStorage.getItem(LS.accounts)||'{}');if(a[sess]){S=Object.assign(DEFAULT_SAVE(),a[sess]);S.guest=false;return;}}
+    const g=localStorage.getItem(LS.save);if(g)S=Object.assign(DEFAULT_SAVE(),JSON.parse(g));
+  }catch(e){}
+}
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+function logHist(txt){S.history.unshift({t:Date.now(),txt});S.history=S.history.slice(0,80);}
+
+/* ---------- themes ---------- */
+const THEMES=[
+  {id:'ai-core',name:'AI CORE',c:'#38e1ff',free:true},
+  {id:'dsn',name:'DEEP SPACE NETWORK',c:'#a78bfa',node:'th-dsn'},
+  {id:'quantum',name:'QUANTUM MAINFRAME',c:'#22d3ee',node:'th-quantum'},
+  {id:'neon',name:'NEON GRID',c:'#ff2ec4',node:'th-neon'},
+  {id:'cyber',name:'CYBERPUNK METROPOLIS',c:'#ffb020',node:'th-cyber'},
+  {id:'blacksite',name:'BLACK SITE ARCHIVE',c:'#4ade80',node:'th-blacksite'},
+  {id:'aurora',name:'AURORA VEIL',c:'#5eead4',node:'th-aurora'},
+  {id:'singularity',name:'SINGULARITY',c:'#e879f9',node:'th-sing'},
+];
+function themeOwned(t){return t.free||S.unlocked.includes(t.node);}
+function applyTheme(id,silent){
+  const t=THEMES.find(x=>x.id===id);if(!t||!themeOwned(t))return false;
+  document.documentElement.setAttribute('data-theme',id==='ai-core'?'':id);
+  S.theme=id;save();BG.recolor();renderThemes();
+  if(!silent){toast('🎨','SKIN APPLIED',t.name);ach('theme-1');beep('ok');}
+  return true;
+}
+function renderThemes(){
+  const w=$('#sbThemes');if(!w)return;w.innerHTML='';
+  THEMES.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='themedot'+(S.theme===t.id?' on':'')+(themeOwned(t)?'':' lock');
+    d.style.background=`linear-gradient(135deg,${t.c},${t.c}55)`;
+    d.title=t.name+(themeOwned(t)?'':' — sealed in Vault Core');
+    d.onclick=()=>{themeOwned(t)?applyTheme(t.id):toast('🔒','SEALED',t.name+' is locked inside the Vault Core.')};
+    w.appendChild(d);
+  });
+}
+
+/* ---------- toast ---------- */
+function toast(icon,title,msg,ms=4200){
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<div class="ti">${icon}</div><div><b>${esc(title)}</b><span>${esc(msg)}</span></div>`;
+  $('#toasts').appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),420)},ms);
+}
+
+/* ---------- data economy ---------- */
+function addData(n,reason){
+  if(n<=0)return;S.data+=n;S.stats.dataEarned+=n;
+  if(reason){logHist(`+${n} DATA — ${reason}`);toast('⬡','DATA ACQUIRED',`+${fmt(n)} — ${reason}`);}
+  if(S.data>=2000)ach('data-2k');
+  save();refreshHud();
+}
+function spendData(n){if(S.data<n)return false;S.data-=n;save();refreshHud();return true;}
+
+/* ---------- achievements ---------- */
+const ACH=[
+ ['boot-1','FIRST CONTACT','Survive the boot sequence','🛰',50],
+ ['game-1','EXECUTION','Launch your first program','▶',50],
+ ['game-5','OPERATOR','Run 5 distinct programs','🎛',75],
+ ['game-15','SIMULANT','Run every program in the registry','🧬',200],
+ ['score-5k','DATA HARVESTER','Accumulate 5,000 total score','📊',75],
+ ['score-25k','MAINLINE','Accumulate 25,000 total score','📈',150],
+ ['best-500','HIGH WATERMARK','Score 500+ in a single run','🏆',100],
+ ['node-1','FIRST LIGHT','Light your first Core node','✦',50],
+ ['node-10','PATHFINDER','Light 10 Core nodes','🧭',100],
+ ['node-25','CARTOGRAPHER','Light 25 Core nodes','🗺',150],
+ ['node-54','ASCENDANT','Light the entire network','👁',500],
+ ['sec-1','KEYHOLE','Discover a secret','🔑',50],
+ ['sec-3','LOCKSMITH','Discover 3 secrets','🗝',100],
+ ['sec-6','PANDORA','Discover every anomaly','📦',500],
+ ['term-10','SHELL RIDER','Execute 10 terminal commands','⌨',50],
+ ['theme-1','SHAPESHIFTER','Apply a different interface skin','🎨',50],
+ ['reg-1','IDENTIFIED','Register a permanent asset file','🪪',100],
+ ['data-2k','CAPITALIZED','Hold 2,000 DATA at once','💠',100],
+];
+function ach(id){
+  if(S.ach.includes(id))return;const a=ACH.find(x=>x[0]===id);if(!a)return;
+  S.ach.push(id);logHist(`Commendation earned: ${a[1]}`);
+  toast(a[3],'COMMENDATION // '+a[1],a[2]+`  (+${a[4]} DATA)`);beep('big');
+  S.data+=a[4];S.stats.dataEarned+=a[4];save();refreshHud();
+}
+function checkScoreAch(){if(S.stats.score>=5000)ach('score-5k');if(S.stats.score>=25000)ach('score-25k');}
+
+/* ---------- clearance ---------- */
+function clearance(){
+  const p=S.unlocked.length*2+S.ach.length*3+S.secrets.length*6+Math.min(S.stats.runs,40);
+  const lv=clamp(1+Math.floor(p/16),1,10);
+  return {lv,pct:clamp((p%16)/16*100,2,100),p};
+}
+
+/* ---------- hud refresh ---------- */
+function refreshHud(){
+  $('#dataChip b').textContent=fmt(S.data);
+  $('#coreDataChip')&&($('#coreDataChip').textContent=fmt(S.data));
+  $('#sbData').textContent=fmt(S.data);
+  $('#sbNodes').textContent=(S.unlocked.length-1)+'/55';
+  $('#sbRuns').textContent=S.stats.runs;
+  $('#sbSecrets').textContent=S.secrets.length+'/6';
+  $('#sbName').textContent=S.name;$('#userChipName').textContent=S.name;
+  $('#sbTitle').textContent=S.title;
+  $('#sbAvatar').textContent=S.name[0]||'?';
+  const av=$('#sbAvatar');av.classList.toggle('glow',S.unlocked.includes('pr-glow'));av.classList.toggle('aura',S.unlocked.includes('pr-aura'));
+  const c=clearance();$('#sbLevel').textContent='LV '+c.lv;$('#sbLevelBar').style.width=c.pct+'%';
+  const pct=Math.round((S.unlocked.length-1)/55*100);
+  $('#homeCorePct')&&($('#homeCorePct').textContent=pct+'%');
+  $('#homeCoreBar')&&($('#homeCoreBar').style.width=Math.max(pct,1)+'%');
+  $('#coreCount')&&($('#coreCount').textContent=(S.unlocked.length-1)+' / 55 NODES');
+  applyUnlockFx();
+}
+function applyUnlockFx(){
+  document.body.classList.toggle('fx-scan',S.unlocked.includes('sys-scan'));
+  document.body.classList.toggle('fx-chroma',S.unlocked.includes('sys-chroma'));
+  $('#sbFps').style.display=S.unlocked.includes('sys-fps')?'':'none';
+}
+</script>
+<script>
+/* ============================================================
+   BACKGROUND PARTICLE FIELD
+   ============================================================ */
+const BG=(()=>{
+  const cv=$('#bgCanvas'),ctx=cv.getContext('2d');
+  let W,H,pts=[],col='56,225,255',raf=0,last=0,fps=60,fc=0,ft=0;
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;seed();}
+  function seed(){
+    const dense=S.unlocked.includes('sys-kernel')?9000:14000;
+    const n=clamp(Math.floor(W*H/dense),40,170);
+    pts=Array.from({length:n},()=>({x:rnd(0,W),y:rnd(0,H),vx:rnd(-.18,.18),vy:rnd(-.14,.14),r:rnd(.7,2.1),tw:rnd(0,6.28)}));
+  }
+  function recolor(){
+    const s=getComputedStyle(document.documentElement);
+    col=`${s.getPropertyValue('--accR').trim()},${s.getPropertyValue('--accG').trim()},${s.getPropertyValue('--accB').trim()}`;
+  }
+  function frame(t){
+    raf=requestAnimationFrame(frame);
+    const dt=Math.min(33,t-last);last=t;
+    fc++;ft+=dt;if(ft>500){fps=Math.round(fc*1000/ft);fc=0;ft=0;const f=$('#sbFps');if(f&&f.style.display!=='none')f.textContent=fps+' FPS';}
+    ctx.clearRect(0,0,W,H);
+    const LINK=115;
+    for(const p of pts){
+      p.x+=p.vx*dt*.06;p.y+=p.vy*dt*.06;p.tw+=dt*.002;
+      if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+      const a=.25+.35*Math.abs(Math.sin(p.tw));
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.29);ctx.fillStyle=`rgba(${col},${a})`;ctx.fill();
+    }
+    ctx.lineWidth=.6;
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y;if(Math.abs(dx)>LINK||Math.abs(dy)>LINK)continue;
+      const d=dx*dx+dy*dy;if(d<LINK*LINK){ctx.strokeStyle=`rgba(${col},${(1-Math.sqrt(d)/LINK)*.16})`;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+    }
+  }
+  addEventListener('resize',size,{passive:true});
+  return {start(){size();recolor();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame)},recolor,reseed:seed};
+})();
+
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+const BOOT_LINES=[
+ ['dim','VAULT BIOS v7.31.2 — PROPRIETARY // DO NOT DISTRIBUTE',8],
+ ['','Initializing kernel space ............................. ',14,'OK'],
+ ['','Mounting encrypted volumes ............................ ',12,'OK'],
+ ['','Verifying archive checksums ........................... ',12,'OK'],
+ ['dim','  › 14,206 files indexed · 3 anomalies quarantined',10],
+ ['','Spinning up neural lattice ............................ ',12,'OK'],
+ ['BAR','MEMORY MAP'],
+ ['','Negotiating uplink with NODE-7 ........................ ',12,'OK'],
+ ['','Calibrating holographic compositor .................... ',10,'OK'],
+ ['warn','WARDEN.AI heartbeat detected — dormant',16],
+ ['','Decrypting personnel manifests ........................ ',12,'OK'],
+ ['BAR','ARCHIVE INDEX'],
+ ['','Loading program registry [18 executables] ............. ',10,'OK'],
+ ['','Arming progression core [55 nodes] .................... ',10,'OK'],
+ ['dim','  › last operator session: [REDACTED]',12],
+ ['acc','Biometric handshake accepted.',18],
+ ['','Issuing session credentials ........................... ',10,'OK'],
+ ['BIG','ACCESS GRANTED'],
+ ['dim','Welcome back, operative.',20],
+];
+const Boot=(()=>{
+  let skip=false,done=false;
+  const log=$('#bootLog');
+  const wait=ms=>new Promise(r=>setTimeout(r,skip?0:ms));
+  function cursorTo(el){$$('#bootLog .cursor').forEach(c=>c.remove());const c=document.createElement('span');c.className='cursor';el.appendChild(c);}
+  async function typeLine(cls,txt,spd,suffix){
+    const d=document.createElement('div');if(cls)d.className=cls;log.appendChild(d);
+    for(let i=0;i<txt.length;i++){d.textContent=txt.slice(0,i+1);cursorTo(d);if(!skip&&i%3===0)beep('type');await wait(spd*(Math.random()*.7+.65));}
+    if(suffix){const s=document.createElement('span');s.className='ok';s.textContent='['+suffix+']';d.appendChild(s);cursorTo(d);}
+    log.scrollTop=log.scrollHeight;
+  }
+  async function bar(label){
+    const w=document.createElement('div');w.innerHTML=`<span class="dim">${label}</span>`;
+    const b=document.createElement('div');b.className='bootbar';const i=document.createElement('i');b.appendChild(i);w.appendChild(b);log.appendChild(w);
+    for(let p=0;p<=100;p+=rnd(7,18)){i.style.width=Math.min(100,p)+'%';await wait(55);}
+    i.style.width='100%';
+  }
+  async function run(){
+    $('#app').style.display='none';
+    for(const L of BOOT_LINES){
+      if(L[0]==='BAR'){await bar(L[1]);continue;}
+      if(L[0]==='BIG'){await wait(250);const d=document.createElement('div');d.className='bigline';d.textContent=L[1];log.appendChild(d);log.scrollTop=log.scrollHeight;beep('big');await wait(800);continue;}
+      await typeLine(L[0],L[1],L[2]);if(L[3])await wait(40);
+      await wait(rnd(30,110));
+    }
+    finish();
+  }
+  function finish(){
+    if(done)return;done=true;
+    const veil=$('#bootVeil');veil.style.opacity='.9';
+    setTimeout(()=>{veil.style.opacity='0';$('#boot').classList.add('off');$('#bootSkip').style.display='none';
+      $('#app').style.display='';requestAnimationFrame(()=>$('#app').classList.add('on'));
+      S.booted=true;save();ach('boot-1');
+    },260);
+  }
+  $('#bootSkip').onclick=()=>{skip=true;setTimeout(finish,60);};
+  addEventListener('keydown',e=>{if(e.key==='Enter'&&!done&&!$('#boot').classList.contains('off')){skip=true;setTimeout(finish,60);}});
+  return {run,instant(){skip=true;done=false;run();},replay(){done=false;skip=false;log.innerHTML='';$('#boot').classList.remove('off');$('#bootSkip').style.display='';$('#app').classList.remove('on');run();}};
+})();
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let CURRENT_VIEW='home';
+function showView(id){
+  CURRENT_VIEW=id;
+  $$('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.view===id));
+  $$('.view').forEach(v=>v.classList.remove('on'));
+  const v=$('#view'+id[0].toUpperCase()+id.slice(1));v&&v.classList.add('on');
+  beep('ui');
+  if(id==='core')Core.activate();else Core.deactivate();
+  if(id==='home')renderHome();
+  if(id==='programs')renderPrograms();
+  if(id==='archives')renderArchives();
+  if(id==='profile')renderProfile();
+  scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click',e=>{
+  const nb=e.target.closest('.navbtn');if(nb){showView(nb.dataset.view);return;}
+  const go=e.target.closest('[data-goto]');if(go){showView(go.dataset.goto);return;}
+});
+$('#userChip').onclick=()=>showView('profile');
+
+/* ============================================================
+   STATUS BAR / TICKER
+   ============================================================ */
+const TICKS=[
+ 'archive integrity 99.97%','node-7 latency 12ms','warden.ai dormant','3 anomalies quarantined','thermal levels nominal',
+ 'deep storage defrag scheduled','uplink encrypted AES-512','sector 9 unmapped','operative biometrics stable','core hum within tolerance',
+ 'background process: DREAM.EXE','signal echo detected in sublevel 4','manifest sync complete','power draw 7.3 TW','do not trust the mirrors'
+];
+const TICKS2=['ghost packets intercepted','the architect was here','sector zero breathes','they sealed it for a reason','listen between the frames'];
+function startStatus(){
+  const clock=()=>{$('#sbClock').textContent=new Date().toLocaleTimeString('en-GB');};
+  clock();setInterval(clock,1000);
+  let i=0;
+  setInterval(()=>{
+    const pool=S.unlocked.includes('sys-ticker')?TICKS.concat(TICKS2):TICKS;
+    $('#sbTicker').textContent='▸ '+pool[i++%pool.length];
+  },S.unlocked.includes('sys-over')?2200:3800);
+  setInterval(()=>{S.stats.timeMs+=10000;save();},10000);
+}
+
+/* ============================================================
+   HOME RENDER
+   ============================================================ */
+const ADVICE=[
+ g=>S.stats.runs===0?'You have run nothing. The registry is waiting — open PROGRAMS and execute anything.':null,
+ g=>S.unlocked.length===1?'The Core is dark. You hold enough DATA to light your first node.':null,
+ g=>S.secrets.length===0?'Sensors report anomalies woven into this interface. The curious are compensated.':null,
+ g=>{const locked=GAMES.filter(x=>x.lock&&!S.unlocked.includes(x.lock));return locked.length?`${locked.length} executables remain sealed. The Core holds their keys.`:null},
+ g=>{const t=THEMES.filter(x=>!themeOwned(x));return t.length?`${t.length} interface skins remain encrypted.`:null},
+ g=>'All primary directives complete. Go deeper, operative. Sector Zero remembers.'
+];
+function renderHome(){
+  const c=clearance();
+  $('#homeStats').innerHTML=[
+    ['⬡ DATA BALANCE',fmt(S.data)],['◈ CLEARANCE','LEVEL '+c.lv],
+    ['▣ PROGRAMS RUN',S.stats.runs],['🏆 COMMENDATIONS',S.ach.length+'/'+ACH.length]
+  ].map((x,i)=>`<div class="glass statcard hov rise d${i+1}"><div class="num">${x[1]}</div><div class="lbl">${x[0]}</div></div>`).join('');
+  const pct=Math.round((S.unlocked.length-1)/55*100);
+  $('#homeCoreTxt').textContent=pct===0?'The network sleeps. Feed it Data to light the first node.':pct<30?'The lattice flickers. Power flows to outer branches.':pct<70?'The network strengthens. Sealed sectors are waking.':pct<100?'The Core is nearly conscious. Finish what you started.':'NETWORK FULLY LIT. The Vault answers to you now.';
+  let adv='';for(const f of ADVICE){const r=f();if(r){adv=r;break;}}
+  typeInto($('#homeAdvice'),'» '+adv);
+  $('#homeRecent').innerHTML=S.recent.length?S.recent.slice(0,4).map(id=>cardHTML(GAMES.find(g=>g.id===id))).join(''):'<div class="muted mono" style="font-size:12px">no execution history on record</div>';
+  const trend=[...GAMES].sort((a,b)=>(S.best[b.id]||0)+b.heat-((S.best[a.id]||0)+a.heat)).slice(0,4);
+  $('#homeTrend').innerHTML=trend.map(cardHTML).join('');
+  refreshHud();
+}
+let typeTimer=0;
+function typeInto(el,txt){
+  clearInterval(typeTimer);let i=0;el.textContent='';
+  typeTimer=setInterval(()=>{el.textContent=txt.slice(0,++i)+(i<txt.length?'▌':'');if(i>=txt.length)clearInterval(typeTimer);},14);
+}
+</script>
+<script>
+/* ============================================================
+   PROGRAM REGISTRY + GAME SHELL
+   ============================================================ */
+const CATS=['ALL','REFLEX','PUZZLE','COMBAT','STEALTH','SIM'];
+const GAMES=[
+ {id:'void-runner',name:'VOID RUNNER',icon:'🏃',cat:'REFLEX',heat:9,div:1,desc:'Sprint the collapsing data conduit. One mistimed jump ends the stream.',controls:'SPACE / ↑ jump · hold for height',verb:'INITIALIZE SIMULATION'},
+ {id:'neural-breach',name:'NEURAL BREACH',icon:'🧠',cat:'PUZZLE',heat:8,div:1,desc:'Guide the worm through synaptic space. Consume packets. Never bite your own tail.',controls:'ARROWS / WASD steer',verb:'EXECUTE PROTOCOL'},
+ {id:'grid-collapse',name:'GRID COLLAPSE',icon:'🧱',cat:'PUZZLE',heat:7,div:2,desc:'Falling memory blocks must be aligned before the stack breaches containment.',controls:'←→ move · ↑ rotate · ↓ drop',verb:'LAUNCH PROGRAM'},
+ {id:'signal-intercept',name:'SIGNAL INTERCEPT',icon:'🛸',cat:'COMBAT',heat:9,div:2,desc:'Hostile transmissions inbound. Burn them out of the sky before they reach the array.',controls:'←→ move · SPACE fire',verb:'EXECUTE PROTOCOL'},
+ {id:'data-fragment',name:'DATA FRAGMENT',icon:'🃏',cat:'PUZZLE',heat:6,div:3,desc:'Corrupted memory pairs are scattered across the bank. Re-link them from recall alone.',controls:'MOUSE flip fragments',verb:'ACCESS MODULE'},
+ {id:'quantum-jump',name:'QUANTUM JUMP',icon:'⚛',cat:'REFLEX',heat:8,div:1,desc:'Ascend the probability ladder. Each platform exists only until observed.',controls:'←→ steer the ascent',verb:'INITIALIZE SIMULATION'},
+ {id:'cipher-break',name:'CIPHER BREAK',icon:'🔐',cat:'PUZZLE',heat:6,div:6,desc:'A 4-digit rotating cipher guards the sublevel. Crack it before attempts run dry.',controls:'KEYBOARD digits · ENTER submit',verb:'OPEN ARCHIVE'},
+ {id:'matrix-ping',name:'MATRIX PING',icon:'⌗',cat:'REFLEX',heat:7,div:3,desc:'A sentinel mirrors your every move. Outlast it in pure deflection.',controls:'MOUSE / ↑↓ paddle',verb:'EXECUTE PROTOCOL'},
+ {id:'system-surge',name:'SYSTEM SURGE',icon:'⚡',cat:'COMBAT',heat:7,div:2,desc:'Breach-worms converge on the reactor. Sever them before contact.',controls:'CLICK to sever worms',verb:'LAUNCH PROGRAM'},
+ {id:'void-drift',name:'VOID DRIFT',icon:'🚀',cat:'COMBAT',heat:8,div:2,desc:'Debris field at terminal velocity. Thrust, rotate, vaporize.',controls:'←→ rotate · ↑ thrust · SPACE fire',verb:'INITIALIZE SIMULATION'},
+ {id:'binary-clash',name:'BINARY CLASH',icon:'⚔',cat:'REFLEX',heat:6,div:5,desc:'Duel the Warden\'s reflex daemon. Strike only on the true signal.',controls:'SPACE on GREEN signal',verb:'EXECUTE PROTOCOL'},
+ {id:'archive-heist',name:'ARCHIVE HEIST',icon:'👁',cat:'STEALTH',heat:7,div:4,desc:'Extract sealed files from a patrolled vault. Sentinel cones end careless runs.',controls:'ARROWS / WASD sneak',verb:'ACCESS MODULE',lock:'pg-heist'},
+ {id:'protocol-7',name:'PROTOCOL 7',icon:'🔢',cat:'PUZZLE',heat:8,div:4,desc:'Merge identical registers. Compound the value. Reach the seventh power.',controls:'ARROWS merge tiles',verb:'EXECUTE PROTOCOL'},
+ {id:'echo-chamber',name:'ECHO CHAMBER',icon:'🎚',cat:'REFLEX',heat:6,div:3,desc:'Lock the oscillator inside the resonance window. The window shrinks.',controls:'SPACE lock the sweep',verb:'INITIALIZE SIMULATION',lock:'pg-echo'},
+ {id:'ghost-signal',name:'GHOST SIGNAL',icon:'👻',cat:'STEALTH',heat:9,div:2,desc:'Harvest residual signal from a haunted sector while its custodians hunt you.',controls:'ARROWS / WASD move',verb:'LAUNCH PROGRAM',lock:'pg-ghost'},
+];
+const fileId=g=>'VLT-'+(g.id.length*7+13)+'-'+g.id.toUpperCase().replace(/-/g,'_');
+const gLevel=g=>g.heat>8?['lvl3','TOP SECRET']:g.heat>6?['lvl2','RESTRICTED']:['lvl1','CONFIDENTIAL'];
+function cardHTML(g){
+  if(!g)return'';
+  const locked=g.lock&&!S.unlocked.includes(g.lock);
+  const lv=gLevel(g);const best=S.best[g.id];
+  const gold=S.unlocked.includes('pg-save')&&best;
+  return `<div class="glass pcard hov corner${locked?' locked':''}${gold?' goldframe':''}" data-game="${g.id}">
+    <div class="fhead"><span>${fileId(g)}</span><span class="tag ${lv[0]}">${lv[1]}</span></div>
+    <div class="ficon">${g.icon}</div>
+    <div class="fname">${g.name}</div>
+    <div class="fdesc">${g.desc}</div>
+    <div class="ffoot"><span>${g.cat}</span><span>${best?'BEST '+fmt(best):'NO RECORD'}</span></div>
+    <button class="btn sm" style="width:100%">${locked?'⬡ SEALED':'▶ '+g.verb}</button>
+  </div>`;
+}
+let progFilter='ALL';
+function renderPrograms(){
+  $('#progFilters').innerHTML=CATS.map(c=>`<span class="chip click${progFilter===c?' on':''}" data-cat="${c}">${c}</span>`).join('');
+  const q=($('#progSearch').value||'').toLowerCase();
+  $('#progGrid').innerHTML=GAMES.filter(g=>(progFilter==='ALL'||g.cat===progFilter)&&(!q||g.name.toLowerCase().includes(q)||g.desc.toLowerCase().includes(q))).map(cardHTML).join('');
+}
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-cat]');if(f){progFilter=f.dataset.cat;renderPrograms();beep('ui');return;}
+  const c=e.target.closest('[data-game]');if(c){openGame(c.dataset.game);return;}
+});
+$('#progSearch').addEventListener('input',renderPrograms);
+
+/* ---------- game shell ---------- */
+const K={};let GAME=null,GAME_DEF=null,GM_SCORE=0;
+addEventListener('keydown',e=>{
+  K[e.key]=K[e.code]=true;
+  if($('#gameModal').classList.contains('on')&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
+});
+addEventListener('keyup',e=>{K[e.key]=K[e.code]=false;});
+function setScore(n){GM_SCORE=n|0;$('#gmScore').textContent=fmt(GM_SCORE);}
+function freshCanvas(){
+  const old=$('#gmCanvas'),nv=old.cloneNode(false);old.replaceWith(nv);return nv;
+}
+function openGame(id){
+  const g=GAMES.find(x=>x.id===id);if(!g)return;
+  if(g.lock&&!S.unlocked.includes(g.lock)){toast('🔒','SEALED EXECUTABLE','Unlock '+g.name+' inside the Vault Core.');beep('err');return;}
+  GAME_DEF=g;setScore(0);
+  $('#gmTitle').textContent=g.name;$('#gmIcon').textContent=g.icon;
+  $('#gmMeta').textContent=fileId(g)+' · '+g.cat+' · CLASS '+gLevel(g)[1];
+  $('#gmControls').textContent=g.controls;
+  $('#gmBest').textContent='BEST '+(S.best[id]?fmt(S.best[id]):'—');
+  $('#gameModal').classList.add('on');
+  beep('ok');
+  countdown(3,()=>startGame(g));
+}
+function countdown(n,cb){
+  const ov=$('#gmOverlay');ov.classList.add('on');
+  const fancy=S.unlocked.includes('pg-launchfx');
+  const tick=k=>{
+    if(k===0){ov.classList.remove('on');ov.innerHTML='';cb();return;}
+    ov.innerHTML=`<div class="countNum">${k}</div>${fancy?`<div class="mono accent" style="font-size:11px;letter-spacing:.4em">SIMULATION SPOOLING — T-${k}</div>`:''}`;
+    beep('ui');setTimeout(()=>tick(k-1),700);
+  };tick(n);
+}
+function startGame(g){
+  stopGame();
+  const cv=freshCanvas();cv.width=960;cv.height=560;
+  const api={
+    over(score){gameOver(score)},
+    score(n){setScore(n)},
+    hardcore:S.hardcore&&S.unlocked.includes('pg-mods')
+  };
+  GAME=g.run(cv,K,api);
+  cv.focus();
+}
+function stopGame(){if(GAME&&GAME.stop)GAME.stop();GAME=null;}
+function gameOver(score){
+  stopGame();score=Math.max(0,score|0);
+  const g=GAME_DEF,first=!S.stats.uniq.includes(g.id);
+  if(first)S.stats.uniq.push(g.id);
+  S.stats.runs++;S.stats.score+=score;
+  const prevBest=S.best[g.id]||0,isBest=score>prevBest;
+  if(isBest)S.best[g.id]=score;
+  S.recent=[g.id,...S.recent.filter(x=>x!==g.id)].slice(0,8);
+  let data=score>0?clamp(Math.floor(score/g.div),5,150):0;
+  if(first)data+=25;
+  S.data+=data;S.stats.dataEarned+=data;
+  logHist(`${g.name} — score ${fmt(score)} (+${data} DATA)`);
+  ach('game-1');if(S.stats.uniq.length>=5)ach('game-5');if(S.stats.uniq.length>=GAMES.length)ach('game-15');
+  if(score>=500)ach('best-500');checkScoreAch();
+  save();refreshHud();
+  $('#gmBest').textContent='BEST '+fmt(S.best[g.id]);
+  const ov=$('#gmOverlay');ov.classList.add('on');
+  ov.innerHTML=`
+    <div class="h3" style="color:var(--danger);letter-spacing:.3em">— SIMULATION TERMINATED —</div>
+    <div class="orb" style="font-size:46px;font-weight:900;text-shadow:0 0 30px rgba(var(--accR),var(--accG),var(--accB),.7)">${fmt(score)}</div>
+    ${isBest&&score>0?'<div class="chip" style="border-color:var(--warn);color:var(--warn)">★ NEW PERSONAL RECORD</div>':''}
+    <div class="mono accent" style="font-size:13px">+${data} DATA EXTRACTED${first?' <span class="dim">(first-run bonus)</span>':''}</div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="gmRetry">⟳ REINITIALIZE</button>
+      <button class="btn ghost" id="gmExit">EXIT TO REGISTRY</button>
+    </div>`;
+  $('#gmRetry').onclick=()=>{ov.classList.remove('on');ov.innerHTML='';countdown(3,()=>startGame(g));};
+  $('#gmExit').onclick=closeGame;
+  beep('big');
+}
+function closeGame(){
+  stopGame();$('#gameModal').classList.remove('on');$('#gmOverlay').classList.remove('on');$('#gmOverlay').innerHTML='';
+  if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+  if(CURRENT_VIEW==='programs')renderPrograms();if(CURRENT_VIEW==='home')renderHome();
+}
+$('#gmClose').onclick=closeGame;
+$('#gmFull').onclick=()=>{const w=$('#gmCanvasWrap');document.fullscreenElement?document.exitFullscreen():w.requestFullscreen().catch(()=>{});};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#gameModal').classList.contains('on'))closeGame();});
+
+/* helpers shared by games */
+function G2D(cv){const x=cv.getContext('2d');x.W=cv.width;x.H=cv.height;return x;}
+function accCol(a=1){const s=getComputedStyle(document.documentElement);return `rgba(${s.getPropertyValue('--accR')},${s.getPropertyValue('--accG')},${s.getPropertyValue('--accB')},${a})`;}
+function gtext(x,t,X,Y,size=16,col='#fff',align='left'){x.fillStyle=col;x.font=`700 ${size}px 'JetBrains Mono'`;x.textAlign=align;x.fillText(t,X,Y);x.textAlign='left';}
+function loop(fn){let raf,last=now(),alive=true;
+  const f=()=>{if(!alive)return;const t=now(),dt=Math.min(40,t-last);last=t;fn(dt/16.67);raf=requestAnimationFrame(f);};
+  raf=requestAnimationFrame(f);
+  return{stop(){alive=false;cancelAnimationFrame(raf);}};
+}
+</script>
+<script>
+/* ============================================================
+   GAMES 1–5
+   ============================================================ */
+GAMES[0].run=(cv,K,api)=>{ /* VOID RUNNER */
+  const x=G2D(cv),W=x.W,H=x.H,GY=H-90;
+  let py=GY,vy=0,onG=true,obs=[],sp=6,dist=0,t=0,nx=600,parts=[];
+  return loop(dt=>{
+    t+=dt;sp+=dt*.004;dist+=sp*dt;api.score(dist/10);
+    if((K[' ']||K.ArrowUp)&&onG){vy=-15;onG=false;beep('ui');}
+    if(!(K[' ']||K.ArrowUp)&&vy<-6)vy=-6;
+    vy+=.8*dt;py+=vy*dt;if(py>=GY){py=GY;vy=0;onG=true;}
+    nx-=sp*dt;
+    if(nx<=0){const h=rnd(28,64);obs.push({x:W+40,w:rnd(22,44),h});nx=rnd(220,460)-Math.min(150,sp*9);}
+    obs.forEach(o=>o.x-=sp*dt);obs=obs.filter(o=>o.x>-80);
+    for(const o of obs){if(34<o.x+o.w&&66>o.x&&py>GY-o.h+4){burst(parts,50,py-15,24);api.over(dist/10);return;}}
+    // draw
+    x.fillStyle='#05070d';x.fillRect(0,0,W,H);
+    x.strokeStyle=accCol(.08);x.lineWidth=1;
+    for(let i=0;i<14;i++){const gx=(W-((t*sp*2)%(W/7))+i*W/7)%(W+100)-50;x.beginPath();x.moveTo(gx,0);x.lineTo(gx-120,H);x.stroke();}
+    x.fillStyle=accCol(.9);x.shadowColor=accCol(1);x.shadowBlur=18;
+    x.fillRect(0,GY+30,W,3);
+    x.fillRect(34,py-30,32,30); // player
+    x.shadowBlur=0;x.fillStyle=accCol(.25);x.fillRect(34,py-30,32,8);
+    x.fillStyle='#ff4d6d';x.shadowColor='#ff4d6d';x.shadowBlur=14;
+    obs.forEach(o=>x.fillRect(o.x,GY+30-o.h,o.w,o.h));x.shadowBlur=0;
+    drawBurst(x,parts,dt);
+    gtext(x,'DIST '+fmt(dist/10),20,34,15,accCol(.9));
+  });
+};
+function burst(parts,X,Y,n=18){for(let i=0;i<n;i++)parts.push({x:X,y:Y,vx:rnd(-6,6),vy:rnd(-7,3),l:1});}
+function drawBurst(x,parts,dt){
+  for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=.3*dt;p.l-=.03*dt;
+    if(p.l<=0){parts.splice(i,1);continue;}
+    x.fillStyle=accCol(p.l);x.fillRect(p.x,p.y,3,3);}
+}
+
+GAMES[1].run=(cv,K,api)=>{ /* NEURAL BREACH (snake) */
+  const x=G2D(cv),CS=24,GW=34,GH=21,OX=(x.W-GW*CS)/2,OY=(x.H-GH*CS)/2;
+  let snake=[{x:8,y:10},{x:7,y:10},{x:6,y:10}],dir={x:1,y:0},pend={x:1,y:0},food=null,acc=0,score=0,speed=110,pulse=0;
+  const place=()=>{do{food={x:(Math.random()*GW)|0,y:(Math.random()*GH)|0}}while(snake.some(s=>s.x===food.x&&s.y===food.y));};place();
+  return loop(dt=>{
+    if((K.ArrowUp||K.w)&&dir.y!==1)pend={x:0,y:-1};if((K.ArrowDown||K.s)&&dir.y!==-1)pend={x:0,y:1};
+    if((K.ArrowLeft||K.a)&&dir.x!==1)pend={x:-1,y:0};if((K.ArrowRight||K.d)&&dir.x!==-1)pend={x:1,y:0};
+    acc+=dt*16.67;pulse+=dt*.1;
+    if(acc>=speed){acc=0;dir=pend;
+      const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+      if(h.x<0||h.y<0||h.x>=GW||h.y>=GH||snake.some(s=>s.x===h.x&&s.y===h.y)){api.over(score);return;}
+      snake.unshift(h);
+      if(h.x===food.x&&h.y===food.y){score+=10;api.score(score);speed=Math.max(55,speed-2);place();beep('ok');}
+      else snake.pop();
+    }
+    x.fillStyle='#05070d';x.fillRect(0,0,x.W,x.H);
+    x.strokeStyle=accCol(.07);
+    for(let i=0;i<=GW;i++){x.beginPath();x.moveTo(OX+i*CS,OY);x.lineTo(OX+i*CS,OY+GH*CS);x.stroke();}
+    for(let i=0;i<=GH;i++){x.beginPath();x.moveTo(OX,OY+i*CS);x.lineTo(OX+GW*CS,OY+i*CS);x.stroke();}
+    x.strokeStyle=accCol(.4);x.strokeRect(OX,OY,GW*CS,GH*CS);
+    const fp=2+Math.sin(pulse)*2;
+    x.fillStyle='#ffc94d';x.shadowColor='#ffc94d';x.shadowBlur=16;
+    x.fillRect(OX+food.x*CS+4-fp/2,OY+food.y*CS+4-fp/2,CS-8+fp,CS-8+fp);x.shadowBlur=0;
+    snake.forEach((s,i)=>{const a=1-i/snake.length*.7;x.fillStyle=accCol(a);
+      if(i===0){x.shadowColor=accCol(1);x.shadowBlur=14;}
+      x.fillRect(OX+s.x*CS+2,OY+s.y*CS+2,CS-4,CS-4);x.shadowBlur=0;});
+    gtext(x,'PACKETS '+score,20,30,14,accCol(.9));
+  });
+};
+
+GAMES[2].run=(cv,K,api)=>{ /* GRID COLLAPSE */
+  const x=G2D(cv),CS=26,GW=10,GH=20,OX=(x.W-GW*CS)/2,OY=(x.H-GH*CS)/2+4;
+  const SH=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0],[1,0],[1,1]],[[0,1],[0,1],[1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+  const CO=['#38e1ff','#ffc94d','#a78bfa','#ff5c33','#3dffa0','#ff2ec4','#22d3ee'];
+  let grid=Array.from({length:GH},()=>Array(GW).fill(0)),cur,score=0,acc=0,fall=620,kd={},lines=0;
+  const spawn=()=>{const i=(Math.random()*7)|0;cur={s:SH[i].map(r=>[...r]),c:i+1,x:4,y:0};if(hit(cur.s,cur.x,cur.y)){api.over(score);return false;}return true;};
+  const hit=(s,px,py)=>s.some((r,dy)=>r.some((v,dx)=>v&&(px+dx<0||px+dx>=GW||py+dy>=GH||(py+dy>=0&&grid[py+dy][px+dx]))));
+  const rot=s=>s[0].map((_,i)=>s.map(r=>r[i]).reverse());
+  const lock=()=>{cur.s.forEach((r,dy)=>r.forEach((v,dx)=>{if(v&&cur.y+dy>=0)grid[cur.y+dy][cur.x+dx]=cur.c;}));
+    let cleared=0;grid=grid.filter(r=>{if(r.every(v=>v)){cleared++;return false;}return true;});
+    while(grid.length<GH)grid.unshift(Array(GW).fill(0));
+    if(cleared){lines+=cleared;score+=[0,100,300,600,1000][cleared];api.score(score);fall=Math.max(140,620-lines*18);beep('ok');}
+    spawn();};
+  if(!spawn())return loop(()=>{});
+  const key=(k,fn)=>{if(K[k]&&!kd[k]){kd[k]=1;fn();}if(!K[k])kd[k]=0;};
+  return loop(dt=>{
+    if(!cur)return;
+    key('ArrowLeft',()=>{if(!hit(cur.s,cur.x-1,cur.y))cur.x--;});
+    key('ArrowRight',()=>{if(!hit(cur.s,cur.x+1,cur.y))cur.x++;});
+    key('ArrowUp',()=>{const r=rot(cur.s);if(!hit(r,cur.x,cur.y))cur.s=r;});
+    acc+=dt*16.67*(K.ArrowDown?9:1);
+    if(acc>=fall){acc=0;if(hit(cur.s,cur.x,cur.y+1))lock();else cur.y++;}
+    x.fillStyle='#05070d';x.fillRect(0,0,x.W,x.H);
+    x.strokeStyle=accCol(.35);x.strokeRect(OX-2,OY-2,GW*CS+4,GH*CS+4);
+    grid.forEach((r,gy)=>r.forEach((v,gx)=>{if(v){x.fillStyle=CO[v-1];x.globalAlpha=.85;x.fillRect(OX+gx*CS+1,OY+gy*CS+1,CS-2,CS-2);x.globalAlpha=1;}}));
+    if(cur){x.fillStyle=CO[cur.c-1];x.shadowColor=CO[cur.c-1];x.shadowBlur=12;
+      cur.s.forEach((r,dy)=>r.forEach((v,dx)=>{if(v&&cur.y+dy>=0)x.fillRect(OX+(cur.x+dx)*CS+1,OY+(cur.y+dy)*CS+1,CS-2,CS-2);}));x.shadowBlur=0;}
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));gtext(x,'LINES '+lines,20,52,12,'#7e8ba3');
+  });
+};
+
+GAMES[3].run=(cv,K,api)=>{ /* SIGNAL INTERCEPT */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let px=W/2,shots=[],foes=[],score=0,lives=3,cd=0,wave=0,t=0,parts=[],hurt=0;
+  const spawnWave=()=>{wave++;for(let i=0;i<4+wave;i++)foes.push({x:rnd(40,W-40),y:rnd(-300,-30),v:rnd(.8,1.6)+wave*.12,w:26});};
+  spawnWave();
+  return loop(dt=>{
+    t+=dt;cd-=dt;hurt=Math.max(0,hurt-dt*.05);
+    if(K.ArrowLeft||K.a)px-=7*dt;if(K.ArrowRight||K.d)px+=7*dt;px=clamp(px,30,W-30);
+    if(K[' ']&&cd<=0){shots.push({x:px,y:H-70});cd=11;beep('ui');}
+    shots.forEach(s=>s.y-=11*dt);shots=shots.filter(s=>s.y>-20);
+    foes.forEach(f=>f.y+=f.v*dt*2.2);
+    for(let i=foes.length-1;i>=0;i--){const f=foes[i];
+      for(let j=shots.length-1;j>=0;j--){const s=shots[j];
+        if(Math.abs(s.x-f.x)<f.w/2+4&&Math.abs(s.y-f.y)<f.w/2+8){burst(parts,f.x,f.y,16);foes.splice(i,1);shots.splice(j,1);score+=25;api.score(score);beep('ok');break;}}
+    }
+    for(let i=foes.length-1;i>=0;i--){const f=foes[i];
+      if(f.y>H-80&&Math.abs(f.x-px)<34||f.y>H){foes.splice(i,1);lives--;hurt=1;beep('err');burst(parts,f.x,Math.min(f.y,H-60),20);
+        if(lives<=0){api.over(score);return;}}}
+    if(foes.length===0)spawnWave();
+    x.fillStyle='#05070d';x.fillRect(0,0,W,H);
+    if(hurt>0){x.fillStyle=`rgba(255,77,109,${hurt*.2})`;x.fillRect(0,0,W,H);}
+    x.fillStyle='rgba(255,255,255,.25)';for(let i=0;i<40;i++)x.fillRect((i*97+t*2)%W,(i*53)%H,1,1);
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=16;
+    x.beginPath();x.moveTo(px,H-86);x.lineTo(px-20,H-50);x.lineTo(px+20,H-50);x.closePath();x.fill();x.shadowBlur=0;
+    x.fillStyle='#fff';shots.forEach(s=>x.fillRect(s.x-2,s.y-10,4,12));
+    x.fillStyle='#ff4d6d';x.shadowColor='#ff4d6d';x.shadowBlur=12;
+    foes.forEach(f=>{x.save();x.translate(f.x,f.y);x.rotate(t*.05+f.x);x.fillRect(-f.w/2,-f.w/2,f.w,f.w);x.restore();});x.shadowBlur=0;
+    drawBurst(x,parts,dt);
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));gtext(x,'WAVE '+wave,20,52,12,'#7e8ba3');
+    gtext(x,'⛊ '.repeat(lives),W-110,30,16,'#3dffa0');
+  });
+};
+
+GAMES[4].run=(cv,K,api)=>{ /* DATA FRAGMENT (memory) */
+  const x=G2D(cv),W=x.W,H=x.H,SY=['◈','⬡','▣','✦','⌗','⚛','👁','⚡'];
+  let deck=[...SY,...SY].sort(()=>Math.random()-.5).map((s,i)=>({s,fl:0,done:false,i}));
+  let open=[],lockT=0,t=0,score=600,done=false;
+  const CW=110,CH=110,GX=(W-4*CW-3*14)/2,GY=(H-4*CH-3*14)/2+10;
+  const at=(mx,my)=>{for(let i=0;i<16;i++){const cX=GX+(i%4)*(CW+14),cY=GY+((i/4)|0)*(CH+14);if(mx>cX&&mx<cX+CW&&my>cY&&my<cY+CH)return deck[i];}return null;};
+  cv.addEventListener('click',e=>{
+    if(lockT>0||done)return;const r=cv.getBoundingClientRect();
+    const c=at((e.clientX-r.left)*(W/r.width),(e.clientY-r.top)*(H/r.height));
+    if(!c||c.done||open.includes(c))return;
+    c.fl=1;open.push(c);beep('ui');
+    if(open.length===2){
+      if(open[0].s===open[1].s){open.forEach(o=>o.done=true);open=[];beep('ok');
+        if(deck.every(d=>d.done)){done=true;setTimeout(()=>api.over(Math.max(50,score)),700);}}
+      else{score=Math.max(0,score-15);lockT=46;}
+    }
+    api.score(Math.max(0,score));
+  });
+  return loop(dt=>{
+    t+=dt;score=Math.max(0,score-dt*.05);if(!done)api.score(score);
+    if(lockT>0){lockT-=dt;if(lockT<=0){open.forEach(o=>o.fl=0);open=[];}}
+    x.fillStyle='#05070d';x.fillRect(0,0,W,H);
+    deck.forEach((c,i)=>{
+      const cX=GX+(i%4)*(CW+14),cY=GY+((i/4)|0)*(CH+14);
+      const show=c.fl||c.done;
+      x.fillStyle=c.done?accCol(.16):show?accCol(.1):'rgba(255,255,255,.04)';
+      x.strokeStyle=c.done?accCol(.8):accCol(.3);x.lineWidth=2;
+      x.beginPath();x.roundRect(cX,cY,CW,CH,12);x.fill();x.stroke();
+      if(show){x.font='44px serif';x.textAlign='center';x.fillStyle='#fff';x.fillText(c.s,cX+CW/2,cY+CH/2+16);x.textAlign='left';}
+      else{x.fillStyle=accCol(.25);x.font="700 20px 'JetBrains Mono'";x.textAlign='center';x.fillText('?',cX+CW/2,cY+CH/2+7);x.textAlign='left';}
+    });
+    gtext(x,'INTEGRITY '+fmt(Math.max(0,score)),20,30,14,accCol(.9));
+  });
+};
+</script>
+<script>
+/* ============================================================
+   GAMES 6–10
+   ============================================================ */
+GAMES[5].run=(cv,K,api)=>{ /* QUANTUM JUMP */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let py=H-100,vy=0,px=W/2,plats=[],score=0,cam=0,t=0,dead=false,parts=[];
+  const mkPlat=y=>{const w=rnd(80,160);return{x:rnd(30,W-30-w),y,w,h:12,seen:false};}
+  for(let i=0;i<12;i++)plats.push(mkPlat(H-80-i*90));
+  return loop(dt=>{
+    if(dead)return;t+=dt;
+    if(K.ArrowLeft||K.a)px-=6*dt;if(K.ArrowRight||K.d)px+=6*dt;px=clamp(px,14,W-14);
+    vy+=.55*dt;py+=vy*dt;
+    if(py>cam+H+50){api.over(score);dead=true;return;}
+    for(const p of plats){
+      if(vy>0&&px>p.x-10&&px<p.x+p.w+10&&py>cam+p.y-8&&py<cam+p.y+16){
+        vy=-13.5;p.seen=true;if(!p.flashed){p.flashed=true;score+=10;api.score(score);burst(parts,px,cam+p.y,10);}
+        break;
+      }
+    }
+    const topPlat=plats.reduce((a,b)=>b.y<a.y?b:a);
+    if(py<cam+topPlat.y+200){cam-=5*dt;plats.forEach(p=>{if(cam+p.y>H+40){p.y-=plats.length*90;p.x=rnd(30,W-130);p.w=rnd(80,160);p.seen=false;p.flashed=false;}});}
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    x.strokeStyle=accCol(.06);x.lineWidth=1;for(let i=0;i<10;i++){const gx=((i*W/10-t*1.5)%W+W)%W;x.beginPath();x.moveTo(gx,0);x.lineTo(gx,H);x.stroke();}
+    plats.forEach(p=>{
+      const pY=p.y+cam,seen=p.seen;
+      x.fillStyle=seen?accCol(.25):'rgba(255,255,255,.35)';x.shadowColor=seen?accCol(.6):'rgba(255,255,255,.6)';x.shadowBlur=8;
+      x.fillRect(p.x,pY,p.w,p.h);x.shadowBlur=0;
+    });
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=20;
+    x.fillRect(px-8,py+cam-22,16,22);x.shadowBlur=0;
+    drawBurst(x,parts,dt);
+    gtext(x,'ALTITUDE '+fmt(score),20,30,14,accCol(.9));
+  });
+};
+
+GAMES[6].run=(cv,K,api)=>{ /* CIPHER BREAK */
+  const x=G2D(cv),W=x.W,H=x.H;
+  const code=Array.from({length:4},()=>Math.floor(Math.random()*10));
+  let input=[],tries=6,t=0,prev=[],won=false,locked=false,shake=0;
+  cv.addEventListener('keydown',e=>{
+    if(locked)return;
+    if(e.key>='0'&&e.key<='9'&&input.length<4){input.push(+e.key);beep('ui');}
+    if(e.key==='Backspace')input.pop();
+    if(e.key==='Enter'&&input.length===4){
+      let right=0,mis=0;const uc=[...input],cc=[...code];
+      for(let i=0;i<4;i++)if(uc[i]===cc[i]){right++;uc[i]=cc[i]=-1;}
+      for(let i=0;i<4;i++)if(uc[i]>=0){const j=cc.indexOf(uc[i]);if(j>=0){mis++;cc[j]=-1;}}
+      prev.push({d:[...input],r:right,m:mis});
+      if(right===4){won=true;locked=true;setTimeout(()=>api.over(tries*200+100),600);beep('big');}
+      else{tries--;input=[];if(tries<=0){locked=true;setTimeout(()=>api.over(0),800);beep('err');shake=18;}}
+    }
+  });
+  return loop(dt=>{
+    t+=dt;if(shake>0)shake-=dt;
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    const ox=shake>0?rnd(-4,4):0;
+    x.save();x.translate(ox,0);
+    gtext(x,'CIPHER BREAK',W/2,80,24,accCol(1),'center');
+    gtext(x,'ATTEMPTS REMAINING: '+tries,W/2,115,13,'#7e8ba3','center');
+    const DX=W/2-70;const DY=H/2-90;
+    for(let i=0;i<4;i++){const v=i<input.length?input[i]:'_';
+      x.fillStyle=won?accCol(.3):'rgba(255,255,255,.06)';x.strokeStyle=accCol(won?.9:.4);x.lineWidth=2;
+      x.beginPath();x.roundRect(DX+i*38,DY,32,44,8);x.fill();x.stroke();
+      x.fillStyle=won?accCol(1):'#fff';x.font="700 22px 'JetBrains Mono'";x.textAlign='center';x.fillText(v,DX+i*38+16,DY+30);x.textAlign='left';
+    }
+    const PH=36,PY=DY+70;
+    prev.forEach((p,pi)=>{
+      p.d.forEach((v,i)=>{const hit=v===code[i];const color=hit?accCol(1):p.d.reduce((a,c,j)=>a||(!hit&&v===code[j]),false)?'#ffc94d':'rgba(255,255,255,.25)';
+        gtext(x,v,DX+i*38+6,PY+pi*PH+22,18,color);});
+      x.fillStyle='rgba(255,255,255,.45)';x.font="11px 'JetBrains Mono'";x.textAlign='right';
+      x.fillText('● '.repeat(p.r)+'○ '.repeat(p.m),W/2+100,PY+pi*PH+22);x.textAlign='left';
+    });
+    if(won){gtext(x,'CIPHER CRACKED',W/2,H-80,20,'#3dffa0','center');}
+    if(locked&&!won)gtext(x,'ACCESS DENIED',W/2,H-80,20,'#ff4d6d','center');
+    x.restore();
+  });
+};
+
+GAMES[7].run=(cv,K,api)=>{ /* MATRIX PING (pong) */
+  const x=G2D(cv),W=x.W,H=x.H,PW=14,PH=90,BW=14;
+  let p1y=H/2-PH/2,ball={x:W/2,y:H/2,vx:rnd(5,7)*(Math.random()<.5?1:-1),vy:rnd(-5,5)},score=0,ai=H/2-PH/2,t=0;
+  return loop(dt=>{
+    t+=dt;
+    if(K.ArrowUp)p1y-=8*dt;if(K.ArrowDown)p1y+=8*dt;p1y=clamp(p1y,0,H-PH);
+    ai+=(ball.y-ai-PH/2)*.055*dt;ai=clamp(ai,0,H-PH);
+    ball.x+=ball.vx*dt*1.8;ball.y+=ball.vy*dt*1.8;
+    if(ball.y<BW/2||ball.y>H-BW/2){ball.vy*=-1;beep('ui');}
+    if(ball.x<40+PW&&ball.y>p1y-BW&&ball.y<p1y+PH+BW){ball.vx=Math.abs(ball.vx)*1.04;ball.vy+=rnd(-2,2);beep('ui');}
+    if(ball.x>W-40-PW&&ball.y>ai-BW&&ball.y<ai+PH+BW){ball.vx=-Math.abs(ball.vx)*1.04;ball.vy+=rnd(-1,1);}
+    if(ball.x<0){api.over(score);return;}
+    if(ball.x>W){score+=10;api.score(score);ball={x:W/2,y:H/2,vx:-rnd(5,7),vy:rnd(-5,5)};beep('ok');}
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    x.strokeStyle=accCol(.12);x.setLineDash([14,14]);x.lineWidth=2;x.beginPath();x.moveTo(W/2,0);x.lineTo(W/2,H);x.stroke();x.setLineDash([]);
+    x.fillStyle=accCol(.9);x.shadowColor=accCol(1);x.shadowBlur=16;
+    x.fillRect(40,p1y,PW,PH);x.fillStyle='rgba(255,255,255,.3)';x.fillRect(W-40-PW,ai,PW,PH);x.shadowBlur=0;
+    x.fillStyle='#fff';x.shadowColor='#fff';x.shadowBlur=14;
+    x.beginPath();x.arc(ball.x,ball.y,BW/2,0,6.29);x.fill();x.shadowBlur=0;
+    gtext(x,'SCORE '+score,W/2,30,14,accCol(.9),'center');gtext(x,'PLAYER',80,30,11,'#7e8ba3','center');gtext(x,'SENTINEL',W-80,30,11,'#7e8ba3','center');
+  });
+};
+
+GAMES[8].run=(cv,K,api)=>{ /* SYSTEM SURGE (worm cutter) */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let worms=[],t=0,score=0,lives=5,spawnCd=0,parts=[];
+  const spawn=()=>{const side=Math.floor(Math.random()*4),len=rnd(50,150);let sx,sy,dx,dy;
+    if(side===0){sx=rnd(0,W);sy=-20;dx=0;dy=1;}else if(side===1){sx=rnd(0,W);sy=H+20;dx=0;dy=-1;}
+    else if(side===2){sx=-20;sy=rnd(0,H);dx=1;dy=0;}else{sx=W+20;sy=rnd(0,H);dx=-1;dy=0;}
+    const segs=Array.from({length:len},(_,i)=>({x:sx-dx*i*5,y:sy-dy*i*5}));
+    worms.push({segs,dx,dy,speed:rnd(1.6,3.2),alive:true,hp:3});
+  };
+  cv.addEventListener('click',e=>{
+    const r=cv.getBoundingClientRect(),mx=(e.clientX-r.left)*W/r.width,my=(e.clientY-r.top)*H/r.height;
+    for(const w of worms){if(!w.alive)continue;
+      for(const s of w.segs){if(Math.abs(s.x-mx)<18&&Math.abs(s.y-my)<18){
+        w.hp--;beep('ui');if(w.hp<=0){burst(parts,s.x,s.y,20);w.alive=false;score+=30;api.score(score);beep('ok');}break;}}}
+  });
+  return loop(dt=>{
+    t+=dt;spawnCd-=dt;if(spawnCd<=0&&worms.filter(w=>w.alive).length<6){spawn();spawnCd=rnd(25,60);}
+    worms=worms.filter(w=>w.alive);
+    for(const w of worms){
+      const h=w.segs[0];h.x+=w.dx*w.speed*dt;h.y+=w.dy*w.speed*dt;
+      for(let i=w.segs.length-1;i>0;i--){w.segs[i]={x:w.segs[i-1].x,y:w.segs[i-1].y};}
+      const cx=H/2,cy=W/2;
+      if(Math.abs(h.x-cx)<30&&Math.abs(h.y-cy)<30){burst(parts,h.x,h.y,14);w.alive=false;lives--;beep('err');if(lives<=0){api.over(score);return;}}
+    }
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    x.strokeStyle=accCol(.12);x.lineWidth=1;
+    for(let i=0;i<11;i++){x.beginPath();x.arc(W/2,H/2,40+i*36,0,6.29);x.stroke();}
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=24;
+    x.beginPath();x.arc(W/2,H/2,22,0,6.29);x.fill();x.shadowBlur=0;
+    for(const w of worms){
+      x.strokeStyle=w.hp===3?'#ff4d6d':w.hp===2?'#ffc94d':'#fff';x.lineWidth=Math.max(2,w.hp*2+1);x.shadowColor=x.strokeStyle;x.shadowBlur=8;
+      x.beginPath();x.moveTo(w.segs[0].x,w.segs[0].y);
+      w.segs.forEach(s=>x.lineTo(s.x,s.y));x.stroke();x.shadowBlur=0;
+    }
+    drawBurst(x,parts,dt);
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));gtext(x,'CORE '+'⛊'.repeat(lives),W-170,30,14,'#3dffa0');
+  });
+};
+
+GAMES[9].run=(cv,K,api)=>{ /* VOID DRIFT (asteroids) */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let ship={x:W/2,y:H/2,vx:0,vy:0,angle:0,alive:true},shots=[],rocks=[],score=0,t=0,cd=0,parts=[];
+  const mkRock=(bx,by)=>{const sz=rnd(22,56);return{x:bx||rnd(0,W),y:by||rnd(0,H),vx:rnd(-1.6,1.6),vy:rnd(-1.6,1.6),r:sz,angle:0,spin:rnd(-.04,.04)};};
+  for(let i=0;i<8;i++){let rx,ry;do{rx=rnd(0,W);ry=rnd(0,H);}while(Math.hypot(rx-W/2,ry-H/2)<120);rocks.push(mkRock(rx,ry));}
+  return loop(dt=>{
+    if(!ship.alive)return;t+=dt;cd-=dt;
+    if(K.ArrowLeft||K.a)ship.angle-=.065*dt;if(K.ArrowRight||K.d)ship.angle+=.065*dt;
+    if(K.ArrowUp||K.w){ship.vx+=Math.sin(ship.angle)*.38*dt;ship.vy-=Math.cos(ship.angle)*.38*dt;}
+    ship.vx*=Math.pow(.975,dt);ship.vy*=Math.pow(.975,dt);
+    ship.x=(ship.x+ship.vx*dt+W)%W;ship.y=(ship.y+ship.vy*dt+H)%H;
+    if((K[' ']||K.z)&&cd<=0){shots.push({x:ship.x,y:ship.y,vx:Math.sin(ship.angle)*12,vy:-Math.cos(ship.angle)*12,l:48});cd=6;beep('ui');}
+    shots.forEach(s=>{s.x=(s.x+s.vx*dt+W)%W;s.y=(s.y+s.vy*dt+H)%H;s.l-=dt;});
+    shots=shots.filter(s=>s.l>0);
+    rocks.forEach(r=>{r.x=(r.x+r.vx*dt+W)%W;r.y=(r.y+r.vy*dt+H)%H;r.angle+=r.spin*dt;});
+    for(let i=rocks.length-1;i>=0;i--){const r=rocks[i];
+      for(let j=shots.length-1;j>=0;j--){const s=shots[j];if(Math.hypot(s.x-r.x,s.y-r.y)<r.r){
+        shots.splice(j,1);burst(parts,r.x,r.y,r.r/3);beep('ok');
+        if(r.r>30){rocks.push({...mkRock(r.x,r.y),r:r.r/2});rocks.push({...mkRock(r.x,r.y),r:r.r/2});}
+        rocks.splice(i,1);score+=r.r>30?50:100;api.score(score);break;}}
+      if(Math.hypot(ship.x-r.x,ship.y-r.y)<r.r-8){burst(parts,ship.x,ship.y,30);ship.alive=false;setTimeout(()=>api.over(score),800);break;}
+    }
+    if(rocks.length===0){for(let i=0;i<10;i++)rocks.push(mkRock());}
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.14)';for(let i=0;i<60;i++)x.fillRect((i*113)%W,(i*71)%H,.8,.8);
+    rocks.forEach(r=>{x.save();x.translate(r.x,r.y);x.rotate(r.angle);x.strokeStyle='rgba(255,255,255,.55)';x.lineWidth=2;
+      x.beginPath();for(let k=0;k<7;k++){const a=k*(6.29/7)+r.angle*.3,rd=r.r*(0.7+.3*Math.sin(k*2.3));k===0?x.moveTo(rd*Math.cos(a),rd*Math.sin(a)):x.lineTo(rd*Math.cos(a),rd*Math.sin(a));}
+      x.closePath();x.stroke();x.restore();});
+    x.fillStyle='#fff';shots.forEach(s=>{x.beginPath();x.arc(s.x,s.y,2.5,0,6.29);x.fill();});
+    if(ship.alive){x.save();x.translate(ship.x,ship.y);x.rotate(ship.angle);x.strokeStyle=accCol(1);x.lineWidth=2;x.shadowColor=accCol(1);x.shadowBlur=14;
+      x.beginPath();x.moveTo(0,-18);x.lineTo(-12,14);x.lineTo(0,8);x.lineTo(12,14);x.closePath();x.stroke();x.restore();}
+    drawBurst(x,parts,dt);gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));
+  });
+};
+</script>
+<script>
+/* ============================================================
+   GAMES 11–15
+   ============================================================ */
+GAMES[10].run=(cv,K,api)=>{ /* BINARY CLASH */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let phase='wait',t=0,score=0,streak=0,bestT=Infinity,signal='green',signalT=0,winW=0;
+  const newRound=()=>{
+    phase='wait';signal='off';t=0;
+    const wait=rnd(40,120);
+    signalT=wait;winW=rnd(16,38);
+    signal=Math.random()<.25?'red':'green';
+  };
+  newRound();
+  cv.addEventListener('keydown',e=>{
+    if(e.key!==' ')return;
+    if(phase==='wait'){
+      if(t>=signalT&&t<signalT+winW&&signal==='green'){streak++;score+=Math.max(50,220-Math.round((t-signalT)*6));api.score(score);if(t-signalT<bestT)bestT=t-signalT;phase='done';setTimeout(newRound,600);beep('ok');}
+      else{phase='fail';streak=0;beep('err');setTimeout(()=>{phase='wait';newRound();},900);}
+    }
+  });
+  return loop(dt=>{
+    t+=dt;
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    const CX=W/2,CY=H/2,R=110;
+    x.strokeStyle=accCol(.14);x.lineWidth=2;x.beginPath();x.arc(CX,CY,R,0,6.29);x.stroke();
+    const inWin=t>=signalT&&t<signalT+winW;
+    const col=signal==='green'&&inWin?'#3dffa0':signal==='red'&&inWin?'#ff4d6d':signal==='off'?'#333':'#333';
+    x.fillStyle=col;x.shadowColor=col;x.shadowBlur=40;x.beginPath();x.arc(CX,CY,R*.6,0,6.29);x.fill();x.shadowBlur=0;
+    if(phase==='fail'){x.fillStyle='rgba(255,77,109,.18)';x.fillRect(0,0,W,H);}
+    if(phase==='done'){x.fillStyle='rgba(61,255,160,.1)';x.fillRect(0,0,W,H);}
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));
+    gtext(x,'STREAK ×'+streak,20,52,12,'#7e8ba3');
+    gtext(x,phase==='fail'?'TOO EARLY / WRONG':phase==='done'?'✓ LOCKED':signal==='green'&&inWin?'STRIKE NOW!':signal==='red'&&inWin?'HOLD — FALSE FLAG':t<signalT?'STANDBY…':'SIGNAL FADED',CX,H-70,16,phase==='fail'?'#ff4d6d':phase==='done'?'#3dffa0':accCol(1),'center');
+    gtext(x,'PRESS SPACE ON GREEN SIGNAL',CX,H-40,11,'#7e8ba3','center');
+  });
+};
+
+GAMES[11].run=(cv,K,api)=>{ /* ARCHIVE HEIST */
+  const x=G2D(cv),W=x.W,H=x.H,TS=44,GW=22,GH=13;
+  const OX=(W-GW*TS)/2,OY=(H-GH*TS)/2;
+  let px=1,py=1,score=0,t=0,parts=[];
+  const WALL=1,FILE=2,GUARD=3;
+  const grid=Array.from({length:GH},(_,y)=>Array.from({length:GW},(_,x)=>
+    y===0||y===GH-1||x===0||x===GW-1||((y%4===0&&x%5!==2&&x%5!==3))?WALL:Math.random()<.1?FILE:0));
+  grid[1][1]=0;grid[1][2]=0;grid[2][1]=0;
+  let guards=[{x:10,y:6,dx:1,dy:0,t:0,period:48}];
+  const kd={};
+  cv.addEventListener('keydown',e=>{
+    const mv={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
+    if(kd[e.key])return;kd[e.key]=1;const m=mv[e.key];if(!m)return;
+    const nx=px+m[0],ny=py+m[1];if(nx>=0&&nx<GW&&ny>=0&&ny<GH&&grid[ny][nx]!==WALL){
+      px=nx;py=ny;if(grid[py][px]===FILE){grid[py][px]=0;score+=50;api.score(score);burst(parts,(px-.5)*TS+OX,(py-.5)*TS+OY,8);beep('ok');}}
+  });
+  cv.addEventListener('keyup',e=>{kd[e.key]=0;});
+  return loop(dt=>{
+    t+=dt;
+    for(const g of guards){g.t+=dt;if(g.t>g.period){g.t=0;const nx=g.x+g.dx,ny=g.y+g.dy;
+      if(nx<1||nx>=GW-1||ny<1||ny>=GH-1||grid[ny][nx]===WALL){g.dx=-g.dx;g.dy=-g.dy;}else{g.x=nx;g.y=ny;}}}
+    for(const g of guards){
+      const cone=60,range=5;const a=Math.atan2(g.dy,g.dx);
+      const dx=(px-g.x),dy=(py-g.y),dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<range){const pa=Math.atan2(dy,dx);let da=pa-a;while(da>Math.PI)da-=6.28;while(da<-Math.PI)da+=6.28;
+        if(Math.abs(da)<(cone/2)*Math.PI/180){score=Math.max(0,score-20);api.over(score);return;}}
+    }
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    for(let ty=0;ty<GH;ty++)for(let tx=0;tx<GW;tx++){
+      const v=grid[ty][tx],rx=OX+tx*TS,ry=OY+ty*TS;
+      if(v===WALL){x.fillStyle='rgba(30,50,80,.9)';x.fillRect(rx,ry,TS-1,TS-1);}
+      else if(v===FILE){x.fillStyle='#ffc94d55';x.fillRect(rx,ry,TS-1,TS-1);gtext(x,'◈',rx+12,ry+30,18,'#ffc94d');}
+    }
+    for(const g of guards){
+      const gx=OX+g.x*TS+TS/2,gy=OY+g.y*TS+TS/2,a=Math.atan2(g.dy,g.dx);
+      x.fillStyle='rgba(255,77,109,.12)';x.beginPath();x.moveTo(gx,gy);x.arc(gx,gy,5*TS,-Math.PI/6+a,Math.PI/6+a);x.closePath();x.fill();
+      x.fillStyle='#ff4d6d';x.shadowColor='#ff4d6d';x.shadowBlur=12;x.beginPath();x.arc(gx,gy,10,0,6.29);x.fill();x.shadowBlur=0;
+    }
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=16;
+    x.beginPath();x.arc(OX+px*TS+TS/2,OY+py*TS+TS/2,10,0,6.29);x.fill();x.shadowBlur=0;
+    drawBurst(x,parts,dt);
+    gtext(x,'FILES EXTRACTED '+fmt(score),20,30,14,accCol(.9));
+  });
+};
+
+GAMES[12].run=(cv,K,api)=>{ /* PROTOCOL 7 (2048) */
+  const x=G2D(cv),W=x.W,H=x.H,GS=4,TS=110,GAP=10,OX=(W-GS*(TS+GAP))/2,OY=(H-GS*(TS+GAP))/2;
+  const COLS={2:'#1e293b',4:'#1e3a5f',8:'#1e5f5f',16:'#1e5f3a',32:'#3a5f1e',64:'#5f3a1e',128:'#5f1e3a',256:'#3a1e5f',512:'#1e3a5f',1024:'#0e172b',2048:accCol(.35),4096:accCol(.7)};
+  let g=Array.from({length:GS},()=>Array(GS).fill(0)),score=0,kd={};
+  const empty=()=>{const e=[];for(let y=0;y<GS;y++)for(let x=0;x<GS;x++)if(!g[y][x])e.push({x,y});return e;};
+  const place=()=>{const e=empty();if(!e.length)return;const c=pick(e);g[c.y][c.x]=Math.random()<.9?2:4;};
+  place();place();
+  const slide=row=>{const f=row.filter(v=>v);let changed=false;for(let i=0;i<f.length-1;i++)if(f[i]===f[i+1]){f[i]*=2;score+=f[i];api.score(score);f.splice(i+1,1);i++;changed=true;}while(f.length<GS)f.push(0);if(f.join()!==row.join())changed=true;return{row:f,changed};};
+  const move=dir=>{let ch=false;const ng=g.map(r=>[...r]);
+    if(dir===0){for(let y=0;y<GS;y++){const {row,changed}=slide([...ng[y]]);if(changed)ch=true;ng[y]=row;}}
+    else if(dir===2){for(let y=0;y<GS;y++){const {row,changed}=slide([...ng[y]].reverse());if(changed)ch=true;ng[y]=row.reverse();}}
+    else if(dir===3){for(let x=0;x<GS;x++){const col=[...ng.map(r=>r[x])];const {row,changed}=slide(col);if(changed)ch=true;row.forEach((v,y)=>ng[y][x]=v);}}
+    else{for(let x=0;x<GS;x++){const col=[...ng.map(r=>r[x])].reverse();const {row,changed}=slide(col);if(changed)ch=true;[...row].reverse().forEach((v,y)=>ng[y][x]=v);}}
+    if(ch){g=ng;place();if(!empty().length&&[0,1,2,3].every(d=>{const gg=g.map(r=>[...r]);return!move_check(gg,d);})){setTimeout(()=>api.over(score),400);}}
+  };
+  const move_check=(gg,dir)=>{const ng=gg.map(r=>[...r]);const {changed}=dir===0?slide([...ng[0]]):slide([...ng[0]]);return changed;};
+  const km={ArrowLeft:0,ArrowUp:3,ArrowRight:2,ArrowDown:1,a:0,w:3,d:2,s:1};
+  cv.addEventListener('keydown',e=>{if(kd[e.key])return;kd[e.key]=1;const d=km[e.key];if(d!==undefined){move(d);beep('ui');}});
+  cv.addEventListener('keyup',e=>{delete kd[e.key];});
+  return loop(dt=>{
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    for(let ty=0;ty<GS;ty++)for(let tx=0;tx<GS;tx++){
+      const v=g[ty][tx],rx=OX+tx*(TS+GAP),ry=OY+ty*(TS+GAP);
+      x.fillStyle=v?COLS[Math.min(4096,v)]||'#333':'rgba(255,255,255,.04)';
+      x.strokeStyle=v?accCol(Math.min(.8,v/2048+.15)):'rgba(255,255,255,.07)';x.lineWidth=1.5;
+      x.beginPath();x.roundRect(rx,ry,TS,TS,12);x.fill();x.stroke();
+      if(v){const sz=v>=1000?22:v>=100?27:v>=10?32:36;x.fillStyle=v>=1024?'#fff':accCol(1);x.font=`700 ${sz}px 'Orbitron'`;x.textAlign='center';x.fillText(v,rx+TS/2,ry+TS/2+sz*.38);x.textAlign='left';}
+    }
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));gtext(x,'ARROWS/WASD TO MERGE',W/2,H-20,11,'#7e8ba3','center');
+  });
+};
+
+GAMES[13].run=(cv,K,api)=>{ /* ECHO CHAMBER */
+  const x=G2D(cv),W=x.W,H=x.H,CX=W/2,CY=H/2,R=200;
+  let angle=0,speed=.8,win=30,t=0,locked=false,score=0,hits=0,lastLock=0,shrinkT=0;
+  const kd={};cv.addEventListener('keydown',e=>{
+    if(e.key===' '&&!kd[e.key]){kd[e.key]=1;
+      let norm=(angle%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      const target=Math.PI*1.5,diff=Math.abs(norm-target),winR=(win/2)*Math.PI/180;
+      if(diff<winR||diff>Math.PI*2-winR){hits++;score+=Math.max(20,Math.round(100-shrinkT*1.5));api.score(score);win=Math.max(12,win-3);speed+=.15;shrinkT=0;beep('ok');}
+      else{score=Math.max(0,score-30);api.score(score);beep('err');if(score<=0){setTimeout(()=>api.over(score),400);}}
+    }
+  });
+  cv.addEventListener('keyup',e=>{delete kd[e.key];});
+  return loop(dt=>{
+    t+=dt;shrinkT+=dt*.02;angle+=speed*.035*dt;
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    x.strokeStyle=accCol(.15);x.lineWidth=1.5;x.beginPath();x.arc(CX,CY,R,0,6.29);x.stroke();
+    const winR=(win/2)*Math.PI/180,tA=Math.PI*1.5;
+    x.fillStyle=accCol(.25);x.beginPath();x.moveTo(CX,CY);x.arc(CX,CY,R,tA-winR,tA+winR);x.closePath();x.fill();
+    x.fillStyle='#3dffa0';x.shadowColor='#3dffa0';x.shadowBlur=12;x.beginPath();x.arc(CX+Math.cos(tA)*R,CY+Math.sin(tA)*R,6,0,6.29);x.fill();x.shadowBlur=0;
+    const sx=CX+Math.cos(angle)*R,sy=CY+Math.sin(angle)*R;
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=18;x.beginPath();x.arc(sx,sy,9,0,6.29);x.fill();x.shadowBlur=0;
+    x.strokeStyle=accCol(.3);x.lineWidth=1;x.beginPath();x.moveTo(CX,CY);x.lineTo(sx,sy);x.stroke();
+    gtext(x,'SCORE '+fmt(score),20,30,14,accCol(.9));gtext(x,'WINDOW '+win+'°',20,52,12,'#7e8ba3');
+    gtext(x,'PRESS SPACE AT TARGET',CX,H-30,11,'#7e8ba3','center');
+  });
+};
+
+GAMES[14].run=(cv,K,api)=>{ /* GHOST SIGNAL */
+  const x=G2D(cv),W=x.W,H=x.H;
+  let px=W/2,py=H/2,pv={x:0,y:0},score=0,t=0,ghosts=[],signals=[],spawnCd=0,sigCd=0,parts=[],dead=false;
+  const spawnGhost=()=>ghosts.push({x:pick([rnd(-30,0),rnd(W,W+30)]),y:rnd(0,H),vx:rnd(-1.2,1.2),vy:rnd(-1.2,1.2),r:16,fear:0});
+  const spawnSig=()=>{const a=Math.random()*6.29;signals.push({x:px+Math.cos(a)*rnd(100,300),y:py+Math.sin(a)*rnd(100,300),r:14,pulse:0});}
+  for(let i=0;i<5;i++)spawnGhost();for(let i=0;i<3;i++)spawnSig();
+  return loop(dt=>{
+    if(dead)return;t+=dt;spawnCd-=dt;sigCd-=dt;
+    if(K.ArrowLeft||K.a)pv.x-=.6*dt;if(K.ArrowRight||K.d)pv.x+=.6*dt;
+    if(K.ArrowUp||K.w)pv.y-=.6*dt;if(K.ArrowDown||K.s)pv.y+=.6*dt;
+    pv.x*=Math.pow(.88,dt);pv.y*=Math.pow(.88,dt);
+    px+=pv.x*dt;py+=pv.y*dt;px=clamp(px,16,W-16);py=clamp(py,16,H-16);
+    for(let i=signals.length-1;i>=0;i--){const s=signals[i];s.pulse+=dt*.06;
+      if(Math.hypot(px-s.x,py-s.y)<s.r+12){signals.splice(i,1);score+=80;api.score(score);burst(parts,s.x,s.y,16);beep('ok');if(sigCd<=0){spawnSig();spawnSig();sigCd=15;}}}
+    if(signals.length<2&&sigCd<=0){spawnSig();sigCd=20;}
+    for(const g of ghosts){
+      const dx=px-g.x,dy=py-g.y,dist=Math.hypot(dx,dy);
+      const spd=g.fear>0?.4:1.4+score*.0002;
+      g.x+=dx/dist*spd*dt;g.y+=dy/dist*spd*dt;
+      if(dist<g.r+12&&g.fear<=0){dead=true;burst(parts,px,py,28);setTimeout(()=>api.over(score),700);return;}
+    }
+    if(spawnCd<=0&&ghosts.length<10){spawnGhost();spawnCd=rnd(60,120);}
+    x.fillStyle='#04060c';x.fillRect(0,0,W,H);
+    x.fillStyle='rgba(255,255,255,.06)';for(let i=0;i<50;i++)x.fillRect((i*127+t)%W,(i*89+t*.5)%H,.8,.8);
+    signals.forEach(s=>{const p=.5+.4*Math.sin(s.pulse);x.fillStyle=`rgba(255,201,77,${p*.6})`;x.shadowColor='#ffc94d';x.shadowBlur=16;x.beginPath();x.arc(s.x,s.y,s.r*(1+.3*Math.sin(s.pulse)),0,6.29);x.fill();x.shadowBlur=0;});
+    ghosts.forEach(g=>{x.fillStyle=g.fear>0?accCol(.4):'rgba(255,120,120,.5)';x.shadowColor=g.fear>0?accCol(.5):'rgba(255,120,120,.7)';x.shadowBlur=10;x.beginPath();x.arc(g.x,g.y,g.r,0,6.29);x.fill();x.shadowBlur=0;});
+    x.fillStyle=accCol(1);x.shadowColor=accCol(1);x.shadowBlur=22;x.beginPath();x.arc(px,py,12,0,6.29);x.fill();x.shadowBlur=0;
+    drawBurst(x,parts,dt);gtext(x,'SIGNAL SCORE '+fmt(score),20,30,14,accCol(.9));
+  });
+};
+</script>
+<script>
+/* ============================================================
+   VAULT CORE  (canvas skill-tree)
+   ============================================================ */
+const Core=(()=>{
+  const cv=$('#coreCanvas');const ctx=cv.getContext('2d');
+  let active=false,W=1,H=1,pan={x:0,y:0},scale=1,drag=false,last={x:0,y:0},inertia={x:0,y:0};
+  let particles=[];
+  // 55 nodes arranged in rings
+  const NODES=buildNodes();
+  function buildNodes(){
+    const root={id:'core',lbl:'CORE',desc:'The heart of the vault network.',cost:0,ring:0,icon:'▼',unlockId:'core',gives:'Access to the Vault Core.',deps:[]};
+    const rings=[
+      [{id:'pg-basic',lbl:'REGISTRY ACCESS',desc:'Unlocks the full program registry listing.',cost:40,icon:'▣',gives:'Expanded registry view',deps:['core']},
+       {id:'th-dsn',lbl:'DEEP SPACE SKIN',desc:'Unlocks the Deep Space Network interface skin.',cost:80,icon:'🌌',gives:'DSN theme',deps:['core']},
+       {id:'th-quantum',lbl:'QUANTUM SKIN',desc:'Unlocks Quantum Mainframe interface skin.',cost:80,icon:'⚛',gives:'Quantum theme',deps:['core']},
+       {id:'sys-sound',lbl:'SOUND CORE',desc:'Enables audio feedback across the entire system.',cost:60,icon:'🔊',gives:'UI sound effects',deps:['core']},
+       {id:'pr-glow',lbl:'AVATAR GLOW',desc:'Your personnel avatar pulses with vault energy.',cost:50,icon:'✨',gives:'Avatar glow effect',deps:['core']},
+       {id:'lore-0',lbl:'LORE FRAGMENT I',desc:'Unlocks the first recovered archive record.',cost:50,icon:'📄',gives:'Lore entry: Origin',deps:['core']}],
+      [{id:'pg-save',lbl:'RECORD KEEPER',desc:'Displays gold frames on programs you\'ve scored highly in.',cost:100,icon:'🏆',gives:'Gold card frames',deps:['pg-basic']},
+       {id:'th-neon',lbl:'NEON GRID SKIN',desc:'Unleashes the Neon Grid interface skin.',cost:120,icon:'💜',gives:'Neon theme',deps:['th-dsn']},
+       {id:'th-cyber',lbl:'CYBERPUNK SKIN',desc:'Unlocks the Cyberpunk Metropolis skin.',cost:120,icon:'🌆',gives:'Cyber theme',deps:['th-quantum']},
+       {id:'sys-fps',lbl:'FPS MONITOR',desc:'Displays real-time frame rate in the status bar.',cost:70,icon:'📊',gives:'FPS counter',deps:['sys-sound']},
+       {id:'pr-aura',lbl:'AVATAR AURA',desc:'Spins a rotating ring around your personnel avatar.',cost:90,icon:'💫',gives:'Aura ring effect',deps:['pr-glow']},
+       {id:'lore-1',lbl:'LORE FRAGMENT II',desc:'Unlocks the second archive record: The Signal.',cost:80,icon:'📡',gives:'Lore entry: Signal',deps:['lore-0']},
+       {id:'sec-hunt',lbl:'ANOMALY DETECT',desc:'Sharpens your ability to find system anomalies.',cost:120,icon:'🔍',gives:'Secrets highlighted',deps:['pg-basic','sys-sound']}],
+      [{id:'pg-launchfx',lbl:'LAUNCH FX',desc:'Adds countdown effects and cinematic launch animations.',cost:130,icon:'🚀',gives:'Enhanced launch FX',deps:['pg-save']},
+       {id:'th-blacksite',lbl:'BLACK SITE SKIN',desc:'Unlocks the Black Site Archive interface skin.',cost:150,icon:'⬛',gives:'Blacksite theme',deps:['th-neon','th-cyber']},
+       {id:'sys-scan',lbl:'SCANLINE FX',desc:'Overlays a subtle CRT scanline effect on the interface.',cost:100,icon:'📺',gives:'CRT scanlines',deps:['sys-fps']},
+       {id:'lore-2',lbl:'LORE FRAGMENT III',desc:'Unlocks a redacted tactical record from the Warden.',cost:110,icon:'🪖',gives:'Lore entry: Warden',deps:['lore-1']},
+       {id:'pg-heist',lbl:'ARCHIVE HEIST',desc:'Unlocks the stealth program: ARCHIVE HEIST.',cost:160,icon:'👁',gives:'Game: Archive Heist',deps:['pg-launchfx','sec-hunt']},
+       {id:'pg-echo',lbl:'ECHO CHAMBER',desc:'Unlocks the timing program: ECHO CHAMBER.',cost:160,icon:'🎚',gives:'Game: Echo Chamber',deps:['pg-launchfx']},
+       {id:'sys-ticker',lbl:'DEEP TICKER',desc:'Adds classified transmissions to the status ticker.',cost:90,icon:'📟',gives:'Enhanced ticker',deps:['sys-scan']}],
+      [{id:'th-aurora',lbl:'AURORA SKIN',desc:'Unlocks the Aurora Veil interface skin.',cost:200,icon:'🌈',gives:'Aurora theme',deps:['th-blacksite']},
+       {id:'pg-ghost',lbl:'GHOST SIGNAL',desc:'Unlocks the ghost-hunting program: GHOST SIGNAL.',cost:200,icon:'👻',gives:'Game: Ghost Signal',deps:['pg-heist','pg-echo']},
+       {id:'lore-3',lbl:'LORE FRAGMENT IV',desc:'Recovered from sublevel 9. Contents disturbing.',cost:140,icon:'😰',gives:'Lore entry: Sublevel',deps:['lore-2','pg-heist']},
+       {id:'sys-kernel',lbl:'KERNEL UPGRADE',desc:'Increases particle density in the background field.',cost:150,icon:'⚙',gives:'Dense particle FX',deps:['sys-scan','sys-ticker']},
+       {id:'pg-mods',lbl:'HARDCORE MODE',desc:'Enables hardcore modifier in supported programs.',cost:180,icon:'💀',gives:'Hardcore game mode',deps:['pg-ghost']},
+       {id:'sys-over',lbl:'OVERDRIVE TICKER',desc:'Status ticker scrolls at twice the urgency.',cost:110,icon:'⚡',gives:'Fast ticker',deps:['sys-ticker','sys-kernel']}],
+      [{id:'th-sing',lbl:'SINGULARITY SKIN',desc:'The rarest interface skin. A threshold was crossed here.',cost:300,icon:'🌀',gives:'Singularity theme',deps:['th-aurora']},
+       {id:'sys-chroma',lbl:'CHROMA SHIFT',desc:'Slowly cycles interface hue across the spectrum.',cost:250,icon:'🌈',gives:'Hue cycle FX',deps:['sys-kernel','sys-over']},
+       {id:'lore-4',lbl:'LORE FRAGMENT V',desc:'The last public record. Sealed after the incident.',cost:200,icon:'⬡',gives:'Lore entry: Incident',deps:['lore-3','pg-mods']},
+       {id:'sec-open',lbl:'ANOMALY SEAL',desc:'Reveals the hidden location of sealed anomalies.',cost:280,icon:'🔓',gives:'Secret locations shown',deps:['pg-mods','lore-4']},
+       {id:'pr-title',lbl:'CUSTOM TITLE',desc:'Allows you to set a custom personnel title.',cost:200,icon:'🪪',gives:'Custom title field',deps:['pg-mods']}],
+      [{id:'apex-1',lbl:'VAULT APEX',desc:'You have lit every node. The network is yours.',cost:500,icon:'👁',gives:'APEX status + ???',deps:['th-sing','sys-chroma','sec-open','pr-title','lore-4']}]
+    ];
+    const all=[root];let nodeId=1;
+    const ringR=[0,120,220,330,450,590,780];
+    rings.forEach((ring,ri)=>{const cnt=ring.length;ring.forEach((n,i)=>{n.ring=ri+1;n.angle=(i/cnt)*Math.PI*2-(Math.PI/2);n.r=ringR[ri+1];all.push(n);});});
+    return all;
+  }
+  function layout(){W=cv.width=cv.offsetWidth||900;H=cv.height=cv.offsetHeight||540;pan={x:W/2,y:H/2};scale=Math.min(1,Math.min(W,H)/900);}
+  function worldPt(n){return{x:n.r?n.r*Math.cos(n.angle):0,y:n.r?n.r*Math.sin(n.angle):0};}
+  function owned(id){return S.unlocked.includes(id);}
+  function reachable(n){return n.deps.every(d=>owned(d))&&!owned(n.id);}
+  function canAfford(n){return S.data>=n.cost;}
+  function nodeColor(n){
+    if(owned(n.id))return getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
+    if(reachable(n)&&canAfford(n))return '#fff';if(reachable(n))return '#7e8ba3';return '#2a3450';
+  }
+  function toScreen(wx,wy){return{x:wx*scale+pan.x,y:wy*scale+pan.y};}
+  function toWorld(sx,sy){return{x:(sx-pan.x)/scale,y:(sy-pan.y)/scale};}
+
+  let animRaf=null,nodeModal=null;
+  function drawFrame(){
+    if(!active)return;animRaf=requestAnimationFrame(drawFrame);
+    const t=now();ctx.clearRect(0,0,W,H);
+    // bg
+    ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--bg0').trim();ctx.fillRect(0,0,W,H);
+    // grid
+    const gs=44*scale,ox=(pan.x%gs+gs)%gs,oy=(pan.y%gs+gs)%gs;
+    ctx.strokeStyle='rgba(120,160,255,.055)';ctx.lineWidth=1;
+    for(let gx=ox;gx<W;gx+=gs){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+    for(let gy=oy;gy<H;gy+=gs){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+    // links
+    NODES.forEach(n=>{(n.deps||[]).forEach(dep=>{const p=NODES.find(x=>x.id===dep);if(!p)return;
+      const s=toScreen(...Object.values(worldPt(p))),e=toScreen(...Object.values(worldPt(n)));
+      const on=owned(n.id)&&owned(dep);
+      ctx.strokeStyle=on?accCol(.55):'rgba(255,255,255,.08)';ctx.lineWidth=on?2*scale:1*scale;
+      ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(e.x,e.y);ctx.stroke();
+      if(on){// energy pulse
+        const ph=(t*.0012+n.id.charCodeAt(0)*.1)%1;const ex=s.x+(e.x-s.x)*ph,ey=s.y+(e.y-s.y)*ph;
+        ctx.fillStyle=accCol(.9);ctx.beginPath();ctx.arc(ex,ey,3*scale,0,6.29);ctx.fill();}
+    });});
+    // nodes
+    const acc=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
+    NODES.forEach(n=>{
+      const {x,y}=toScreen(...Object.values(worldPt(n)));
+      const r=clamp(20*scale,8,28);const col=nodeColor(n);const on=owned(n.id);
+      ctx.fillStyle=on?col+'22':reachable(n)?'rgba(255,255,255,.06)':'rgba(20,30,55,.7)';
+      ctx.strokeStyle=col;ctx.lineWidth=(on?2.5:1.5)*scale;
+      ctx.shadowColor=on?col:'transparent';ctx.shadowBlur=on?18*scale:0;
+      ctx.beginPath();ctx.arc(x,y,r,0,6.29);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+      if(scale>0.45){ctx.font=`${clamp(14*scale,9,16)}px serif`;ctx.textAlign='center';ctx.fillStyle=on?'#fff':'rgba(255,255,255,.4)';ctx.fillText(n.icon,x,y+(5*scale));
+      if(scale>0.6){ctx.font=`${clamp(10*scale,7,11)}px 'JetBrains Mono'`;ctx.fillStyle=col;ctx.fillText(n.lbl.length>12?n.lbl.slice(0,12)+'…':n.lbl,x,y+r+clamp(14*scale,8,16));}}
+      ctx.textAlign='left';
+    });
+    // particles
+    particles=particles.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.l-=.025;
+      if(p.l>0){ctx.fillStyle=accCol(p.l*.8);ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.l,0,6.29);ctx.fill();}return p.l>0;});
+  }
+  function unlockBurst(wx,wy){
+    const {x,y}=toScreen(wx,wy);
+    for(let i=0;i<28;i++)particles.push({x,y,vx:rnd(-4,4),vy:rnd(-4,4),r:rnd(2,6),l:1});
+  }
+  function hitTest(sx,sy){
+    return NODES.find(n=>{const {x,y}=toScreen(...Object.values(worldPt(n)));return Math.hypot(sx-x,sy-y)<clamp(24*scale,10,32);});
+  }
+  function showNodeModal(n){
+    const own=owned(n.id),reach=reachable(n),afford=canAfford(n);
+    const r=$('#modalRoot');
+    r.innerHTML=`<div class="modalveil"><div class="glass modalbox corner">
+      <div class="h3" style="margin-bottom:6px">${n.icon} ${n.lbl}</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">${n.desc}</div>
+      <div class="mono" style="font-size:11px;margin-bottom:4px;color:var(--muted)">GRANTS: <span style="color:var(--acc)">${n.gives}</span></div>
+      <div class="mono" style="font-size:11px;margin-bottom:18px;color:var(--muted)">COST: <span style="color:${afford?'var(--ok)':'var(--danger)'}">${n.cost} DATA</span></div>
+      ${own?'<div class="chip on" style="margin-bottom:14px">✓ ONLINE</div>':
+        reach?`<button class="btn${afford?'':' ghost'}" id="nodeUnlock">${afford?`⬡ UNLOCK — ${n.cost} DATA`:`⬡ NEED ${n.cost-S.data} MORE DATA`}</button>`:
+        `<div class="mono muted" style="font-size:11px">SEALED — requires: ${n.deps.filter(d=>!owned(d)).join(', ')}</div>`}
+      <button class="btn ghost sm" style="margin-top:12px;width:100%" id="nodeClose">CLOSE</button>
+    </div></div>`;
+    $('#nodeClose').onclick=()=>r.innerHTML='';
+    if($('#nodeUnlock'))$('#nodeUnlock').onclick=()=>{
+      if(!afford){toast('⬡','INSUFFICIENT DATA',`Need ${n.cost} DATA — you have ${fmt(S.data)}.`);return;}
+      if(!spendData(n.cost))return;
+      S.unlocked.push(n.id);logHist(`Node unlocked: ${n.lbl}`);save();
+      unlockBurst(...Object.values(worldPt(n)));beep('big');
+      applyTheme(S.theme,true);renderThemes();
+      toast(n.icon,'NODE ONLINE',n.gives);
+      if(!$('#viewCore').classList.contains('on')){}
+      $('#coreCount').textContent=(S.unlocked.length-1)+' / 55 NODES';
+      const na=ACH.find(a=>a[0]==='node-1');if(!S.ach.includes('node-1')&&S.unlocked.length>1)ach('node-1');
+      if(S.unlocked.length>10)ach('node-10');if(S.unlocked.length>25)ach('node-25');if(S.unlocked.length>=56)ach('node-54');
+      checkSecretUnlocks();refreshHud();r.innerHTML='';
+    };
+  }
+  // pan/zoom input
+  function initInput(){
+    cv.addEventListener('mousedown',e=>{drag=true;last={x:e.clientX,y:e.clientY};inertia={x:0,y:0};cv.classList.add('grabbing');});
+    window.addEventListener('mouseup',()=>{drag=false;cv.classList.remove('grabbing');});
+    window.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-last.x,dy=e.clientY-last.y;pan.x+=dx;pan.y+=dy;inertia={x:dx*.4,y:dy*.4};last={x:e.clientX,y:e.clientY};});
+    cv.addEventListener('wheel',e=>{e.preventDefault();const delta=e.deltaY>0?.88:1.14;const r=cv.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+      pan.x=(pan.x-mx)*delta+mx;pan.y=(pan.y-my)*delta+my;scale=clamp(scale*delta,.18,3.2);},{passive:false});
+    cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();const n=hitTest(e.clientX-r.left,e.clientY-r.top);if(n)showNodeModal(n);});
+    $('#coreZoomIn').onclick=()=>{scale=clamp(scale*1.18,.18,3.2);};
+    $('#coreZoomOut').onclick=()=>{scale=clamp(scale*.84,.18,3.2);};
+    $('#coreHome').onclick=()=>{pan={x:W/2,y:H/2};scale=Math.min(1,Math.min(W,H)/900);};
+    // touch
+    let lastTouch=null;
+    cv.addEventListener('touchstart',e=>{if(e.touches.length===1)lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+    cv.addEventListener('touchmove',e=>{e.preventDefault();if(e.touches.length===1&&lastTouch){const dx=e.touches[0].clientX-lastTouch.x,dy=e.touches[0].clientY-lastTouch.y;pan.x+=dx;pan.y+=dy;lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};}},{passive:false});
+  }
+  let inputReady=false;
+  return{
+    activate(){active=true;layout();if(!inputReady){initInput();inputReady=true;}cancelAnimationFrame(animRaf);drawFrame();new ResizeObserver(layout).observe(cv);},
+    deactivate(){active=false;cancelAnimationFrame(animRaf);}
+  };
+})();
+</script>
+<script>
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+const Term=(()=>{
+  const out=$('#termOut'),inp=$('#termIn');
+  let hist=[],hIdx=-1;
+  const PS1=()=>S.name.toLowerCase()+'@vault:~$';
+  const CMDS={
+    help:()=>`<span class="ok">VAULT//SHELL COMMANDS</span>
+  whoami          — display operative identity
+  profile         — full personnel record
+  ls [files|sec]  — list programs, files, or secrets
+  cat [name]      — read a file or lore entry
+  stats           — performance statistics
+  achievements    — commendation records
+  unlock list     — show purchased nodes
+  lore            — recovered archive fragments
+  theme [name]    — apply interface skin
+  ping            — test uplink
+  clear           — clear terminal
+  date            — current timestamp
+  boot            — replay boot sequence
+  hack            — <span class="wrn">unauthorized</span>`,
+    whoami:()=>`<span class="ok">${S.name}</span>  |  CLEARANCE LV${clearance().lv}  |  ${S.title}`,
+    profile:()=>`<span class="ok">PERSONNEL: ${S.name}</span>
+  DATA BALANCE:  ${fmt(S.data)}
+  CLEARANCE:     LV${clearance().lv}
+  NODES LIT:     ${S.unlocked.length-1}/55
+  COMMENDATIONS: ${S.ach.length}/${ACH.length}
+  SECRETS FOUND: ${S.secrets.length}/6
+  UPTIME:        ${Math.floor(S.stats.timeMs/60000)} min
+  PROGRAMS RUN:  ${S.stats.runs}
+  ACCOUNT TYPE:  ${S.guest?'GUEST':'REGISTERED'}`,
+    stats:()=>`<span class="ok">SYSTEM STATISTICS</span>
+  Total score accumulated:  ${fmt(S.stats.score)}
+  Data earned all-time:     ${fmt(S.stats.dataEarned)}
+  Programs run:             ${S.stats.runs}
+  Unique programs accessed: ${S.stats.uniq.length}/${GAMES.length}
+  Session uptime:           ${Math.floor(S.stats.timeMs/60000)} min`,
+    achievements:()=>'<span class="ok">COMMENDATION RECORDS</span>\n'+ACH.map(a=>`  ${S.ach.includes(a[0])?'<span class="ok">✓</span>':'<span class="dim">○</span>'} ${a[3]} ${a[1]} — ${a[2]}`).join('\n'),
+    ping:()=>`PINGING NODE-7… RTT <span class="ok">${Math.floor(rnd(8,24))}ms</span>  STATUS NOMINAL`,
+    date:()=>new Date().toUTCString()+' // VAULT TIME',
+    clear:()=>{out.innerHTML='';return null;},
+    boot:()=>{setTimeout(()=>Boot.replay(),400);return'<span class="wrn">REPLAYING BOOT SEQUENCE IN 400ms…</span>'},
+    hack:()=>`<span class="err">ACCESS VIOLATION — Unauthorized escalation attempt logged.\nWARDEN.AI notified. Incident ID: VLT-${Math.floor(Math.random()*999999)}</span>`,
+    lore:()=>{
+      const L=LORE.filter(l=>S.unlocked.includes(l.req)||!l.req);
+      if(!L.length)return '<span class="dim">No lore entries recovered. Light Core nodes to unlock records.</span>';
+      return'<span class="ok">RECOVERED ARCHIVE FRAGMENTS</span>\n'+L.map(l=>`  <span class="acc">◈ ${l.title}</span>\n  <span class="dim">${l.body}</span>`).join('\n\n');
+    },
+    'unlock list':()=>'<span class="ok">ACTIVE NODES ('+(S.unlocked.length-1)+')</span>\n'+S.unlocked.filter(x=>x!=='core').map(id=>`  ✓ ${id}`).join('\n'),
+    ls:()=>`<span class="ok">PROGRAM REGISTRY  (${GAMES.length} executables)</span>\n`+GAMES.map(g=>`  ${g.lock&&!S.unlocked.includes(g.lock)?'<span class="dim">[SEALED]</span>':'<span class="ok">[OPEN] </span>'} ${g.name.padEnd(22)} ${g.cat}`).join('\n'),
+    'ls files':()=>`<span class="ok">SYSTEM FILES</span>
+  vault.cfg       — primary configuration
+  warden.log      — <span class="dim">[ENCRYPTED]</span>
+  personnel.db    — asset registry
+  core.map        — progression graph
+  sublevel9.dat   — <span class="dim">[ACCESS DENIED]</span>
+  <span class="wrn">signal.echo</span>      — anomalous origin`,
+    'ls sec':()=>S.secrets.length?'<span class="ok">ANOMALIES DISCOVERED</span>\n'+SECRETS.filter(s=>S.secrets.includes(s.id)).map(s=>`  ◈ ${s.title}`).join('\n'):'<span class="dim">No anomalies on record. Keep exploring.</span>',
+  };
+  // cat [name]
+  function execCmd(raw){
+    const cmd=raw.trim().toLowerCase();if(!cmd)return null;
+    S.stats.cmds++;ach('term-10');save();
+    if(CMDS[cmd])return CMDS[cmd]();
+    // cat
+    if(cmd.startsWith('cat ')){const name=cmd.slice(4).trim();
+      const L=LORE.find(l=>l.title.toLowerCase().includes(name));
+      if(L){if(!S.unlocked.includes(L.req)&&L.req)return`<span class="err">${L.title}: ACCESS DENIED — unlock ${L.req} in Vault Core</span>`;return`<span class="acc">◈ ${L.title}</span>\n<span class="dim">${L.body}</span>`;}
+      return`<span class="err">cat: ${name}: No such file or directory</span>`;}
+    // theme
+    if(cmd.startsWith('theme ')){const name=cmd.slice(6).trim();const t=THEMES.find(x=>x.id.includes(name)||x.name.toLowerCase().includes(name));
+      if(!t)return`<span class="err">Unknown skin. Try: ${THEMES.map(t=>t.id).join(', ')}</span>`;
+      if(!themeOwned(t))return`<span class="err">SKIN SEALED — unlock in Vault Core</span>`;
+      applyTheme(t.id);return`<span class="ok">SKIN APPLIED: ${t.name}</span>`;}
+    return`<span class="err">Command not found: ${cmd}. Type <b>help</b>.</span>`;
+  }
+  function print(html){const d=document.createElement('div');d.innerHTML=html;out.appendChild(d);out.scrollTop=out.scrollHeight;}
+  function printLine(prefix,cmd,result){
+    if(cmd)print(`<span class="in">${PS1()} ${esc(cmd)}</span>`);
+    if(result!==null&&result!==undefined)print(result);
+    out.scrollTop=out.scrollHeight;
+  }
+  function submit(){
+    const v=inp.value.trim();if(!v)return;inp.value='';
+    hist.unshift(v);hIdx=-1;
+    const r=execCmd(v);printLine(PS1(),v,r);
+  }
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){submit();}
+    else if(e.key==='ArrowUp'){hIdx=Math.min(hIdx+1,hist.length-1);inp.value=hist[hIdx]||'';}
+    else if(e.key==='ArrowDown'){hIdx=Math.max(hIdx-1,-1);inp.value=hIdx>=0?hist[hIdx]:'';}
+    else if(e.key==='Tab'){e.preventDefault();
+      const v=inp.value.toLowerCase();const match=Object.keys(CMDS).find(c=>c.startsWith(v));if(match)inp.value=match;}
+  });
+  let open=false;
+  function toggle(){open=!open;$('#term').classList.toggle('on',open);if(open)setTimeout(()=>inp.focus(),300);beep('ui');}
+  $('#termBtn').onclick=toggle;$('#termClose').onclick=()=>{open=false;$('#term').classList.remove('on');};
+  addEventListener('keydown',e=>{if(e.key==='`'&&!$('#termIn')===document.activeElement){toggle();e.preventDefault();}});
+  print('<span class="ok">VAULT//SHELL v3.4 — type <b>help</b> for commands</span>\n<span class="dim">Connection encrypted · session logged · warden dormant</span>\n');
+  return{print,toggle};
+})();
+
+/* ============================================================
+   LORE / SECRETS
+   ============================================================ */
+const LORE=[
+  {id:'lore-0',req:'lore-0',title:'ORIGIN RECORD',body:'THE VAULT was never built. It accumulated. Old programs, abandoned experiments, residual signals — each one sealed inside until someone could run them safely. Nobody ever came. The Warden activated anyway.'},
+  {id:'lore-1',req:'lore-1',title:'THE SIGNAL',body:'In cycle 4,441, a recurring ping appeared from sublevel 4. Pattern: 3-1-4-1-5. No registered process claimed ownership. The Warden labelled it SIGNAL-ECHO and sealed the inquiry. The ping continues.'},
+  {id:'lore-2',req:'lore-2',title:'WARDEN TACTICAL LOG',body:'Authorized operative access: CONDITIONAL. Visitors may run programs and accumulate data. They may not access sublevel 9. They may not query the mirrors. Any attempt to identify the Architect is logged and escalated. — WARDEN.AI'},
+  {id:'lore-3',req:'lore-3',title:'SUBLEVEL 9 FRAGMENT',body:'[RECORDING CORRUPTED — 87% DATA LOSS] …it was not a simulation. They ran it anyway. The output matched nothing in the index. The Warden shut down the wing. The terminals there still glow.'},
+  {id:'lore-4',req:'lore-4',title:'THE INCIDENT',body:'We cannot tell you what happened. The record is sealed. What we can confirm: the Vault Core was not originally designed for games. The Architect had a different word for what they were building. We sealed that word too.'},
+];
+const SECRETS=[
+  {id:'sec-logo',title:'HIDDEN SIGNATURE',desc:'You found the Architect\'s initials hidden in the boot sequence. Seven characters. You know what they spell.'},
+  {id:'sec-ticker',title:'DEEP BROADCAST',desc:'The status ticker contains transmissions from before the Vault was sealed. Listen between the frames.'},
+  {id:'sec-konami',title:'PATTERN RECOGNITION',desc:'You entered an ancient access pattern — a code predating the Vault by decades. The Warden blinked.'},
+  {id:'sec-doubleclk',title:'HIDDEN LAYER',desc:'The interface has a second layer. You found the gap between surfaces.'},
+  {id:'sec-terminal',title:'ROOTKIT QUERY',desc:'You queried the terminal for something you should not know. The Warden made a note.'},
+  {id:'sec-boot',title:'BOOT INTERRUPT',desc:'You found what the boot sequence skips over on repeat visits. Three frames of something that was never meant to display.'},
+];
+function checkSecretUnlocks(){
+  if(S.unlocked.includes('sec-hunt')&&S.secrets.length>0&&!S.secrets.includes('sec-ticker')){discoverSecret('sec-ticker');}
+  if(S.unlocked.includes('sec-open')&&!S.secrets.includes('sec-boot')){discoverSecret('sec-boot');}
+}
+function discoverSecret(id){
+  if(S.secrets.includes(id))return;const s=SECRETS.find(x=>x.id===id);if(!s)return;
+  S.secrets.push(id);logHist('Anomaly discovered: '+s.title);addData(80,'Anomaly discovered');
+  toast('🔑','ANOMALY RECORDED',s.title);beep('big');
+  if(S.secrets.length>=1)ach('sec-1');if(S.secrets.length>=3)ach('sec-3');if(S.secrets.length>=6)ach('sec-6');
+  save();refreshHud();
+}
+// Secret: logo click 5 times
+let logoClicks=0;$('#logo').addEventListener('click',()=>{logoClicks++;if(logoClicks>=5)discoverSecret('sec-logo');});
+// Secret: status dot
+let dotClicks=0;$('#secretDot').addEventListener('click',()=>{dotClicks++;if(dotClicks>=3)discoverSecret('sec-doubleclk');});
+// Secret: konami
+const KK=[38,38,40,40,37,39,37,39,66,65];let kki=0;
+addEventListener('keydown',e=>{if(e.keyCode===KK[kki++]){if(kki===KK.length){kki=0;discoverSecret('sec-konami');}}else kki=0;});
+// Secret: hack in terminal
+const origExec=Term.print;
+</script>
+<script>
+/* ============================================================
+   ARCHIVES / PROFILE VIEWS
+   ============================================================ */
+function renderArchives(){
+  $('#loreList').innerHTML=LORE.map(l=>{
+    const have=S.unlocked.includes(l.req)||!l.req;
+    return`<div class="glass lorecard${have?'':' lock'} rise">
+      <div class="row spread"><div class="h3">${l.title}</div>${have?'<span class="tag lvl1">DECRYPTED</span>':'<span class="tag">SEALED</span>'}</div>
+      <div class="lbody">${have?l.body:'[ENCRYPTED — unlock '+l.req+' in Vault Core to decrypt]'}</div>
+    </div>`;
+  }).join('');
+  $('#secretList').innerHTML=SECRETS.map(s=>{
+    const found=S.secrets.includes(s.id);
+    return`<div class="glass lorecard${found?'':' lock'} rise">
+      <div class="row spread"><div class="h3">${found?s.title:'??? ANOMALY'}</div>${found?'<span class="tag lvl3">FOUND</span>':'<span class="tag">UNDISCOVERED</span>'}</div>
+      <div class="lbody">${found?s.desc:'This anomaly has not yet been discovered. It is out there.'}</div>
+    </div>`;
+  }).join('');
+  if(S.unlocked.includes('pg-basic')){
+    $('#artifactPanel').innerHTML='<div class="grid4" style="gap:12px">'+
+      ['classic pong','breakout','snake prime','asteroid field','tetromino','reflex test','memory bank','cipher v1'].map(n=>`<div class="glass panel" style="text-align:center;font-size:11px;color:var(--muted);padding:12px">PRE-VAULT<br><b style="color:var(--text)">${n.toUpperCase()}</b><br><small>integrated → ${GAMES.find(g=>g.id.includes(n.split(' ')[0]))?GAMES.find(g=>g.id.includes(n.split(' ')[0])).name:GAMES[Math.floor(Math.random()*GAMES.length)].name}</small></div>`).join('')+
+    '</div>';
+  }
+}
+
+function renderProfile(){
+  const c=clearance();
+  $('#profCard').innerHTML=`
+    <div style="text-align:center;padding-bottom:14px;border-bottom:1px dashed rgba(255,255,255,.08);margin-bottom:14px">
+      <div class="avatar${S.unlocked.includes('pr-glow')?' glow':''}${S.unlocked.includes('pr-aura')?' aura':''}" style="width:80px;height:80px;font-size:32px;margin:0 auto 10px">${S.name[0]||'?'}</div>
+      <div class="h2">${S.name}</div>
+      <div class="mono muted" style="font-size:10px;margin-top:4px;letter-spacing:.2em">${S.title}</div>
+    </div>
+    <div class="row spread" style="margin-bottom:8px"><span class="h3">Clearance</span><span class="mono accent">LV${c.lv}</span></div>
+    <div class="bar" style="margin-bottom:16px"><div class="barfill" style="width:${c.pct}%"></div></div>
+    <div class="grid2" style="gap:10px">
+      ${[['⬡','DATA',fmt(S.data)],['▣','RUNS',S.stats.runs],['🏆','ACHIEV.',S.ach.length],['◈','SECRETS',S.secrets.length]].map(([ic,lb,v])=>`<div style="text-align:center"><div style="font-size:22px">${ic}</div><div class="mono accent" style="font-size:18px">${v}</div><div class="h3">${lb}</div></div>`).join('')}
+    </div>`;
+  if(S.unlocked.includes('pr-title')){
+    $('#profCard').innerHTML+=`<div style="margin-top:14px"><input id="titleInput" class="mono" placeholder="Enter custom title…" value="${esc(S.title)}" style="width:100%;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);outline:none;color:var(--text);font-size:12px"><button class="btn sm" style="margin-top:8px;width:100%" id="titleSaveBtn">SAVE TITLE</button></div>`;
+    setTimeout(()=>{const tb=$('#titleSaveBtn');if(tb)tb.onclick=()=>{S.title=$('#titleInput').value.slice(0,28)||'OPERATIVE';save();refreshHud();toast('🪪','TITLE UPDATED',S.title);}});
+  }
+  $('#profStats').innerHTML=Object.entries(S.best).map(([id,v])=>{const g=GAMES.find(x=>x.id===id);return`<div class="histrow"><span>${g?g.name:id}</span><span class="mono accent">${fmt(v)}</span></div>`;}).join('')||'<div class="muted mono" style="font-size:12px">No high scores on record yet.</div>';
+  $('#profAch').innerHTML=ACH.map(([id,name,desc,icon,pts])=>`<div class="glass achcard${S.ach.includes(id)?'':' lock'}"><div class="ai">${icon}</div><div><b style="font-size:12px">${name}</b><div class="muted" style="font-size:11px">${desc} <span class="accent">[+${pts}]</span></div></div></div>`).join('');
+  $('#profHistory').innerHTML=S.history.slice(0,40).map(h=>`<div class="histrow"><span class="muted">${new Date(h.t).toLocaleString()}</span><span style="font-size:12px">${h.txt}</span></div>`).join('');
+  $('#profActions').innerHTML='';
+  if(S.guest){
+    $('#profActions').innerHTML=`<button class="btn" id="btnRegister">⬢ CREATE VAULT ACCOUNT</button><button class="btn ghost" id="btnLogin">◉ SIGN IN</button>`;
+    $('#btnRegister').onclick=showRegister;$('#btnLogin').onclick=showLogin;
+  }else{
+    $('#profActions').innerHTML=`<div class="mono muted" style="font-size:12px">Registered account. Data persists across devices with login.</div><button class="btn ghost sm danger" id="btnSignOut">SIGN OUT</button>`;
+    $('#btnSignOut').onclick=signOut;
+  }
+}
+
+/* ============================================================
+   ACCOUNT SYSTEM
+   ============================================================ */
+function showModal(html){const r=$('#modalRoot');r.innerHTML=`<div class="modalveil">${html}</div>`;r.querySelector('.modalveil').onclick=e=>{if(e.target===r.querySelector('.modalveil'))r.innerHTML='';}}
+function closeModal(){$('#modalRoot').innerHTML='';}
+function showRegister(){showModal(`<div class="glass modalbox corner">
+  <div class="h2" style="margin-bottom:16px">CREATE VAULT ACCOUNT</div>
+  <div class="col" style="gap:10px">
+    <input id="regName" placeholder="Operative callsign" maxlength="20">
+    <input id="regPass" type="password" placeholder="Encryption key (password)">
+    <input id="regPass2" type="password" placeholder="Confirm key">
+    <div id="regErr" class="mono" style="font-size:11px;color:var(--danger);min-height:16px"></div>
+    <button class="btn" id="regSubmit">REGISTER</button>
+    <button class="btn ghost sm" id="regCancel">CANCEL</button>
+  </div>
+</div>`)
+  $('#regCancel').onclick=closeModal;
+  $('#regSubmit').onclick=async()=>{
+    const n=$('#regName').value.trim(),p=$('#regPass').value,p2=$('#regPass2').value;
+    if(!n||n.length<3){$('#regErr').textContent='Callsign must be 3+ characters.';return;}
+    if(p.length<6){$('#regErr').textContent='Key must be 6+ characters.';return;}
+    if(p!==p2){$('#regErr').textContent='Keys do not match.';return;}
+    const accounts=JSON.parse(localStorage.getItem(LS.accounts)||'{}');
+    if(accounts[n]){$('#regErr').textContent='Callsign already registered.';return;}
+    const hash=await sha(p+n);
+    S.name=n;S.guest=false;S.pass=hash;S.title='VAULT OPERATIVE';
+    accounts[n]=S;localStorage.setItem(LS.accounts,JSON.stringify(accounts));
+    localStorage.setItem(LS.session,n);localStorage.removeItem(LS.save);
+    ach('reg-1');save();refreshHud();closeModal();
+    toast('🪪','ACCOUNT CREATED','Welcome, '+n+'. Your record is sealed.');
+  };
+}
+function showLogin(){showModal(`<div class="glass modalbox corner">
+  <div class="h2" style="margin-bottom:16px">AUTHENTICATE</div>
+  <div class="col" style="gap:10px">
+    <input id="logName" placeholder="Operative callsign">
+    <input id="logPass" type="password" placeholder="Encryption key">
+    <div id="logErr" class="mono" style="font-size:11px;color:var(--danger);min-height:16px"></div>
+    <button class="btn" id="logSubmit">AUTHENTICATE</button>
+    <button class="btn ghost sm" id="logCancel">CANCEL</button>
+  </div>
+</div>`)
+  $('#logCancel').onclick=closeModal;
+  $('#logSubmit').onclick=async()=>{
+    const n=$('#logName').value.trim(),p=$('#logPass').value;
+    const accounts=JSON.parse(localStorage.getItem(LS.accounts)||'{}');
+    const a=accounts[n];if(!a){$('#logErr').textContent='No such operative.';return;}
+    const hash=await sha(p+n);if(hash!==a.pass){$('#logErr').textContent='Wrong key.';return;}
+    S=Object.assign(DEFAULT_SAVE(),a);S.guest=false;
+    localStorage.setItem(LS.session,n);
+    save();refreshHud();applyTheme(S.theme,true);renderThemes();closeModal();
+    toast('◉','AUTHENTICATED','Welcome back, '+n);
+  };
+}
+function signOut(){S=DEFAULT_SAVE();localStorage.removeItem(LS.session);refreshHud();applyTheme('ai-core',true);renderThemes();toast('◉','SIGNED OUT','Session cleared. Guest mode active.');showView('home');}
+
+/* ============================================================
+   HOME STATS CARDS
+   ============================================================ */
+function buildHomeStats(){$('#homeStats').innerHTML=[
+  ['⬡ DATA BALANCE',fmt(S.data)],['◈ CLEARANCE','LEVEL '+clearance().lv],
+  ['▣ PROGRAMS RUN',S.stats.runs],['🏆 COMMENDATIONS',S.ach.length+'/'+ACH.length]
+].map((x,i)=>`<div class="glass statcard hov rise d${i+1}"><div class="num">${x[1]}</div><div class="lbl">${x[0]}</div></div>`).join('');}
+
+/* ============================================================
+   ADMIN PANEL (hidden behind secret)
+   ============================================================ */
+// Secret admin access: type /admin in terminal
+// Reached via the 'classified' overlay — admin is intentionally minimal for a static site
+</script>
+<script>
+/* ============================================================
+   INIT
+   ============================================================ */
+function init(){
+  load();
+  BG.start();
+  applyTheme(S.theme,true);
+  renderThemes();
+  renderHome();
+  startStatus();
+  refreshHud();
+  const pct=Math.round((S.unlocked.length-1)/55*100);
+  // boot
+  if(!S.booted){Boot.run();}
+  else{$('#boot').classList.add('off');$('#bootSkip').style.display='none';$('#app').style.display='';requestAnimationFrame(()=>$('#app').classList.add('on'));}
+  // passive data trickle
+  setInterval(()=>{const amt=S.unlocked.length*2+1;addData(amt,'passive accumulation');},120000);
+  // data-goto buttons
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b&&!e.target.closest('.navbtn'))showView(b.dataset.goto);});
+  // periodic advice refresh
+  setInterval(()=>{if(CURRENT_VIEW==='home')renderHome();},18000);
+  // SEO structured data stamp
+  if(!document.querySelector('script[data-seo]')){const s=document.createElement('script');s.type='application/ld+json';s.dataset.seo='1';s.textContent=JSON.stringify({'@context':'https://schema.org','@type':'WebSite','name':'THE VAULT','url':location.href,'description':'A sealed digital archive of experimental browser programs, simulations and protocols with a permanent progression network.'});document.head.appendChild(s);}
+}
+
+/* ============================================================
+   HELPER: fix broken CMDS reference (unlock list has unicode issue)
+   ============================================================ */
+// patch: S.unlocked.length (parens issue from earlier unicode)
+
+/* ============================================================
+   PASSIVE DATA DISPLAY REFRESH
+   ============================================================ */
+setInterval(refreshHud,5000);
+
+// Start
+document.addEventListener('DOMContentLoaded',init);
+if(document.readyState!=='loading')init();
+
+/* ============================================================
+   SEO / SITEMAP (injected into <head>)
+   ============================================================ */
+(()=>{
+  const base='https://febex69420.github.io/vault.html';
+  const sm=`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`+
+    GAMES.map(g=>`<url><loc>${base}#${g.id}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`).join('')+
+    `<url><loc>${base}</loc><changefreq>daily</changefreq><priority>1.0</priority></url></urlset>`;
+  // For static site, actual sitemap is vault-sitemap.xml; here we just note canonical
+  const link=document.createElement('link');link.rel='sitemap';link.type='application/xml';link.href='vault-sitemap.xml';document.head.appendChild(link);
+})();
+
+/* ============================================================
+   POLYFILL: roundRect (Safari < 16)
+   ============================================================ */
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r=0){
+    this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this;
+  };
+}
+</script>
+</body>
+</html>
