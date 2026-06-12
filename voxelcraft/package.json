@@ -1,0 +1,7 @@
+{
+  "name": "voxelcraft",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser voxel sandbox game. No build step; this file only enables ESM syntax checking with node --check."
+}

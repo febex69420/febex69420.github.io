@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VoxelCraft — 3D Voxel Sandbox</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000;
+    font-family: 'Courier New', monospace; }
+  canvas#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* ---------- overlay screens ---------- */
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; z-index: 50;
+    background: linear-gradient(#1a2a3a, #0a1018);
+    color: #eee; }
+  .logo { font-size: 56px; font-weight: bold; letter-spacing: 4px; color: #fff;
+    text-shadow: 3px 3px 0 #3a5a2a, 6px 6px 0 rgba(0,0,0,.5); margin-bottom: 12px; }
+  .logo span { color: #7bc14e; }
+  .subtitle { color: #9ab; margin-bottom: 18px; }
+  .menu-btn { font-family: inherit; font-size: 18px; padding: 10px 0; width: 320px;
+    background: #6e6e6e; color: #fff; border: 2px solid #000;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,.35), inset -2px -2px 0 rgba(0,0,0,.35);
+    cursor: pointer; }
+  .menu-btn:hover { background: #7e8e6e; }
+  .menu-btn.small { width: auto; padding: 6px 14px; font-size: 14px; margin-left: 6px; }
+  .menu-btn.danger:hover { background: #a05050; }
+  .field-row { display: flex; gap: 8px; align-items: center; color: #cde; }
+  .field-row input, .field-row select { font-family: inherit; padding: 8px;
+    background: #111; color: #eee; border: 2px solid #555; width: 200px; }
+  #world-list { width: 520px; max-width: 92vw; max-height: 44vh; overflow-y: auto;
+    background: rgba(0,0,0,.45); border: 2px solid #444; padding: 8px; }
+  .world-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 8px; border-bottom: 1px solid #333; }
+  .world-row small { color: #9ab; }
+  .hint { color: #9ab; font-size: 13px; padding: 8px; }
+  #loading-bar-wrap { width: 360px; height: 22px; border: 2px solid #888; background: #111; }
+  #loading-bar { height: 100%; width: 0%; background: #7bc14e; transition: width .1s; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; inset: 0; pointer-events: none; z-index: 20; display: none; }
+  .crosshair { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    color: #fff; font-size: 22px; text-shadow: 0 0 2px #000; mix-blend-mode: difference; }
+  .hurt-flash { position: absolute; inset: 0; background: #b00; opacity: 0;
+    transition: opacity .15s; }
+  .hotbar { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 2px; background: rgba(0,0,0,.5); padding: 3px;
+    border: 2px solid rgba(255,255,255,.35); }
+  .slot { width: 44px; height: 44px; background: rgba(20,20,20,.7);
+    border: 2px solid #555; position: relative; pointer-events: auto; }
+  .hotbar-slot.sel { border-color: #fff; box-shadow: 0 0 6px rgba(255,255,255,.6); }
+  .slot-icon { position: absolute; inset: 4px; background-repeat: no-repeat;
+    image-rendering: pixelated; }
+  .slot-count { position: absolute; right: 2px; bottom: 0; color: #fff; font-size: 14px;
+    font-weight: bold; text-shadow: 1px 1px 0 #000; }
+  .dur-bar { position: absolute; left: 3px; right: 3px; bottom: 3px; height: 3px;
+    background: #222; }
+  .dur-fill { height: 100%; }
+  .stats { position: absolute; bottom: 62px; left: 50%; transform: translateX(-50%);
+    width: 420px; display: flex; flex-wrap: wrap; justify-content: space-between;
+    font-size: 18px; text-shadow: 1px 1px 0 #000; }
+  .hearts .h-full { color: #e33; } .hearts .h-half { color: #a55; } .hearts .h-empty { color: #422; }
+  .food { text-align: right; }
+  .food .f-full { color: #c80; } .food .f-half { color: #850; } .food .f-empty { color: #321; }
+  .air { width: 100%; text-align: right; }
+  .air .b-full { color: #4af; } .air .b-empty { color: #234; }
+  .item-tip { position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
+    color: #fff; text-shadow: 1px 1px 0 #000; font-size: 16px; transition: opacity .4s; }
+  .debug { position: absolute; top: 8px; left: 8px; color: #fff; font-size: 13px;
+    background: rgba(0,0,0,.45); padding: 6px; line-height: 1.45; }
+  .chat-log { position: absolute; bottom: 130px; left: 8px; width: 460px; max-width: 60vw;
+    font-size: 14px; transition: opacity .5s; }
+  .chat-line { background: rgba(0,0,0,.45); padding: 2px 6px; margin-top: 2px;
+    text-shadow: 1px 1px 0 #000; word-wrap: break-word; }
+  .chat-input-wrap { position: absolute; bottom: 100px; left: 8px; width: 460px;
+    max-width: 60vw; pointer-events: auto; }
+  .chat-input { width: 100%; font-family: inherit; font-size: 14px; padding: 6px;
+    background: rgba(0,0,0,.65); color: #fff; border: 1px solid #888; outline: none; }
+
+  /* ---------- modal screens (inventory etc.) ---------- */
+  #modal { position: fixed; inset: 0; display: none; align-items: center;
+    justify-content: center; z-index: 40; background: rgba(0,0,0,.35); }
+  .panel { background: #c6c6c6; border: 3px solid; border-color: #fff #555 #555 #fff;
+    padding: 14px; color: #333; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+  .panel h3 { margin-bottom: 10px; color: #404040; }
+  .panel.wide { width: 560px; }
+  .panel.menu { display: flex; flex-direction: column; gap: 8px; align-items: center;
+    min-width: 380px; background: rgba(20, 26, 34, .92); color: #eee; border-color: #667 #223 #223 #667; }
+  .panel.menu h3 { color: #fff; }
+  .death-panel { background: rgba(60, 10, 10, .92); }
+  .slot-grid { display: grid; gap: 2px; margin-top: 6px; }
+  .slot-grid.g9 { grid-template-columns: repeat(9, 44px); }
+  .slot-grid.g3 { grid-template-columns: repeat(3, 44px); }
+  .slot-grid.g2 { grid-template-columns: repeat(2, 44px); }
+  .slot-grid .slot { background: #8b8b8b; border-color: #373737 #fff #fff #373737; }
+  .hotrow { margin-top: 10px; }
+  .inv-top { display: flex; gap: 24px; align-items: center; margin-bottom: 8px; }
+  .armor-col { display: flex; flex-direction: column; gap: 2px; }
+  .craft-wrap { display: flex; align-items: center; gap: 10px; }
+  .craft-arrow { font-size: 28px; color: #555; }
+  .slot.out { width: 50px; height: 50px; border-color: #5a5; }
+  .creative-grid { max-height: 260px; overflow-y: auto; }
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tab { font-family: inherit; padding: 6px 10px; cursor: pointer;
+    background: #999; border: 2px solid #666; }
+  .tab.active { background: #ddd; border-color: #333; }
+  .search { width: 100%; margin-top: 8px; font-family: inherit; padding: 6px;
+    border: 2px solid #777; background: #eee; }
+  .furnace-area { display: flex; gap: 20px; align-items: center; margin: 8px 0; }
+  .furnace-col { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .furnace-flame { font-size: 22px; }
+  .furnace-prog { width: 70px; height: 10px; background: #777; border: 1px solid #444; }
+  .furnace-prog-fill { height: 100%; background: #e8a020; }
+  .setting-row { display: flex; flex-direction: column; width: 320px; gap: 4px;
+    margin-bottom: 6px; }
+  .setting-row input[type=range] { width: 100%; }
+  .cursor-stack { position: fixed; width: 44px; height: 44px; pointer-events: none;
+    z-index: 100; }
+  .cursor-stack .slot-icon { inset: 4px; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<!-- title screen -->
+<div id="title" class="screen">
+  <div class="logo">Voxel<span>Craft</span></div>
+  <div class="subtitle">A 3D voxel sandbox — survival, crafting, redstone, the Nether & more</div>
+  <button id="btn-play" class="menu-btn">Play</button>
+  <button id="btn-settings" class="menu-btn">Settings</button>
+  <div class="field-row" style="margin-top:14px">
+    <label for="player-name">Name:</label>
+    <input id="player-name" maxlength="16">
+  </div>
+  <p class="hint">WASD move · Space jump · Ctrl sprint · E inventory · T chat · F3 debug<br>
+  Left-click mine / attack · Right-click place / use · Open the same world in two tabs for multiplayer</p>
+</div>
+
+<!-- world select -->
+<div id="worlds" class="screen" style="display:none">
+  <h2>Select World</h2>
+  <div id="world-list"></div>
+  <h3 style="margin-top:10px">Create New World</h3>
+  <div class="field-row"><label>Name</label><input id="new-name" placeholder="My World" maxlength="24"></div>
+  <div class="field-row"><label>Seed</label><input id="new-seed" placeholder="random"></div>
+  <div class="field-row"><label>Mode</label>
+    <select id="new-mode">
+      <option value="survival">Survival</option>
+      <option value="creative">Creative</option>
+    </select>
+  </div>
+  <button id="btn-create" class="menu-btn">Create World</button>
+  <button id="btn-back-title" class="menu-btn">Back</button>
+</div>
+
+<!-- loading -->
+<div id="loading" class="screen" style="display:none">
+  <h2>Generating world…</h2>
+  <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+</div>
+
+<div id="hud"></div>
+<div id="modal"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
