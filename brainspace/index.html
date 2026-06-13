@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05060c" />
+  <title>BrainSpace — your mind, as a living graph</title>
+  <meta name="description" content="BrainSpace turns every note, idea, person, and conversation into a node in a living, interactive brain. Not folders — a graph you can explore, build, and share." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/landing.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="aurora"></div>
+
+  <!-- ===================== LANDING ===================== -->
+  <canvas id="landing-canvas"></canvas>
+
+  <nav class="nav">
+    <div class="brand"><span class="dot"></span> BrainSpace</div>
+    <div class="nav-links">
+      <a class="btn" href="../">← Felix's site</a>
+      <button class="btn btn-primary" data-enter>Enter your brain</button>
+    </div>
+  </nav>
+
+  <main class="landing">
+    <section class="scene"><div class="scene-inner">
+      <div class="eyebrow">A second brain you can see</div>
+      <h1>It starts with a single thought.</h1>
+      <p>Scroll, and watch one glowing node grow into an entire mind.</p>
+    </div></section>
+
+    <section class="scene"><div class="scene-inner">
+      <h2>Then thoughts connect.</h2>
+      <p>Every note, idea, task, person, file, and conversation becomes a node. Every relationship becomes a glowing edge.</p>
+    </div></section>
+
+    <section class="scene"><div class="scene-inner">
+      <h2>Clusters of meaning emerge.</h2>
+      <p>BrainSpace doesn't use folders. Your knowledge organizes itself into a living, force-directed graph that reveals how you actually think.</p>
+    </div></section>
+
+    <section class="scene"><div class="scene-inner">
+      <h2>AI weaves the web for you.</h2>
+      <p>On-device intelligence reads your notes and suggests connections, clusters, summaries, and duplicate ideas — linking VR to your YouTube notes before you even think to.</p>
+    </div></section>
+
+    <section class="scene"><div class="scene-inner">
+      <div class="features">
+        <div class="feature glass"><div class="ico">🧠</div><h3>The graph is the product</h3><p>Pan, zoom, rotate, and fly through up to thousands of glowing nodes at 60fps.</p></div>
+        <div class="feature glass"><div class="ico">⏳</div><h3>Travel through time</h3><p>Scrub a slider to see your brain at any moment, or replay its entire evolution.</p></div>
+        <div class="feature glass"><div class="ico">🔍</div><h3>Search like a galaxy</h3><p>Text, semantic, and graph search fly the camera straight to the matching node.</p></div>
+        <div class="feature glass"><div class="ico">🌐</div><h3>Share your mind</h3><p>Every brain has a public link. Visitors fly through your ideas, not a profile page.</p></div>
+      </div>
+    </div></section>
+
+    <section class="scene"><div class="scene-inner footer-cta">
+      <div class="eyebrow">Welcome to your mind</div>
+      <h1>Ready to think in a new dimension?</h1>
+      <div class="cta">
+        <button class="btn btn-primary" data-enter>Enter your brain →</button>
+      </div>
+      <p class="footer-note">Runs entirely in your browser. Your brain is saved locally and privately. No account needed.</p>
+    </div></section>
+  </main>
+
+  <div class="scroll-hint"><div class="mouse"></div>SCROLL</div>
+
+  <!-- ===================== APP ===================== -->
+  <div id="app">
+    <canvas id="graph-canvas"></canvas>
+
+    <div class="topbar glass">
+      <div class="brand"><span class="dot"></span> BrainSpace</div>
+      <span class="chip" id="stat-nodes">0 nodes</span>
+      <span class="chip hide-sm" id="stat-edges">0 links</span>
+      <div class="spacer"></div>
+      <span class="chip hide-sm">Press <span class="kbd">/</span> to search · <span class="kbd">N</span> new · <span class="kbd">C</span> connect · <span class="kbd">F</span> fit</span>
+    </div>
+
+    <div class="cmd">
+      <input id="cmd-input" class="cmd-input" placeholder="Search your brain — fly to any thought…" />
+      <div class="cmd-modes">
+        <span class="cmd-mode active" data-mode="text">Full-text</span>
+        <span class="cmd-mode" data-mode="semantic">Semantic</span>
+        <span class="cmd-mode" data-mode="graph">Graph</span>
+      </div>
+      <div id="cmd-results"></div>
+    </div>
+
+    <div class="rail glass">
+      <button id="tool-new" title="New node (N)">＋</button>
+      <button id="tool-connect" title="Connect mode (C)">🔗</button>
+      <button id="tool-ai" title="AI suggest connections">✨</button>
+      <button id="tool-cluster" title="Detect clusters">◎</button>
+      <button id="tool-fit" title="Fit graph (F)">⤢</button>
+      <button id="tool-share" title="Share brain">↗</button>
+    </div>
+
+    <div id="inspector" class="inspector glass"></div>
+
+    <div class="timeline glass">
+      <button id="timeline-play" class="btn play" title="Replay my brain">▶</button>
+      <input id="timeline-range" type="range" min="0" max="100" value="100" />
+      <span id="timeline-ts" class="ts">now</span>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

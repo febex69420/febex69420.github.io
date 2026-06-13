@@ -1,0 +1,76 @@
+/* landing.css — the cinematic scroll experience. */
+.landing { position: relative; z-index: 1; }
+
+/* fixed canvas that animates as you scroll through the scenes */
+#landing-canvas {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  z-index: 1; pointer-events: none;
+}
+
+/* top nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px clamp(18px, 4vw, 48px);
+}
+.brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: .3px; }
+.brand .dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, var(--accent) 60%, transparent);
+  box-shadow: 0 0 16px 2px var(--accent); animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 50% { box-shadow: 0 0 26px 5px var(--accent-2); } }
+.nav-links { display: flex; gap: 10px; align-items: center; }
+
+/* each scroll scene */
+.scene {
+  position: relative; z-index: 10; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 12vh clamp(20px, 6vw, 80px);
+  pointer-events: none;
+}
+.scene > * { pointer-events: auto; }
+.scene-inner { max-width: 760px; opacity: 0; transform: translateY(40px); transition: opacity .9s, transform .9s; }
+.scene.in .scene-inner { opacity: 1; transform: none; }
+
+.eyebrow {
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 18px; font-weight: 600;
+}
+.scene h1 {
+  font-size: clamp(38px, 7vw, 84px); line-height: 1.02; font-weight: 800;
+  letter-spacing: -1.5px;
+  background: linear-gradient(180deg, #fff 0%, #b9c6ff 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.scene h2 {
+  font-size: clamp(28px, 4.5vw, 52px); font-weight: 760; letter-spacing: -1px;
+  margin-bottom: 16px;
+  background: linear-gradient(180deg, #fff, #c7d0ff); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.scene p { font-size: clamp(16px, 2vw, 21px); color: var(--ink-dim); line-height: 1.6; margin: 0 auto 26px; max-width: 600px; }
+.scene .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.scroll-hint {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+  z-index: 15; color: var(--ink-faint); font-size: 12px; letter-spacing: 2px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; transition: opacity .5s;
+}
+.scroll-hint .mouse {
+  width: 22px; height: 34px; border: 1.5px solid var(--ink-faint); border-radius: 12px; position: relative;
+}
+.scroll-hint .mouse::after {
+  content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 6px; border-radius: 2px; background: var(--ink-dim);
+  animation: wheel 1.6s infinite;
+}
+@keyframes wheel { 0% { opacity: 0; top: 6px; } 30% { opacity: 1; } 100% { opacity: 0; top: 16px; } }
+
+/* feature grid scene */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 10px; text-align: left; }
+.feature { padding: 22px; }
+.feature .ico { font-size: 22px; margin-bottom: 12px; }
+.feature h3 { font-size: 17px; margin-bottom: 7px; }
+.feature p { font-size: 14px; margin: 0; }
+
+.footer-cta { gap: 26px; }
+.footer-note { font-size: 13px; color: var(--ink-faint); margin-top: 30px; }
