@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>SKYBOUND — Guardian of Lumera</title>
+<meta name="description" content="An original browser-based 3D open-world superhero sandbox. Fly, slice skyscrapers with laser eyes, and protect a living city.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #05070f; cursor: crosshair; }
+  canvas#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #9fd0ff; font-family: system-ui, sans-serif; font-size: 18px; letter-spacing: 2px;
+    background: radial-gradient(circle at 50% 35%, #14284f, #05070f); z-index: 5; }
+  #boot.gone { display: none; }
+</style>
+<!-- No build step: ES modules + an import map pointing at the vendored, MIT-licensed Three.js. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="boot">BUILDING LUMERA CITY…</div>
+  <script type="module">
+    import './src/main.js';
+    // hide the boot splash once the first frame has had a chance to render
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const b = document.getElementById('boot'); if (b) b.classList.add('gone');
+    }));
+    addEventListener('error', (e) => {
+      const b = document.getElementById('boot');
+      if (b) { b.classList.remove('gone'); b.textContent = 'Error: ' + (e.message || e.error); }
+    });
+  </script>
+</body>
+</html>

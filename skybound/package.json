@@ -1,0 +1,11 @@
+{
+  "name": "skybound",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SKYBOUND — Guardian of Lumera. An original browser-based 3D open-world superhero sandbox. No build step; ESM. node --check validates syntax, *.test.mjs run pure-logic tests.",
+  "scripts": {
+    "check": "node --check src/main.js",
+    "test": "node smoke.test.mjs && node integration.test.mjs"
+  }
+}
