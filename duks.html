@@ -6,12 +6,14 @@
 <title>Duks</title>
 <style>
     :root {
-        --glass-bg: rgba(255, 255, 255, 0.10);
-        --glass-bg-strong: rgba(255, 255, 255, 0.16);
-        --glass-border: rgba(255, 255, 255, 0.22);
-        --glass-highlight: rgba(255, 255, 255, 0.55);
-        --text: #f5f7ff;
-        --text-dim: rgba(245, 247, 255, 0.65);
+        --glass-bg: rgba(255, 255, 255, 0.55);
+        --glass-bg-strong: rgba(255, 255, 255, 0.72);
+        --glass-border: rgba(255, 255, 255, 0.75);
+        --glass-highlight: rgba(255, 255, 255, 0.9);
+        --text: #1c2138;
+        --text-dim: rgba(28, 33, 56, 0.55);
+        --accent-btn: linear-gradient(180deg, #ffffff, #eef1fb);
+        --accent-text: #2b3150;
         --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -24,7 +26,7 @@
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         color: var(--text);
-        background: #0b1026;
+        background: #eef1f8;
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -34,33 +36,33 @@
         position: relative;
     }
 
-    /* ---------- animated liquid background ---------- */
+    /* ---------- soft light liquid background ---------- */
     .bg {
         position: fixed;
         inset: 0;
         z-index: -2;
         overflow: hidden;
-        background: radial-gradient(circle at 20% 20%, #1b2a6b, #0b1026 60%);
+        background: linear-gradient(160deg, #fbfcff 0%, #eef1f8 55%, #e6ebf5 100%);
     }
     .blob {
         position: absolute;
         width: 46vmax;
         height: 46vmax;
         border-radius: 50%;
-        filter: blur(70px);
-        opacity: 0.7;
-        mix-blend-mode: screen;
-        animation: drift 22s ease-in-out infinite;
+        filter: blur(90px);
+        opacity: 0.4;
+        mix-blend-mode: normal;
+        animation: drift 26s ease-in-out infinite;
     }
-    .blob.b1 { background: #6a5cff; top: -12%; left: -10%; animation-delay: 0s; }
-    .blob.b2 { background: #ff5ca8; bottom: -18%; right: -8%; animation-delay: -7s; }
-    .blob.b3 { background: #2ad4ff; top: 30%; right: -14%; animation-delay: -12s; }
-    .blob.b4 { background: #28ffa8; bottom: 0%; left: -12%; animation-delay: -3s; }
+    .blob.b1 { background: #cdd6ff; top: -12%; left: -10%; animation-delay: 0s; }
+    .blob.b2 { background: #ffd9ea; bottom: -18%; right: -8%; animation-delay: -8s; }
+    .blob.b3 { background: #d4ecff; top: 30%; right: -14%; animation-delay: -14s; }
+    .blob.b4 { background: #d8f5e6; bottom: 0%; left: -12%; animation-delay: -4s; }
 
     @keyframes drift {
         0%   { transform: translate(0, 0) scale(1); }
-        33%  { transform: translate(12vw, 8vh) scale(1.15); }
-        66%  { transform: translate(-8vw, -6vh) scale(0.9); }
+        33%  { transform: translate(10vw, 7vh) scale(1.12); }
+        66%  { transform: translate(-7vw, -5vh) scale(0.92); }
         100% { transform: translate(0, 0) scale(1); }
     }
 
@@ -70,7 +72,7 @@
         inset: 0;
         z-index: -1;
         pointer-events: none;
-        opacity: 0.04;
+        opacity: 0.025;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
@@ -78,13 +80,13 @@
     .glass {
         position: relative;
         background: var(--glass-bg);
-        backdrop-filter: blur(18px) saturate(170%);
-        -webkit-backdrop-filter: blur(18px) saturate(170%);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
         border: 1px solid var(--glass-border);
         box-shadow:
-            0 10px 40px rgba(0, 0, 0, 0.38),
+            0 12px 40px rgba(40, 50, 90, 0.14),
             inset 0 1px 1px var(--glass-highlight),
-            inset 0 -8px 24px rgba(0, 0, 0, 0.12);
+            inset 0 -8px 24px rgba(255, 255, 255, 0.25);
         border-radius: 28px;
     }
     /* specular sheen across the top edge */
@@ -93,9 +95,9 @@
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        background: linear-gradient(160deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 45%);
+        background: linear-gradient(160deg, rgba(255,255,255,0.6), rgba(255,255,255,0) 45%);
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.8;
     }
 
     .card {
@@ -115,7 +117,7 @@
         font-size: 38px;
         font-weight: 800;
         letter-spacing: -0.5px;
-        background: linear-gradient(180deg, #ffffff, #cdd6ff);
+        background: linear-gradient(180deg, #2b3150, #5a64a0);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
@@ -130,8 +132,8 @@
         margin: 0 auto 24px;
         max-width: 320px;
         border-radius: 18px;
-        background: rgba(0, 0, 0, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(120, 130, 170, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.5);
     }
     .segment button {
         flex: 1;
@@ -146,7 +148,7 @@
         cursor: pointer;
         transition: color 0.3s var(--ease);
     }
-    .segment button.active { color: #1b2150; }
+    .segment button.active { color: var(--accent-text); }
     .pill {
         position: absolute;
         top: 5px;
@@ -154,8 +156,8 @@
         height: calc(100% - 10px);
         width: calc(50% - 5px);
         border-radius: 14px;
-        background: linear-gradient(180deg, #ffffff, #e8ecff);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 1px #fff;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(40, 50, 90, 0.18), inset 0 1px 1px #fff;
         transition: transform 0.45s var(--spring);
     }
     .pill.right { transform: translateX(100%); }
@@ -181,8 +183,9 @@
         padding: 18px;
         margin-bottom: 22px;
         border-radius: 22px;
-        background: rgba(0, 0, 0, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 1px 2px rgba(255,255,255,0.7);
         overflow: hidden;
         word-break: break-word;
     }
@@ -204,27 +207,27 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 2px;
-        color: #1b2150;
+        color: var(--accent-text);
         cursor: pointer;
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         border-radius: 22px;
-        background: linear-gradient(180deg, #ffffff, #dfe5ff);
-        box-shadow: 0 10px 30px rgba(80, 90, 220, 0.35), inset 0 1px 2px #fff;
+        background: var(--accent-btn);
+        box-shadow: 0 10px 26px rgba(40, 50, 90, 0.16), inset 0 1px 2px #fff;
         overflow: hidden;
         transition: transform 0.18s var(--spring), box-shadow 0.25s var(--ease);
     }
-    .duks-btn:hover { box-shadow: 0 14px 38px rgba(80, 90, 220, 0.5), inset 0 1px 2px #fff; }
+    .duks-btn:hover { box-shadow: 0 14px 32px rgba(40, 50, 90, 0.24), inset 0 1px 2px #fff; }
     .duks-btn:active { transform: scale(0.96); }
-    .duks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .duks-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     /* moving glossy sweep */
     .duks-btn::after {
         content: "";
         position: absolute;
         top: 0; left: -60%;
         width: 40%; height: 100%;
-        background: linear-gradient(110deg, transparent, rgba(255,255,255,0.7), transparent);
+        background: linear-gradient(110deg, transparent, rgba(255,255,255,0.8), transparent);
         transform: skewX(-20deg);
-        animation: sweep 3.4s ease-in-out infinite;
+        animation: sweep 3.6s ease-in-out infinite;
     }
     @keyframes sweep {
         0%, 60% { left: -60%; }
@@ -249,8 +252,8 @@
         display: flex;
         align-items: center;
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(120, 130, 170, 0.10);
+        border: 1px solid rgba(255, 255, 255, 0.6);
         overflow: hidden;
     }
     .stepper button {
@@ -262,7 +265,7 @@
         cursor: pointer;
         transition: background 0.2s;
     }
-    .stepper button:hover { background: rgba(255, 255, 255, 0.12); }
+    .stepper button:hover { background: rgba(255, 255, 255, 0.5); }
     .stepper input {
         flex: 1;
         width: 100%;
@@ -284,11 +287,11 @@
         height: 50px;
         font-size: 16px;
         font-weight: 700;
-        color: #1b2150;
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: var(--accent-text);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         border-radius: 16px;
-        background: linear-gradient(180deg, #ffffff, #dfe5ff);
-        box-shadow: 0 8px 22px rgba(80, 90, 220, 0.3), inset 0 1px 2px #fff;
+        background: var(--accent-btn);
+        box-shadow: 0 8px 20px rgba(40, 50, 90, 0.14), inset 0 1px 2px #fff;
         cursor: pointer;
         transition: transform 0.18s var(--spring);
         white-space: nowrap;
@@ -306,8 +309,8 @@
         padding: 14px 16px 16px;
         border-radius: 18px;
         background: var(--glass-bg-strong);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        box-shadow: inset 0 1px 1px rgba(255,255,255,0.35);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), 0 4px 14px rgba(40,50,90,0.08);
         animation: cardIn 0.5s var(--spring) both;
     }
     @keyframes cardIn {
@@ -326,7 +329,7 @@
         font-size: 16px;
         font-weight: 600;
         padding: 4px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(28, 33, 56, 0.08);
     }
     .group-card li:last-child { border-bottom: none; }
 
@@ -342,7 +345,7 @@
     .count {
         font-size: 12px;
         color: var(--text-dim);
-        background: rgba(0,0,0,0.2);
+        background: rgba(120, 130, 170, 0.14);
         padding: 3px 10px;
         border-radius: 999px;
     }
@@ -354,22 +357,22 @@
         font-size: 15px;
         color: var(--text);
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.7);
         transition: border 0.25s, background 0.25s;
     }
     .add-row input::placeholder { color: var(--text-dim); }
     .add-row input:focus {
         outline: none;
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(0, 0, 0, 0.28);
+        border-color: rgba(120, 130, 200, 0.6);
+        background: rgba(255, 255, 255, 0.85);
     }
     .add-row .add-btn {
         width: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         border-radius: 16px;
-        background: linear-gradient(180deg, #ffffff, #dfe5ff);
-        color: #1b2150;
+        background: var(--accent-btn);
+        color: var(--accent-text);
         font-size: 26px;
         font-weight: 700;
         cursor: pointer;
@@ -387,8 +390,8 @@
         font-weight: 600;
         border-radius: 999px;
         background: var(--glass-bg-strong);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        box-shadow: inset 0 1px 1px rgba(255,255,255,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), 0 2px 8px rgba(40,50,90,0.06);
         animation: chipIn 0.35s var(--spring) both;
         transition: transform 0.2s var(--ease);
     }
@@ -408,14 +411,14 @@
         width: 22px; height: 22px;
         border: none;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(28, 33, 56, 0.08);
         color: var(--text);
         font-size: 15px;
         line-height: 1;
         cursor: pointer;
-        transition: background 0.2s, transform 0.2s;
+        transition: background 0.2s, transform 0.2s, color 0.2s;
     }
-    .chip .x:hover { background: #ff5c7a; transform: rotate(90deg); }
+    .chip .x:hover { background: #ff5c7a; color: #fff; transform: rotate(90deg); }
 
     .empty-note { color: var(--text-dim); font-size: 14px; padding: 6px 2px; }
 
