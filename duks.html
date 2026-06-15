@@ -1,263 +1,677 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Duks Picker</title>
+<title>Duks</title>
 <style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.10);
+        --glass-bg-strong: rgba(255, 255, 255, 0.16);
+        --glass-border: rgba(255, 255, 255, 0.22);
+        --glass-highlight: rgba(255, 255, 255, 0.55);
+        --text: #f5f7ff;
+        --text-dim: rgba(245, 247, 255, 0.65);
+        --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
     body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        color: #fff;
         margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text);
+        background: #0b1026;
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 30px 15px;
+        padding: 32px 16px 64px;
+        overflow-x: hidden;
+        position: relative;
     }
-    .container {
-        max-width: 480px;
+
+    /* ---------- animated liquid background ---------- */
+    .bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        overflow: hidden;
+        background: radial-gradient(circle at 20% 20%, #1b2a6b, #0b1026 60%);
+    }
+    .blob {
+        position: absolute;
+        width: 46vmax;
+        height: 46vmax;
+        border-radius: 50%;
+        filter: blur(70px);
+        opacity: 0.7;
+        mix-blend-mode: screen;
+        animation: drift 22s ease-in-out infinite;
+    }
+    .blob.b1 { background: #6a5cff; top: -12%; left: -10%; animation-delay: 0s; }
+    .blob.b2 { background: #ff5ca8; bottom: -18%; right: -8%; animation-delay: -7s; }
+    .blob.b3 { background: #2ad4ff; top: 30%; right: -14%; animation-delay: -12s; }
+    .blob.b4 { background: #28ffa8; bottom: 0%; left: -12%; animation-delay: -3s; }
+
+    @keyframes drift {
+        0%   { transform: translate(0, 0) scale(1); }
+        33%  { transform: translate(12vw, 8vh) scale(1.15); }
+        66%  { transform: translate(-8vw, -6vh) scale(0.9); }
+        100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* faint grain overlay for depth */
+    .grain {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ---------- glass primitives ---------- */
+    .glass {
+        position: relative;
+        background: var(--glass-bg);
+        backdrop-filter: blur(18px) saturate(170%);
+        -webkit-backdrop-filter: blur(18px) saturate(170%);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+            0 10px 40px rgba(0, 0, 0, 0.38),
+            inset 0 1px 1px var(--glass-highlight),
+            inset 0 -8px 24px rgba(0, 0, 0, 0.12);
+        border-radius: 28px;
+    }
+    /* specular sheen across the top edge */
+    .glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(160deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 45%);
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .card {
         width: 100%;
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(4px);
+        max-width: 540px;
+        padding: 26px 24px 30px;
+        animation: rise 0.7s var(--ease) both;
     }
+    @keyframes rise {
+        from { opacity: 0; transform: translateY(24px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    header { text-align: center; margin-bottom: 22px; }
     h1 {
-        text-align: center;
-        margin: 0 0 6px;
-        font-size: 30px;
+        margin: 0;
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(180deg, #ffffff, #cdd6ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
     }
-    .subtitle {
-        text-align: center;
-        opacity: 0.75;
-        margin: 0 0 20px;
-        font-size: 14px;
+    .tagline { margin: 6px 0 0; font-size: 14px; color: var(--text-dim); }
+
+    /* ---------- segmented tab control ---------- */
+    .segment {
+        position: relative;
+        display: flex;
+        padding: 5px;
+        margin: 0 auto 24px;
+        max-width: 320px;
+        border-radius: 18px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.10);
     }
-    #result {
+    .segment button {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        border: none;
+        background: transparent;
+        color: var(--text-dim);
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 0;
+        cursor: pointer;
+        transition: color 0.3s var(--ease);
+    }
+    .segment button.active { color: #1b2150; }
+    .pill {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        height: calc(100% - 10px);
+        width: calc(50% - 5px);
+        border-radius: 14px;
+        background: linear-gradient(180deg, #ffffff, #e8ecff);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 1px #fff;
+        transition: transform 0.45s var(--spring);
+    }
+    .pill.right { transform: translateX(100%); }
+
+    .panel { display: none; animation: fade 0.45s var(--ease) both; }
+    .panel.active { display: block; }
+    @keyframes fade {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- pick panel ---------- */
+    .result {
+        position: relative;
         text-align: center;
-        font-size: 40px;
-        font-weight: bold;
-        min-height: 56px;
-        margin: 10px 0 20px;
-        padding: 14px;
-        border-radius: 12px;
-        background: rgba(0, 0, 0, 0.2);
+        font-size: clamp(30px, 8vw, 46px);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        min-height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        margin-bottom: 22px;
+        border-radius: 22px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        overflow: hidden;
         word-break: break-word;
     }
-    .duks-button {
+    .result.placeholder { color: var(--text-dim); font-weight: 600; font-size: 20px; }
+    .result.spinning { color: var(--text-dim); }
+    .result.reveal { animation: pop 0.5s var(--spring); }
+    @keyframes pop {
+        0%   { transform: scale(0.6); opacity: 0; }
+        60%  { transform: scale(1.12); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .duks-btn {
+        position: relative;
         display: block;
         width: 100%;
-        padding: 18px;
+        padding: 20px;
         font-size: 24px;
-        font-weight: bold;
-        letter-spacing: 1px;
+        font-weight: 800;
         text-transform: uppercase;
-        border: none;
-        border-radius: 12px;
-        background: #ffcc00;
-        color: #1e3c72;
+        letter-spacing: 2px;
+        color: #1b2150;
         cursor: pointer;
-        transition: transform 0.08s ease, background 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 22px;
+        background: linear-gradient(180deg, #ffffff, #dfe5ff);
+        box-shadow: 0 10px 30px rgba(80, 90, 220, 0.35), inset 0 1px 2px #fff;
+        overflow: hidden;
+        transition: transform 0.18s var(--spring), box-shadow 0.25s var(--ease);
     }
-    .duks-button:hover { background: #ffd84d; }
-    .duks-button:active { transform: scale(0.97); }
+    .duks-btn:hover { box-shadow: 0 14px 38px rgba(80, 90, 220, 0.5), inset 0 1px 2px #fff; }
+    .duks-btn:active { transform: scale(0.96); }
+    .duks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* moving glossy sweep */
+    .duks-btn::after {
+        content: "";
+        position: absolute;
+        top: 0; left: -60%;
+        width: 40%; height: 100%;
+        background: linear-gradient(110deg, transparent, rgba(255,255,255,0.7), transparent);
+        transform: skewX(-20deg);
+        animation: sweep 3.4s ease-in-out infinite;
+    }
+    @keyframes sweep {
+        0%, 60% { left: -60%; }
+        100% { left: 140%; }
+    }
 
-    .section-title {
-        margin: 26px 0 10px;
-        font-size: 16px;
-        opacity: 0.9;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        padding-bottom: 6px;
-    }
-    .add-row {
+    /* ---------- groups panel ---------- */
+    .group-controls {
         display: flex;
-        gap: 8px;
-        margin-bottom: 14px;
+        gap: 10px;
+        align-items: stretch;
+        margin-bottom: 8px;
     }
-    .add-row input {
+    .group-controls .field {
         flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
-    .add-row button {
-        padding: 10px 16px;
+    .group-controls label { font-size: 12px; color: var(--text-dim); padding-left: 4px; }
+    .stepper {
+        display: flex;
+        align-items: center;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        overflow: hidden;
+    }
+    .stepper button {
+        width: 44px;
         border: none;
-        border-radius: 8px;
-        background: #4caf50;
-        color: #fff;
-        font-size: 15px;
+        background: transparent;
+        color: var(--text);
+        font-size: 22px;
         cursor: pointer;
+        transition: background 0.2s;
     }
-    .add-row button:hover { background: #5bc15f; }
+    .stepper button:hover { background: rgba(255, 255, 255, 0.12); }
+    .stepper input {
+        flex: 1;
+        width: 100%;
+        text-align: center;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 700;
+        padding: 12px 0;
+        -moz-appearance: textfield;
+    }
+    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    ul#nameList {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+    .make-btn {
+        align-self: flex-end;
+        padding: 0 22px;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1b2150;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff, #dfe5ff);
+        box-shadow: 0 8px 22px rgba(80, 90, 220, 0.3), inset 0 1px 2px #fff;
+        cursor: pointer;
+        transition: transform 0.18s var(--spring);
+        white-space: nowrap;
     }
-    ul#nameList li {
+    .make-btn:active { transform: scale(0.95); }
+
+    .hint { font-size: 12px; color: var(--text-dim); margin: 0 0 18px; padding-left: 4px; min-height: 16px; }
+
+    .groups {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    .group-card {
+        padding: 14px 16px 16px;
+        border-radius: 18px;
+        background: var(--glass-bg-strong);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.35);
+        animation: cardIn 0.5s var(--spring) both;
+    }
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(14px) scale(0.96); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .group-card h3 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .group-card ul { list-style: none; margin: 0; padding: 0; }
+    .group-card li {
+        font-size: 16px;
+        font-weight: 600;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .group-card li:last-child { border-bottom: none; }
+
+    /* ---------- shared name manager ---------- */
+    .names-section { margin-top: 28px; }
+    .section-head {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 9px 12px;
-        margin-bottom: 6px;
-        background: rgba(0, 0, 0, 0.18);
-        border-radius: 8px;
-        font-size: 16px;
+        align-items: baseline;
+        margin-bottom: 12px;
     }
-    ul#nameList li.no-pick {
-        opacity: 0.55;
+    .section-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
+    .count {
+        font-size: 12px;
+        color: var(--text-dim);
+        background: rgba(0,0,0,0.2);
+        padding: 3px 10px;
+        border-radius: 999px;
     }
-    .badge {
-        font-size: 11px;
-        background: #e74c3c;
-        color: #fff;
-        padding: 2px 7px;
-        border-radius: 10px;
-        margin-left: 8px;
+
+    .add-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .add-row input {
+        flex: 1;
+        padding: 13px 16px;
+        font-size: 15px;
+        color: var(--text);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: border 0.25s, background 0.25s;
     }
-    .remove-btn {
-        border: none;
-        background: #e74c3c;
-        color: #fff;
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
+    .add-row input::placeholder { color: var(--text-dim); }
+    .add-row input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(0, 0, 0, 0.28);
+    }
+    .add-row .add-btn {
+        width: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff, #dfe5ff);
+        color: #1b2150;
+        font-size: 26px;
+        font-weight: 700;
         cursor: pointer;
-        font-size: 16px;
-        line-height: 1;
+        transition: transform 0.18s var(--spring);
     }
-    .remove-btn:hover { background: #ff6155; }
-    .empty-note {
-        text-align: center;
-        opacity: 0.6;
-        font-size: 14px;
-        padding: 10px;
+    .add-row .add-btn:active { transform: scale(0.9); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 8px 8px 14px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 999px;
+        background: var(--glass-bg-strong);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.3);
+        animation: chipIn 0.35s var(--spring) both;
+        transition: transform 0.2s var(--ease);
+    }
+    .chip:hover { transform: translateY(-2px); }
+    .chip.removing { animation: chipOut 0.28s var(--ease) forwards; }
+    @keyframes chipIn {
+        from { opacity: 0; transform: scale(0.7); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes chipOut {
+        to { opacity: 0; transform: scale(0.6); }
+    }
+    .chip .x {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px; height: 22px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+    .chip .x:hover { background: #ff5c7a; transform: rotate(90deg); }
+
+    .empty-note { color: var(--text-dim); font-size: 14px; padding: 6px 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.001s !important; transition-duration: 0.05s !important; }
+        .blob { animation: none; }
+        .duks-btn::after { display: none; }
     }
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>🎲 Duks Picker</h1>
-    <p class="subtitle">Tryk på knappen for at vælge en tilfældig duks</p>
-
-    <div id="result">—</div>
-    <button class="duks-button" onclick="pickName()">duks</button>
-
-    <div class="section-title">Navne</div>
-    <div class="add-row">
-        <input type="text" id="newName" placeholder="Tilføj et navn..." onkeydown="if(event.key==='Enter') addName()">
-        <button onclick="addName()">Tilføj</button>
+    <div class="bg">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+        <div class="blob b4"></div>
     </div>
-    <ul id="nameList"></ul>
-</div>
+    <div class="grain"></div>
+
+    <main class="card glass">
+        <header>
+            <h1>🎲 Duks</h1>
+            <p class="tagline">Vælg en tilfældig duks — eller lav grupper</p>
+        </header>
+
+        <nav class="segment" role="tablist" aria-label="Tilstand">
+            <span class="pill" id="pill"></span>
+            <button class="active" id="tabPick" role="tab" aria-selected="true" onclick="switchTab('pick')">Vælg duks</button>
+            <button id="tabGroups" role="tab" aria-selected="false" onclick="switchTab('groups')">Grupper</button>
+        </nav>
+
+        <!-- PICK PANEL -->
+        <section class="panel active" id="panelPick" role="tabpanel" aria-label="Vælg duks">
+            <div class="result placeholder" id="result" aria-live="polite">Tryk på knappen</div>
+            <button class="duks-btn" id="duksBtn" onclick="pickDuks()">duks</button>
+        </section>
+
+        <!-- GROUPS PANEL -->
+        <section class="panel" id="panelGroups" role="tabpanel" aria-label="Grupper" hidden>
+            <div class="group-controls">
+                <div class="field">
+                    <label for="perGroup">Personer per gruppe</label>
+                    <div class="stepper">
+                        <button type="button" aria-label="Færre" onclick="stepSize(-1)">−</button>
+                        <input type="number" id="perGroup" value="2" min="1" inputmode="numeric">
+                        <button type="button" aria-label="Flere" onclick="stepSize(1)">+</button>
+                    </div>
+                </div>
+                <button class="make-btn" onclick="makeGroups()">Lav grupper</button>
+            </div>
+            <p class="hint" id="groupHint"></p>
+            <div class="groups" id="groups"></div>
+        </section>
+
+        <!-- SHARED NAME MANAGER -->
+        <section class="names-section">
+            <div class="section-head">
+                <h2>Navne</h2>
+                <span class="count" id="count">0</span>
+            </div>
+            <div class="add-row">
+                <input type="text" id="newName" placeholder="Tilføj et navn…" autocomplete="off"
+                       onkeydown="if(event.key==='Enter') addName()">
+                <button class="add-btn" aria-label="Tilføj navn" onclick="addName()">+</button>
+            </div>
+            <div class="chips" id="chips"></div>
+        </section>
+    </main>
 
 <script>
-    const STORAGE_KEY = "duksNames";
-
-    // The default list of names. "felix" stays in the list but never gets picked.
+    // Default roster — recreated fresh on every load (no saving).
     const DEFAULT_NAMES = [
         "felix", "felix h", "marius", "mads", "nord enisa", "emma",
         "liah", "keyla", "parsa", "irusa", "mie", "berat", "asit",
         "elias", "tristan", "lias", "emil N", "emil"
     ];
 
-    // Names that can never be picked (0% chance), compared case-insensitively.
+    // Names that quietly never win the single pick. Kept invisible in the UI.
     const BLOCKED = ["felix"];
 
-    let names = loadNames();
+    let names = DEFAULT_NAMES.slice();
+    let spinning = false;
 
-    function loadNames() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) return parsed;
-            } catch (e) { /* fall through to defaults */ }
-        }
-        return DEFAULT_NAMES.slice();
-    }
-
-    function saveNames() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(names));
-    }
+    const $ = (id) => document.getElementById(id);
 
     function isBlocked(name) {
         return BLOCKED.includes(name.trim().toLowerCase());
     }
 
-    function renderList() {
-        const list = document.getElementById("nameList");
-        list.innerHTML = "";
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    /* ---------------- name manager ---------------- */
+    function renderNames() {
+        const chips = $("chips");
+        $("count").textContent = names.length;
+        chips.innerHTML = "";
         if (names.length === 0) {
-            const note = document.createElement("li");
+            const note = document.createElement("span");
             note.className = "empty-note";
             note.textContent = "Ingen navne endnu — tilføj et ovenfor.";
-            list.appendChild(note);
+            chips.appendChild(note);
             return;
         }
         names.forEach((name, index) => {
-            const li = document.createElement("li");
-            const blocked = isBlocked(name);
-            if (blocked) li.classList.add("no-pick");
+            const chip = document.createElement("span");
+            chip.className = "chip";
 
             const label = document.createElement("span");
             label.textContent = name;
-            if (blocked) {
-                const badge = document.createElement("span");
-                badge.className = "badge";
-                badge.textContent = "0%";
-                label.appendChild(badge);
-            }
 
-            const btn = document.createElement("button");
-            btn.className = "remove-btn";
-            btn.textContent = "×";
-            btn.title = "Fjern";
-            btn.onclick = () => removeName(index);
+            const x = document.createElement("button");
+            x.className = "x";
+            x.textContent = "×";
+            x.setAttribute("aria-label", "Fjern " + name);
+            x.onclick = () => removeName(index, chip);
 
-            li.appendChild(label);
-            li.appendChild(btn);
-            list.appendChild(li);
+            chip.appendChild(label);
+            chip.appendChild(x);
+            chips.appendChild(chip);
         });
     }
 
     function addName() {
-        const input = document.getElementById("newName");
+        const input = $("newName");
         const value = input.value.trim();
         if (value === "") return;
         names.push(value);
-        saveNames();
-        renderList();
+        renderNames();
         input.value = "";
         input.focus();
     }
 
-    function removeName(index) {
-        names.splice(index, 1);
-        saveNames();
-        renderList();
+    function removeName(index, chipEl) {
+        if (chipEl) {
+            chipEl.classList.add("removing");
+            setTimeout(() => { names.splice(index, 1); renderNames(); }, 240);
+        } else {
+            names.splice(index, 1);
+            renderNames();
+        }
     }
 
-    function pickName() {
-        // Only names that are not blocked are eligible (felix = 0% chance).
+    /* ---------------- tabs ---------------- */
+    function switchTab(which) {
+        const pick = which === "pick";
+        $("pill").classList.toggle("right", !pick);
+        $("tabPick").classList.toggle("active", pick);
+        $("tabGroups").classList.toggle("active", !pick);
+        $("tabPick").setAttribute("aria-selected", pick);
+        $("tabGroups").setAttribute("aria-selected", !pick);
+        $("panelPick").classList.toggle("active", pick);
+        $("panelGroups").classList.toggle("active", !pick);
+        $("panelPick").hidden = !pick;
+        $("panelGroups").hidden = pick;
+    }
+
+    /* ---------------- pick a duks ---------------- */
+    function pickDuks() {
+        if (spinning) return;
         const eligible = names.filter(n => !isBlocked(n));
-        const result = document.getElementById("result");
+        const result = $("result");
+
         if (eligible.length === 0) {
-            result.textContent = "Ingen navne at vælge 🤷";
+            result.className = "result placeholder";
+            result.textContent = "Ingen at vælge 🤷";
             return;
         }
-        const choice = eligible[Math.floor(Math.random() * eligible.length)];
-        result.textContent = choice;
+
+        spinning = true;
+        $("duksBtn").disabled = true;
+        result.className = "result spinning";
+
+        const finalChoice = eligible[Math.floor(Math.random() * eligible.length)];
+        const start = performance.now();
+        const duration = 1100;
+
+        function frame(now) {
+            const elapsed = now - start;
+            // decelerating cycle: swap names slower over time
+            result.textContent = eligible[Math.floor(Math.random() * eligible.length)];
+            if (elapsed < duration) {
+                const delay = 40 + (elapsed / duration) * 120; // 40ms → 160ms
+                setTimeout(() => requestAnimationFrame(frame), delay);
+            } else {
+                result.textContent = finalChoice;
+                result.className = "result reveal";
+                spinning = false;
+                $("duksBtn").disabled = false;
+            }
+        }
+        requestAnimationFrame(frame);
     }
 
-    renderList();
+    /* ---------------- groups ---------------- */
+    function stepSize(delta) {
+        const input = $("perGroup");
+        let v = parseInt(input.value, 10) || 1;
+        v = Math.max(1, v + delta);
+        input.value = v;
+    }
+
+    function makeGroups() {
+        const size = Math.max(1, parseInt($("perGroup").value, 10) || 1);
+        const hint = $("groupHint");
+        const container = $("groups");
+        container.innerHTML = "";
+
+        const pool = names.slice(); // everyone is included in groups
+        if (pool.length === 0) {
+            hint.textContent = "Tilføj nogle navne først.";
+            return;
+        }
+        shuffle(pool);
+
+        const total = pool.length;
+        const groupCount = Math.ceil(total / size);
+        const base = Math.floor(total / groupCount);
+        let remainder = total % groupCount;
+
+        const groups = [];
+        let idx = 0;
+        for (let g = 0; g < groupCount; g++) {
+            const take = base + (remainder > 0 ? 1 : 0);
+            if (remainder > 0) remainder--;
+            groups.push(pool.slice(idx, idx + take));
+            idx += take;
+        }
+
+        hint.textContent = `${total} personer fordelt i ${groupCount} ${groupCount === 1 ? "gruppe" : "grupper"}.`;
+
+        groups.forEach((members, i) => {
+            const card = document.createElement("div");
+            card.className = "group-card";
+            card.style.animationDelay = (i * 0.07) + "s";
+
+            const h = document.createElement("h3");
+            h.textContent = "Gruppe " + (i + 1);
+            const ul = document.createElement("ul");
+            members.forEach(m => {
+                const li = document.createElement("li");
+                li.textContent = m;
+                ul.appendChild(li);
+            });
+            card.appendChild(h);
+            card.appendChild(ul);
+            container.appendChild(card);
+        });
+    }
+
+    renderNames();
 </script>
 </body>
 </html>
