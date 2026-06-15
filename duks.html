@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duks Picker</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: #fff;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px 15px;
+    }
+    .container {
+        max-width: 480px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(4px);
+    }
+    h1 {
+        text-align: center;
+        margin: 0 0 6px;
+        font-size: 30px;
+    }
+    .subtitle {
+        text-align: center;
+        opacity: 0.75;
+        margin: 0 0 20px;
+        font-size: 14px;
+    }
+    #result {
+        text-align: center;
+        font-size: 40px;
+        font-weight: bold;
+        min-height: 56px;
+        margin: 10px 0 20px;
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        word-break: break-word;
+    }
+    .duks-button {
+        display: block;
+        width: 100%;
+        padding: 18px;
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 12px;
+        background: #ffcc00;
+        color: #1e3c72;
+        cursor: pointer;
+        transition: transform 0.08s ease, background 0.2s ease;
+    }
+    .duks-button:hover { background: #ffd84d; }
+    .duks-button:active { transform: scale(0.97); }
+
+    .section-title {
+        margin: 26px 0 10px;
+        font-size: 16px;
+        opacity: 0.9;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding-bottom: 6px;
+    }
+    .add-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+    .add-row input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+    .add-row button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        background: #4caf50;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+    }
+    .add-row button:hover { background: #5bc15f; }
+
+    ul#nameList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    ul#nameList li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 12px;
+        margin-bottom: 6px;
+        background: rgba(0, 0, 0, 0.18);
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    ul#nameList li.no-pick {
+        opacity: 0.55;
+    }
+    .badge {
+        font-size: 11px;
+        background: #e74c3c;
+        color: #fff;
+        padding: 2px 7px;
+        border-radius: 10px;
+        margin-left: 8px;
+    }
+    .remove-btn {
+        border: none;
+        background: #e74c3c;
+        color: #fff;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+    }
+    .remove-btn:hover { background: #ff6155; }
+    .empty-note {
+        text-align: center;
+        opacity: 0.6;
+        font-size: 14px;
+        padding: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🎲 Duks Picker</h1>
+    <p class="subtitle">Tryk på knappen for at vælge en tilfældig duks</p>
+
+    <div id="result">—</div>
+    <button class="duks-button" onclick="pickName()">duks</button>
+
+    <div class="section-title">Navne</div>
+    <div class="add-row">
+        <input type="text" id="newName" placeholder="Tilføj et navn..." onkeydown="if(event.key==='Enter') addName()">
+        <button onclick="addName()">Tilføj</button>
+    </div>
+    <ul id="nameList"></ul>
+</div>
+
+<script>
+    const STORAGE_KEY = "duksNames";
+
+    // The default list of names. "felix" stays in the list but never gets picked.
+    const DEFAULT_NAMES = [
+        "felix", "felix h", "marius", "mads", "nord enisa", "emma",
+        "liah", "keyla", "parsa", "irusa", "mie", "berat", "asit",
+        "elias", "tristan", "lias", "emil N", "emil"
+    ];
+
+    // Names that can never be picked (0% chance), compared case-insensitively.
+    const BLOCKED = ["felix"];
+
+    let names = loadNames();
+
+    function loadNames() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (e) { /* fall through to defaults */ }
+        }
+        return DEFAULT_NAMES.slice();
+    }
+
+    function saveNames() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(names));
+    }
+
+    function isBlocked(name) {
+        return BLOCKED.includes(name.trim().toLowerCase());
+    }
+
+    function renderList() {
+        const list = document.getElementById("nameList");
+        list.innerHTML = "";
+        if (names.length === 0) {
+            const note = document.createElement("li");
+            note.className = "empty-note";
+            note.textContent = "Ingen navne endnu — tilføj et ovenfor.";
+            list.appendChild(note);
+            return;
+        }
+        names.forEach((name, index) => {
+            const li = document.createElement("li");
+            const blocked = isBlocked(name);
+            if (blocked) li.classList.add("no-pick");
+
+            const label = document.createElement("span");
+            label.textContent = name;
+            if (blocked) {
+                const badge = document.createElement("span");
+                badge.className = "badge";
+                badge.textContent = "0%";
+                label.appendChild(badge);
+            }
+
+            const btn = document.createElement("button");
+            btn.className = "remove-btn";
+            btn.textContent = "×";
+            btn.title = "Fjern";
+            btn.onclick = () => removeName(index);
+
+            li.appendChild(label);
+            li.appendChild(btn);
+            list.appendChild(li);
+        });
+    }
+
+    function addName() {
+        const input = document.getElementById("newName");
+        const value = input.value.trim();
+        if (value === "") return;
+        names.push(value);
+        saveNames();
+        renderList();
+        input.value = "";
+        input.focus();
+    }
+
+    function removeName(index) {
+        names.splice(index, 1);
+        saveNames();
+        renderList();
+    }
+
+    function pickName() {
+        // Only names that are not blocked are eligible (felix = 0% chance).
+        const eligible = names.filter(n => !isBlocked(n));
+        const result = document.getElementById("result");
+        if (eligible.length === 0) {
+            result.textContent = "Ingen navne at vælge 🤷";
+            return;
+        }
+        const choice = eligible[Math.floor(Math.random() * eligible.length)];
+        result.textContent = choice;
+    }
+
+    renderList();
+</script>
+</body>
+</html>
