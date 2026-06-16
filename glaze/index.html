@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#e3e6ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
+  <title>Glaze — Create on your device</title>
+  <meta name="description" content="A private, in-browser creative studio. Paint, edit images, edit video and export to many formats. Nothing is uploaded or stored." />
+  <link rel="stylesheet" href="assets/glaze.css" />
+  <style>
+    .hero { padding: clamp(40px, 9vw, 96px) 0 clamp(28px, 5vw, 56px); text-align: center; }
+    .hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: var(--sp-5);
+      padding: 8px 16px; border-radius: var(--r-pill); font-size: var(--fs-13); font-weight: 560; color: var(--ink-2);
+    }
+    .hero .eyebrow svg { width: 16px; height: 16px; color: var(--good); }
+    .hero h1 { font-size: clamp(40px, 9vw, 72px); letter-spacing: -0.04em; line-height: 1.02; }
+    .hero h1 .grad { background: linear-gradient(120deg, var(--ink), var(--ink-3)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p.lead { max-width: 40ch; margin: var(--sp-5) auto 0; font-size: clamp(16px, 2.4vw, 20px); color: var(--ink-2); }
+    .hero .cta { margin-top: var(--sp-8); display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
+
+    .grid { display: grid; gap: var(--sp-4); grid-template-columns: 1fr; padding-bottom: var(--sp-8); }
+    @media (min-width: 720px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    .tool-card {
+      display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-6);
+      text-align: left; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+      min-height: 220px;
+    }
+    .tool-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); }
+    .tool-card .ic {
+      width: 54px; height: 54px; border-radius: var(--r-md); display: grid; place-items: center;
+      background: var(--fill-soft); color: var(--ink); margin-bottom: var(--sp-2);
+    }
+    .tool-card .ic svg { width: 28px; height: 28px; }
+    .tool-card h3 { font-size: var(--fs-22); }
+    .tool-card p { color: var(--ink-2); font-size: var(--fs-15); }
+    .tool-card .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; }
+    .tool-card .tags span { font-size: var(--fs-12); color: var(--ink-3); padding: 4px 10px; border-radius: var(--r-pill); background: var(--fill-soft); }
+    .tool-card .go { margin-top: var(--sp-3); display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ink); }
+
+    .assure { display: grid; gap: var(--sp-4); grid-template-columns: 1fr; margin: var(--sp-8) 0; padding: var(--sp-6); }
+    @media (min-width: 720px) { .assure { grid-template-columns: repeat(3, 1fr); } }
+    .assure .item { display: flex; gap: var(--sp-3); align-items: flex-start; }
+    .assure .item svg { width: 22px; height: 22px; flex: 0 0 auto; color: var(--ink); margin-top: 2px; }
+    .assure .item h4 { font-size: var(--fs-16); font-weight: 620; margin-bottom: 2px; }
+    .assure .item p { font-size: var(--fs-14); color: var(--ink-3); }
+
+    footer { text-align: center; padding: var(--sp-8) 0 calc(var(--sp-10) + env(safe-area-inset-bottom)); color: var(--ink-3); font-size: var(--fs-13); }
+    footer a { text-decoration: underline; }
+    .entrance { opacity: 0; transform: translateY(14px); animation: rise var(--dur-slow) var(--ease-out) forwards; }
+    .entrance:nth-child(2) { animation-delay: .05s; }
+    .entrance:nth-child(3) { animation-delay: .1s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <a class="brand" href="index.html" aria-label="Glaze home">
+      <span class="mark" aria-hidden="true">◇</span> Glaze
+    </a>
+    <span class="spacer"></span>
+    <a class="btn btn-sm" href="privacy.html">Privacy</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle appearance"></button>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow glass entrance">
+        <!-- shield icon injected -->
+        <span data-icon="shield"></span> 100% on-device · No uploads · No cookies
+      </span>
+      <h1 class="entrance">Create freely.<br /><span class="grad">Nothing leaves your device.</span></h1>
+      <p class="lead entrance">A private creative studio in your browser. Paint, retouch photos, trim video — then export to a wide range of formats. All processing happens locally.</p>
+      <div class="cta entrance">
+        <a class="btn btn-primary" href="paint.html">Start painting</a>
+        <a class="btn" href="#tools">Explore tools</a>
+      </div>
+    </section>
+
+    <section id="tools" class="grid">
+      <a class="tool-card glass entrance" href="paint.html">
+        <span class="ic" data-icon="brush"></span>
+        <h3>Paint</h3>
+        <p>Brush, pencil, marker, airbrush, fill and a true 3D voxel mode — with a buttery-smooth eraser and fully adjustable sizes.</p>
+        <div class="tags"><span>Brush</span><span>Voxel 3D</span><span>Smooth eraser</span><span>Layers of tools</span></div>
+        <span class="go">Open Paint <span data-icon="arrowRight"></span></span>
+      </a>
+      <a class="tool-card glass entrance" href="image.html">
+        <span class="ic" data-icon="image"></span>
+        <h3>Image Editor</h3>
+        <p>Adjust light & color, apply filters, crop, rotate, resize, add text and markup. Non-destructive preview, precise export.</p>
+        <div class="tags"><span>Adjust</span><span>Filters</span><span>Crop</span><span>Markup</span></div>
+        <span class="go">Open Image <span data-icon="arrowRight"></span></span>
+      </a>
+      <a class="tool-card glass entrance" href="video.html">
+        <span class="ic" data-icon="video"></span>
+        <h3>Video Editor</h3>
+        <p>Trim, crop, recolor, change speed and rotate. Export WebM instantly, or load the optional power engine for MP4, GIF & more.</p>
+        <div class="tags"><span>Trim</span><span>Filters</span><span>Speed</span><span>MP4 / GIF</span></div>
+        <span class="go">Open Video <span data-icon="arrowRight"></span></span>
+      </a>
+    </section>
+
+    <section class="assure glass">
+      <div class="item"><span data-icon="shield"></span><div><h4>Private by design</h4><p>No accounts, no servers receiving your media, no analytics. Your work stays in this tab.</p></div></div>
+      <div class="item"><span data-icon="download"></span><div><h4>You own the output</h4><p>Export and download straight to your device in many formats. Nothing is retained afterwards.</p></div></div>
+      <div class="item"><span data-icon="move"></span><div><h4>Every device</h4><p>Touch, pen and mouse. Phones, tablets and desktops — the layout adapts to each.</p></div></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Glaze · A local-first creative studio · <a href="privacy.html">Privacy &amp; legal</a> · <a href="../index.html">Back to felix.world</a></p>
+    <p style="margin-top:8px">No cookies. No tracking. No storage. <span class="muted">Optional 3D &amp; video engines load from public CDNs only when you use them.</span></p>
+  </footer>
+
+  <script src="assets/common.js"></script>
+  <script>
+    document.querySelectorAll("[data-icon]").forEach(function (el) {
+      el.innerHTML = Glaze.icon(el.getAttribute("data-icon"), el.closest(".ic") ? 28 : 18);
+    });
+  </script>
+</body>
+</html>
