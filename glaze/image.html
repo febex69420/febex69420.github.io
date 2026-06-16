@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#e3e6ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
+  <title>Glaze · Image</title>
+  <link rel="stylesheet" href="assets/glaze.css" />
+  <style>
+    body { overflow: hidden; }
+    .editor { height: 100dvh; }
+    .workspace { position: relative; flex: 1; overflow: hidden; }
+    #stage { position: absolute; inset: 0; padding: 12px; display: grid; place-items: center; }
+    #imgWrap { position: relative; max-width: 100%; max-height: 100%; box-shadow: var(--shadow-2); border-radius: 4px; }
+    #display { display: block; border-radius: 4px; width: 100%; height: 100%; }
+    #markup { position: absolute; left: 0; top: 0; width: 100%; height: 100%; touch-action: none; border-radius: 4px; }
+
+    /* crop overlay */
+    #cropBox { position: absolute; border: 1.5px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,0.55); cursor: move; display: none; }
+    #cropBox .h { position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 4px; box-shadow: var(--shadow-1); }
+    #cropBox .h.tl { left: -8px; top: -8px; cursor: nwse-resize; }
+    #cropBox .h.tr { right: -8px; top: -8px; cursor: nesw-resize; }
+    #cropBox .h.bl { left: -8px; bottom: -8px; cursor: nesw-resize; }
+    #cropBox .h.br { right: -8px; bottom: -8px; cursor: nwse-resize; }
+    #cropBox .grid3::before, #cropBox .grid3::after { content: ""; position: absolute; background: rgba(255,255,255,0.4); }
+    #cropBox .grid3::before { left: 33.33%; right: 33.33%; top: 0; bottom: 0; border-left: 1px solid rgba(255,255,255,0.4); border-right: 1px solid rgba(255,255,255,0.4); }
+    #cropBox .grid3::after { top: 33.33%; bottom: 33.33%; left: 0; right: 0; border-top: 1px solid rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.4); }
+
+    /* empty dropzone */
+    #drop { text-align: center; padding: 40px; border-radius: var(--r-xl); border: 1.5px dashed var(--hairline); max-width: 480px; }
+    #drop .ic { width: 64px; height: 64px; border-radius: var(--r-lg); display: grid; place-items: center; background: var(--fill-soft); margin: 0 auto 18px; }
+    #drop .ic svg { width: 32px; height: 32px; }
+    #drop h2 { font-size: var(--fs-22); margin-bottom: 8px; }
+    #drop p { color: var(--ink-3); margin-bottom: 18px; }
+    .drag-over #drop { border-color: var(--ink); background: var(--fill-soft); }
+
+    /* rail + panel */
+    #rail { position: absolute; z-index: var(--z-toolbar); display: flex; gap: 2px; padding: 6px; }
+    #panel { position: absolute; z-index: var(--z-toolbar); }
+    #panel .panel { gap: var(--sp-3); }
+    #ring { position: absolute; z-index: 5; border: 1.5px solid var(--ink); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); mix-blend-mode: difference; display: none; }
+
+    @media (min-width: 900px) {
+      #rail { left: 14px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+      #panel { right: 14px; top: 14px; width: 280px; max-height: calc(100% - 28px); overflow-y: auto; }
+      #panelToggle { display: none; }
+    }
+    @media (max-width: 899px) {
+      #rail { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom)); transform: translateX(-50%); flex-direction: row; }
+      #panel { left: 8px; right: 8px; bottom: 0; max-height: 64dvh; overflow-y: auto; border-radius: var(--r-xl) var(--r-xl) 0 0; transform: translateY(105%); transition: transform var(--dur) var(--ease-out); padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+      #panel.open { transform: none; }
+      .sheet-handle { display: block; width: 38px; height: 5px; border-radius: 3px; background: var(--fill-soft-2); margin: 0 auto 10px; }
+    }
+    .sheet-handle { display: none; }
+    .pmode { display: none; }
+    .pmode.active { display: flex; flex-direction: column; gap: var(--sp-3); }
+    .reset-link { font-size: var(--fs-13); color: var(--ink-3); text-decoration: underline; cursor: pointer; background: none; border: 0; align-self: flex-start; }
+  </style>
+</head>
+<body data-no-privacy-note class="editor-page">
+  <div class="editor">
+    <header class="appbar">
+      <a class="brand" href="index.html" aria-label="Glaze home"><span class="mark" aria-hidden="true">◇</span></a>
+      <span class="doc-name" id="docName">Image Editor</span>
+      <span class="spacer"></span>
+      <button class="icon-btn" id="undoBtn" aria-label="Undo" title="Undo"></button>
+      <button class="icon-btn" id="redoBtn" aria-label="Redo" title="Redo"></button>
+      <button class="btn btn-sm" id="openBtn">Open</button>
+      <button class="btn btn-sm btn-primary" id="exportBtn" disabled>Export</button>
+      <button class="icon-btn" id="panelToggle" aria-label="Adjustments"></button>
+      <button class="icon-btn" data-theme-toggle aria-label="Toggle appearance"></button>
+    </header>
+
+    <div class="workspace">
+      <div id="stage">
+        <div id="drop">
+          <span class="ic" data-icon="image"></span>
+          <h2>Drop an image to edit</h2>
+          <p>Or paste from clipboard. Your photo is processed entirely on this device — never uploaded.</p>
+          <button class="btn btn-primary" id="chooseBtn">Choose image</button>
+        </div>
+        <div id="imgWrap" class="hidden">
+          <canvas id="display"></canvas>
+          <canvas id="markup"></canvas>
+          <div id="cropBox"><span class="grid3"></span><span class="h tl"></span><span class="h tr"></span><span class="h bl"></span><span class="h br"></span></div>
+        </div>
+        <div id="ring"></div>
+      </div>
+
+      <nav id="rail" class="glass-strong glass" aria-label="Modes"></nav>
+
+      <aside id="panel" class="glass-strong glass" aria-label="Controls">
+        <div class="sheet-handle" id="sheetHandle"></div>
+
+        <!-- ADJUST -->
+        <div class="pmode active" data-mode="adjust" id="m-adjust">
+          <h4>Light &amp; Color</h4>
+          <div id="adjustControls"></div>
+          <button class="reset-link" id="resetAdjust">Reset adjustments</button>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="pmode" data-mode="filters" id="m-filters">
+          <h4>Looks</h4>
+          <div class="swatches" id="filterGrid" style="grid-template-columns:repeat(2,1fr)"></div>
+        </div>
+
+        <!-- CROP -->
+        <div class="pmode" data-mode="crop" id="m-crop">
+          <h4>Crop &amp; aspect</h4>
+          <div class="chips" id="aspectChips"></div>
+          <div class="row wrap">
+            <button class="btn btn-sm btn-primary" id="applyCrop">Apply crop</button>
+            <button class="btn btn-sm" id="cancelCrop">Reset</button>
+          </div>
+          <p class="hint muted" style="font-size:var(--fs-13)">Drag the box to frame your shot, then apply.</p>
+        </div>
+
+        <!-- TRANSFORM -->
+        <div class="pmode" data-mode="transform" id="m-transform">
+          <h4>Transform</h4>
+          <div class="row wrap">
+            <button class="btn btn-sm" id="rotL" title="Rotate left"></button>
+            <button class="btn btn-sm" id="rotR" title="Rotate right"></button>
+            <button class="btn btn-sm" id="flipH" title="Flip horizontal"></button>
+            <button class="btn btn-sm" id="flipV" title="Flip vertical"></button>
+          </div>
+          <label class="field">
+            <span class="field-label">Straighten <span class="val"><span id="straightenVal">0</span>°</span></span>
+            <input type="range" id="straighten" min="-45" max="45" value="0">
+          </label>
+        </div>
+
+        <!-- MARKUP -->
+        <div class="pmode" data-mode="markup" id="m-markup">
+          <h4>Markup</h4>
+          <div class="row" id="markupTools"></div>
+          <label class="field" id="muSizeField">
+            <span class="field-label">Size <span class="val"><span id="muSizeVal">14</span> px</span></span>
+            <input type="range" id="muSize" min="1" max="200" value="14">
+          </label>
+          <div class="row" id="muColorRow">
+            <input type="color" id="muColor" value="#ff3b30" aria-label="Markup color">
+            <button class="btn btn-sm" id="addText">Add text…</button>
+          </div>
+          <button class="btn btn-sm" id="clearMarkup">Clear markup</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="assets/common.js"></script>
+  <script src="assets/image.js"></script>
+</body>
+</html>

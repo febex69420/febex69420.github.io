@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#e3e6ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
+  <title>Glaze · Privacy &amp; Legal</title>
+  <meta name="description" content="How Glaze handles your data: it doesn't. No uploads, no cookies, no storage, no tracking. Everything runs on your device." />
+  <link rel="stylesheet" href="assets/glaze.css" />
+  <style>
+    .doc { max-width: 760px; margin: 0 auto; padding: 0 var(--sp-5) var(--sp-12); }
+    .doc .lead { font-size: var(--fs-18); color: var(--ink-2); margin: var(--sp-4) 0 var(--sp-8); }
+    .card { padding: var(--sp-6); margin-bottom: var(--sp-4); }
+    .card h2 { font-size: var(--fs-22); margin-bottom: var(--sp-3); display: flex; align-items: center; gap: 10px; }
+    .card h2 svg { width: 22px; height: 22px; color: var(--ink); }
+    .card p { color: var(--ink-2); margin-bottom: var(--sp-3); }
+    .card ul { margin: 0 0 var(--sp-2); padding-left: 0; list-style: none; }
+    .card li { display: flex; gap: 10px; align-items: flex-start; color: var(--ink-2); margin-bottom: 10px; }
+    .card li svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 3px; color: var(--good); }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: var(--r-pill); font-size: var(--fs-13); font-weight: 560; }
+    .badge svg { width: 16px; height: 16px; color: var(--good); }
+    .hero { padding: clamp(36px,8vw,72px) 0 0; }
+    h1 { font-size: clamp(32px,7vw,52px); letter-spacing: -0.03em; }
+    code { background: var(--fill-soft); padding: 2px 7px; border-radius: 6px; font-size: 0.9em; }
+    .updated { color: var(--ink-3); font-size: var(--fs-13); margin-top: var(--sp-6); }
+    a.inline { text-decoration: underline; font-weight: 560; }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <a class="brand" href="index.html" aria-label="Glaze home"><span class="mark" aria-hidden="true">◇</span> Glaze</a>
+    <span class="spacer"></span>
+    <a class="btn btn-sm" href="index.html">Back to app</a>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle appearance"></button>
+  </header>
+
+  <main class="doc">
+    <div class="hero">
+      <span class="badge glass" data-icon="shield"> Privacy by architecture, not by promise</span>
+      <h1 style="margin-top:18px">Your work never leaves this device.</h1>
+      <p class="lead">Glaze is a static web app. There is no Glaze account, no Glaze server that receives your files, and no database. Everything you open, paint, edit and export is processed locally in your browser and discarded when you close the tab.</p>
+    </div>
+
+    <section class="card glass">
+      <h2><span data-icon="shield"></span> What we collect</h2>
+      <p><b>Nothing.</b> We genuinely have no way to collect anything, because there is no backend to send it to.</p>
+      <ul>
+        <li><span data-icon="check"></span> No accounts, sign-ups, emails or profiles.</li>
+        <li><span data-icon="check"></span> No analytics, telemetry, fingerprinting or tracking pixels.</li>
+        <li><span data-icon="check"></span> No advertising and no third-party trackers.</li>
+        <li><span data-icon="check"></span> Your images and videos are read directly from your device into the browser's memory and never transmitted anywhere.</li>
+      </ul>
+    </section>
+
+    <section class="card glass">
+      <h2><span data-icon="layers"></span> Cookies &amp; storage</h2>
+      <p>Glaze uses <b>no cookies</b> and <b>no local storage of any kind</b>. We don't even remember your light/dark preference between visits — the appearance follows your system setting, and a manual toggle lasts only until you reload.</p>
+      <ul>
+        <li><span data-icon="check"></span> No cookies → no cookie-consent banner is legally required.</li>
+        <li><span data-icon="check"></span> No <code>localStorage</code>, <code>sessionStorage</code> or IndexedDB writing your data.</li>
+        <li><span data-icon="check"></span> Your files exist only in this tab's memory and are gone the moment you close or refresh it. Export anything you want to keep.</li>
+      </ul>
+    </section>
+
+    <section class="card glass">
+      <h2><span data-icon="download"></span> Where your files go</h2>
+      <p>When you export, the finished file is generated in your browser and handed to your device's normal download mechanism. It is saved wherever your browser saves downloads — on your device, under your control. Glaze never receives a copy.</p>
+    </section>
+
+    <section class="card glass">
+      <h2><span data-icon="video"></span> Optional engines loaded from public CDNs</h2>
+      <p>Two advanced features download code (not your media) from public content-delivery networks the first time you use them:</p>
+      <ul>
+        <li><span data-icon="cube"></span> <b>Voxel 3D mode</b> loads the <a class="inline" href="https://threejs.org" rel="noopener" target="_blank">Three.js</a> 3D engine from jsDelivr.</li>
+        <li><span data-icon="video"></span> <b>Video "Power export"</b> (MP4 / GIF / MOV) loads <a class="inline" href="https://ffmpegwasm.netlify.app" rel="noopener" target="_blank">ffmpeg.wasm</a> from unpkg (~25&nbsp;MB, once).</li>
+      </ul>
+      <p>Like loading any web page, requesting a file from a CDN reveals your IP address and basic request headers to that CDN — that's how the internet works. It sends <b>none of your media and no personal data</b>. If you never open Voxel mode or Power export, no such request is ever made, and the rest of Glaze works fully offline once the page has loaded.</p>
+    </section>
+
+    <section class="card glass">
+      <h2><span data-icon="check"></span> Verify it yourself</h2>
+      <p>You don't have to take our word for it. Open your browser's developer tools, go to the <b>Network</b> tab, and use the Paint or Image editor: after the page loads you'll see no further network activity, even while editing and exporting. CDN requests appear only if you open Voxel 3D or Video Power export.</p>
+    </section>
+
+    <section class="card glass">
+      <h2><span data-icon="info"></span> Legal</h2>
+      <p><b>Your content is yours.</b> You retain all rights to anything you create or edit in Glaze. We claim no licence over it and never see it.</p>
+      <p><b>Data-protection laws (GDPR, UK GDPR, CCPA, etc.):</b> these govern how organisations process personal data. Glaze processes no personal data and stores nothing, so there is nothing for us to retain, share, sell or delete on request.</p>
+      <p><b>Your responsibility:</b> please only edit media you have the right to use. You are responsible for how you use the files you create.</p>
+      <p><b>No warranty:</b> Glaze is provided "as is", without warranties of any kind. It's a free creative tool — always keep your own backups of important originals.</p>
+      <p class="updated">Last updated 16 June 2026 · Glaze is open static code; inspect the page source any time.</p>
+    </section>
+
+    <p style="text-align:center;margin-top:var(--sp-6)"><a class="btn btn-primary" href="index.html">Back to Glaze</a></p>
+  </main>
+
+  <script src="assets/common.js"></script>
+  <script>
+    document.querySelectorAll("[data-icon]").forEach((el) => el.innerHTML = Glaze.icon(el.getAttribute("data-icon"), el.classList.contains("badge") ? 16 : 20));
+  </script>
+</body>
+</html>

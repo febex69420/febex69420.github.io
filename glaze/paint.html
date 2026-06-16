@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#e3e6ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)" />
+  <title>Glaze · Paint</title>
+  <!-- Import map so the lazy-loaded 3D voxel module can resolve Three.js from a public CDN.
+       Three.js is fetched only when you open Voxel 3D mode — never on the 2D paint path. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="assets/glaze.css" />
+  <style>
+    body { overflow: hidden; touch-action: none; }
+    .editor { height: 100dvh; }
+    .appbar .seg-wrap { display: flex; }
+    .workspace { position: relative; flex: 1; overflow: hidden; }
+    #stage { position: absolute; inset: 0; padding: 0; touch-action: none; }
+    #canvasWrap {
+      position: absolute; left: 0; top: 0; transform-origin: 0 0;
+      box-shadow: var(--shadow-2); border-radius: 2px; will-change: transform;
+    }
+    #canvasWrap canvas { position: absolute; left: 0; top: 0; display: block; image-rendering: auto; border-radius: 2px; }
+    #art { z-index: 1; }
+    #live { z-index: 2; pointer-events: none; }
+    #voxelMount { position: absolute; inset: 0; z-index: 1; }
+    #voxelMount canvas { display: block; width: 100%; height: 100%; }
+
+    /* brush cursor ring */
+    #ring {
+      position: absolute; z-index: 5; border: 1.5px solid var(--ink); border-radius: 50%;
+      pointer-events: none; transform: translate(-50%, -50%); mix-blend-mode: difference; display: none;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.5);
+    }
+
+    /* Tool rail */
+    #toolrail { position: absolute; z-index: var(--z-toolbar); display: flex; gap: 2px; padding: 6px; }
+    /* Properties panel */
+    #props { position: absolute; z-index: var(--z-toolbar); }
+    #props .panel { gap: var(--sp-3); }
+
+    /* Zoom controls */
+    #zoom { position: absolute; z-index: var(--z-toolbar); right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; padding: 4px; gap: 2px; }
+    #zoom .lvl { text-align: center; font-size: 11px; color: var(--ink-3); padding: 2px 0; font-variant-numeric: tabular-nums; }
+
+    .sheet-handle { display: none; }
+
+    /* Desktop layout */
+    @media (min-width: 900px) {
+      #toolrail { left: 14px; top: 50%; transform: translateY(-50%); flex-direction: column; }
+      #props { right: 14px; top: 14px; width: 272px; max-height: calc(100% - 28px); overflow-y: auto; }
+      #propsToggle { display: none; }
+    }
+    /* Mobile layout */
+    @media (max-width: 899px) {
+      #toolrail { left: 50%; bottom: calc(10px + env(safe-area-inset-bottom)); transform: translateX(-50%); flex-direction: row; max-width: calc(100vw - 16px); overflow-x: auto; scrollbar-width: none; }
+      #toolrail::-webkit-scrollbar { display: none; }
+      #zoom { bottom: calc(78px + env(safe-area-inset-bottom)); }
+      #props {
+        left: 8px; right: 8px; bottom: 0; width: auto; max-height: 70dvh; overflow-y: auto;
+        border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+        transform: translateY(105%); transition: transform var(--dur) var(--ease-out); padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      }
+      #props.open { transform: none; }
+      .sheet-handle { display: block; width: 38px; height: 5px; border-radius: 3px; background: var(--fill-soft-2); margin: 0 auto var(--sp-2); }
+    }
+
+    .swatch-row { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+    .hexval { font-variant-numeric: tabular-nums; font-size: var(--fs-13); color: var(--ink-3); }
+    .recent { display: flex; gap: 6px; }
+    .recent button { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--hairline); padding: 0; cursor: pointer; }
+    .seg-label { font-size: var(--fs-13); }
+    .hint { font-size: var(--fs-12); color: var(--ink-3); line-height: 1.45; }
+  </style>
+</head>
+<body data-no-privacy-note>
+  <div class="editor">
+    <header class="appbar">
+      <a class="brand" href="index.html" aria-label="Glaze home"><span class="mark" aria-hidden="true">◇</span></a>
+      <div class="seg-wrap">
+        <div class="segmented" role="group" aria-label="Paint mode">
+          <button id="mode2d" aria-pressed="true">Paint</button>
+          <button id="modeVoxel" aria-pressed="false">Voxel 3D</button>
+        </div>
+      </div>
+      <span class="doc-name" id="docName">Untitled</span>
+      <span class="spacer"></span>
+      <button class="icon-btn" id="undoBtn" aria-label="Undo" title="Undo (Ctrl/Cmd+Z)"></button>
+      <button class="icon-btn" id="redoBtn" aria-label="Redo" title="Redo (Ctrl/Cmd+Shift+Z)"></button>
+      <button class="icon-btn" id="clearBtn" aria-label="Clear canvas" title="Clear"></button>
+      <button class="btn btn-sm btn-primary" id="exportBtn">Export</button>
+      <button class="icon-btn" id="propsToggle" aria-label="Brush settings"></button>
+      <button class="icon-btn" data-theme-toggle aria-label="Toggle appearance"></button>
+    </header>
+
+    <div class="workspace">
+      <div id="stage" class="checker">
+        <div id="canvasWrap">
+          <canvas id="art"></canvas>
+          <canvas id="live"></canvas>
+        </div>
+        <div id="voxelMount" class="hidden"></div>
+        <div id="ring"></div>
+      </div>
+
+      <!-- Tools -->
+      <nav id="toolrail" class="glass-strong glass" aria-label="Tools"></nav>
+
+      <!-- Zoom -->
+      <div id="zoom" class="glass-strong glass">
+        <button class="icon-btn" id="zoomIn" aria-label="Zoom in"></button>
+        <div class="lvl" id="zoomLvl">100%</div>
+        <button class="icon-btn" id="zoomOut" aria-label="Zoom out"></button>
+        <button class="icon-btn" id="zoomFit" aria-label="Fit to screen" title="Fit"></button>
+      </div>
+
+      <!-- Properties -->
+      <aside id="props" class="glass-strong glass" aria-label="Tool settings">
+        <div class="sheet-handle" id="sheetHandle"></div>
+        <div class="panel">
+          <h4 id="toolTitle">Brush</h4>
+
+          <label class="field raster-only" id="sizeField">
+            <span class="field-label">Size <span class="val"><span id="sizeVal">24</span> px</span></span>
+            <input type="range" id="size" min="1" max="400" value="24" />
+          </label>
+
+          <label class="field raster-only" id="opacityField">
+            <span class="field-label">Opacity <span class="val"><span id="opacityVal">100</span>%</span></span>
+            <input type="range" id="opacity" min="1" max="100" value="100" />
+          </label>
+
+          <label class="field raster-only" id="softnessField">
+            <span class="field-label">Softness <span class="val"><span id="softnessVal">0</span>%</span></span>
+            <input type="range" id="softness" min="0" max="100" value="0" />
+          </label>
+
+          <label class="field voxel-field hidden" id="voxelSizeField">
+            <span class="field-label">Voxel brush <span class="val"><span id="vsizeVal">1</span>³</span></span>
+            <input type="range" id="vsize" min="1" max="4" value="1" />
+          </label>
+
+          <hr class="divider" />
+
+          <div class="col" id="colorField">
+            <span class="field-label">Color <span class="hexval" id="hexVal">#1C1C1E</span></span>
+            <div class="swatch-row">
+              <input type="color" id="color" value="#1c1c1e" aria-label="Pick color" />
+              <div class="recent" id="recent" aria-label="Recent colors"></div>
+            </div>
+            <div class="swatches" id="palette" aria-label="Palette"></div>
+          </div>
+
+          <hr class="divider raster-only" />
+
+          <div class="col raster-only" id="bgField">
+            <span class="field-label">Canvas</span>
+            <div class="row wrap">
+              <button class="btn btn-sm" id="fillBg">Fill background</button>
+              <button class="btn btn-sm" id="newCanvas">New…</button>
+            </div>
+            <button class="btn btn-sm btn-block" id="importImg">Import image</button>
+          </div>
+
+          <p class="hint voxel-field hidden">Tap a face to add a voxel · use the Eraser tool to remove · drag to orbit · pinch / scroll to zoom.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="assets/common.js"></script>
+  <script src="assets/paint.js"></script>
+</body>
+</html>
