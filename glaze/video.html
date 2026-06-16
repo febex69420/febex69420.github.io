@@ -46,6 +46,71 @@
       .sheet-handle { display: block; width: 38px; height: 5px; border-radius: 3px; background: var(--fill-soft-2); margin: 0 auto 10px; }
     }
     .sheet-handle { display: none; }
+
+    /* ---- Preview wrapper + crop overlay ---- */
+    #vwrap { position: relative; display: none; line-height: 0; }
+    #cropOverlay { position: absolute; inset: 0; display: none; pointer-events: none; }
+    #cropOverlay.on { display: block; }
+    #cropOverlay .crop-box {
+      position: absolute; pointer-events: auto; cursor: move;
+      border: 1px solid var(--on-ink);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 0 0 9999px rgba(0,0,0,.42);
+      box-sizing: border-box;
+    }
+    #cropOverlay .crop-h {
+      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--on-ink); border: 1px solid rgba(0,0,0,.55); box-shadow: var(--shadow-1);
+      transform: translate(-50%, -50%);
+    }
+    #cropOverlay .crop-h[data-edge="nw"] { left: 0; top: 0; cursor: nwse-resize; }
+    #cropOverlay .crop-h[data-edge="n"]  { left: 50%; top: 0; cursor: ns-resize; }
+    #cropOverlay .crop-h[data-edge="ne"] { left: 100%; top: 0; cursor: nesw-resize; }
+    #cropOverlay .crop-h[data-edge="w"]  { left: 0; top: 50%; cursor: ew-resize; }
+    #cropOverlay .crop-h[data-edge="e"]  { left: 100%; top: 50%; cursor: ew-resize; }
+    #cropOverlay .crop-h[data-edge="sw"] { left: 0; top: 100%; cursor: nesw-resize; }
+    #cropOverlay .crop-h[data-edge="s"]  { left: 50%; top: 100%; cursor: ns-resize; }
+    #cropOverlay .crop-h[data-edge="se"] { left: 100%; top: 100%; cursor: nwse-resize; }
+
+    /* ---- Panel fields ---- */
+    #panel .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    #panel .field input[type="range"] { width: 100%; }
+    #panel input[type="range"] { accent-color: var(--ink); height: 22px; }
+    .text-in {
+      width: 100%; padding: 8px 10px; border-radius: var(--r-sm);
+      border: 1px solid var(--hairline); background: var(--fill-soft);
+      color: var(--ink); font-size: var(--fs-14); font-family: inherit;
+    }
+    .text-in:focus { outline: 2px solid var(--ring); outline-offset: 1px; }
+    input[type="color"] {
+      width: 44px; height: 30px; padding: 2px; border-radius: var(--r-sm);
+      border: 1px solid var(--hairline); background: var(--fill-soft); cursor: pointer;
+    }
+    .reset-link {
+      background: none; border: 0; color: var(--ink-3); text-decoration: underline;
+      cursor: pointer; align-self: flex-start; font-size: 13px; padding: 4px 0; min-height: 28px;
+    }
+    .reset-link:hover { color: var(--ink); }
+
+    /* ---- Collapsible groups ---- */
+    .group .grp-head {
+      display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
+      margin: 0; min-height: 32px;
+    }
+    .group .grp-head .ghi { display: inline-flex; color: var(--ink-3); }
+    .group .grp-head .ghi svg { width: 16px; height: 16px; }
+    .group .grp-head .caret {
+      margin-left: auto; width: 8px; height: 8px; border-right: 2px solid var(--ink-3);
+      border-bottom: 2px solid var(--ink-3); transform: rotate(45deg);
+      transition: transform var(--dur-fast) var(--ease-out);
+    }
+    .group[data-collapsed="true"] .grp-head .caret { transform: rotate(-45deg); }
+    .group .grp-body { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: 4px; }
+    .group[data-collapsed="true"] .grp-body { display: none; }
+    .group .grp-head:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .group .grp-head .caret { transition: none; }
+    }
   </style>
 </head>
 <body data-no-privacy-note>
@@ -68,7 +133,16 @@
           <p>Trim, recolour, transform and re-export — all on your device. Nothing is uploaded.</p>
           <button class="btn btn-primary" id="chooseBtn">Choose video</button>
         </div>
-        <video id="video" playsinline></video>
+        <div id="vwrap">
+          <video id="video" playsinline></video>
+          <div id="cropOverlay" aria-hidden="true">
+            <div class="crop-box" id="cropBox">
+              <span class="crop-h" data-edge="nw"></span><span class="crop-h" data-edge="n"></span><span class="crop-h" data-edge="ne"></span>
+              <span class="crop-h" data-edge="w"></span><span class="crop-h" data-edge="e"></span>
+              <span class="crop-h" data-edge="sw"></span><span class="crop-h" data-edge="s"></span><span class="crop-h" data-edge="se"></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="transport" class="glass hidden">
@@ -92,26 +166,107 @@
       <aside id="panel" class="glass-strong glass" aria-label="Settings">
         <div class="sheet-handle" id="sheetHandle"></div>
         <div class="panel">
-          <div class="sect">
-            <h4>Light &amp; Colour</h4>
-            <div id="adjustControls"></div>
-            <button class="reset-link" id="resetAdjust" style="background:none;border:0;color:var(--ink-3);text-decoration:underline;cursor:pointer;align-self:flex-start;font-size:13px">Reset</button>
-          </div>
-          <hr class="divider" />
-          <div class="sect">
-            <h4>Transform</h4>
-            <div class="row wrap">
-              <button class="btn btn-sm" id="rotR" title="Rotate"></button>
-              <button class="btn btn-sm" id="flipH" title="Flip horizontal"></button>
-              <button class="btn btn-sm" id="flipV" title="Flip vertical"></button>
+          <!-- ===== Motion ===== -->
+          <div class="sect group" data-group="motion">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-motion"></span>Motion<span class="caret"></span></h4>
+            <div class="grp-body" id="body-motion">
+              <div class="row wrap">
+                <button class="btn btn-sm" id="rotR" title="Rotate 90°"></button>
+                <button class="btn btn-sm" id="flipH" title="Flip horizontal"></button>
+                <button class="btn btn-sm" id="flipV" title="Flip vertical"></button>
+              </div>
+              <div id="motionControls"></div>
+              <button class="reset-link" id="resetMotion">Reset motion</button>
             </div>
           </div>
           <hr class="divider" />
-          <div class="sect">
-            <h4>Audio</h4>
-            <label class="field-row"><span class="field-label grow">Mute audio</span>
-              <span class="switch"><input type="checkbox" id="muteChk"><span class="track"></span></span>
-            </label>
+
+          <!-- ===== Crop ===== -->
+          <div class="sect group" data-group="crop">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-crop"></span>Crop<span class="caret"></span></h4>
+            <div class="grp-body" id="body-crop">
+              <label class="field-row"><span class="field-label grow">Show crop box</span>
+                <span class="switch"><input type="checkbox" id="cropChk"><span class="track"></span></span>
+              </label>
+              <div id="cropControls"></div>
+              <button class="reset-link" id="resetCrop">Reset crop</button>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Opacity ===== -->
+          <div class="sect group" data-group="opacity">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-opacity"></span>Opacity<span class="caret"></span></h4>
+            <div class="grp-body" id="body-opacity">
+              <div id="opacityControls"></div>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Lumetri Color ===== -->
+          <div class="sect group" data-group="color">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-color"></span>Lumetri Color<span class="caret"></span></h4>
+            <div class="grp-body" id="body-color">
+              <div id="adjustControls"></div>
+              <button class="reset-link" id="resetAdjust">Reset colour</button>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Fade (Dip to Black) ===== -->
+          <div class="sect group" data-group="fade">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-fade"></span>Fade<span class="caret"></span></h4>
+            <div class="grp-body" id="body-fade">
+              <div id="fadeControls"></div>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Title / Text ===== -->
+          <div class="sect group" data-group="title">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-title"></span>Title<span class="caret"></span></h4>
+            <div class="grp-body" id="body-title">
+              <label class="field"><span class="field-label">Text</span>
+                <input type="text" id="titleText" class="text-in" placeholder="Add a title…" maxlength="120">
+              </label>
+              <div class="segmented" id="titleAlign" role="group" aria-label="Text alignment" style="margin:2px 0">
+                <button data-al="left" aria-pressed="false">Left</button>
+                <button data-al="center" aria-pressed="true">Center</button>
+                <button data-al="right" aria-pressed="false">Right</button>
+              </div>
+              <div class="field-row">
+                <span class="field-label grow">Text colour</span>
+                <input type="color" id="titleColor" value="#ffffff" aria-label="Text colour">
+              </div>
+              <label class="field-row"><span class="field-label grow">Lower-third bar</span>
+                <span class="switch"><input type="checkbox" id="titleBar" checked><span class="track"></span></span>
+              </label>
+              <div id="titleControls"></div>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Audio ===== -->
+          <div class="sect group" data-group="audio">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-audio"></span>Audio<span class="caret"></span></h4>
+            <div class="grp-body" id="body-audio">
+              <label class="field-row"><span class="field-label grow">Mute audio</span>
+                <span class="switch"><input type="checkbox" id="muteChk"><span class="track"></span></span>
+              </label>
+              <div id="audioControls"></div>
+            </div>
+          </div>
+          <hr class="divider" />
+
+          <!-- ===== Speed / Reverse ===== -->
+          <div class="sect group" data-group="speed">
+            <h4 class="grp-head" role="button" tabindex="0" aria-expanded="true"><span class="ghi" id="ic-speed"></span>Speed &amp; Reverse<span class="caret"></span></h4>
+            <div class="grp-body" id="body-speed">
+              <label class="field-row"><span class="field-label grow">Reverse clip</span>
+                <span class="switch"><input type="checkbox" id="revChk"><span class="track"></span></span>
+              </label>
+              <p class="muted hint" style="font-size:var(--fs-13);margin:0">Reverse plays the clip backward. Use <b>Power</b> export for reversed audio; Instant reverse is video-only.</p>
+            </div>
           </div>
         </div>
       </aside>

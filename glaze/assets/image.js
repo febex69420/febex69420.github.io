@@ -202,6 +202,8 @@
     sctx.drawImage(img, 0, 0, Sw, Sh);
     markup.width = Sw; markup.height = Sh;
     mctx.clearRect(0, 0, Sw, Sh);
+    selResize();          // size the selection overlay buffer to the new image
+    selClear();           // start with no active selection
     settings = Object.assign({}, ZERO);
     straighten = 0; $("#straighten").value = 0; $("#straightenVal").textContent = "0";
     syncAdjustUI();
@@ -270,7 +272,7 @@
       const c = cv.getContext("2d"); c.clearRect(0, 0, cv.width, cv.height); c.drawImage(tmp, 0, 0);
     });
   }
-  function afterTransform() { sizePreview(); render(); fitDisplay(); buildFilterTiles(); pushHistory(); $("#docName").textContent = src.width + " × " + src.height; }
+  function afterTransform() { selResize(); selClear(); sizePreview(); render(); fitDisplay(); buildFilterTiles(); pushHistory(); $("#docName").textContent = src.width + " × " + src.height; }
 
   $("#rotL").innerHTML = "<span style='display:inline-flex;transform:scaleX(-1)'>" + G.icon("rotate") + "</span>"; $("#rotL").title = "Rotate left";
   $("#rotR").innerHTML = G.icon("rotate");
@@ -445,11 +447,530 @@
   }
 
   // ============================================================
+  //  Selection tools (marquee / lasso / polygon / magic wand)
+  //  Selection lives in SOURCE pixel space as an offscreen MASK
+  //  canvas where any opaque (alpha>0) pixel = selected.
+  // ============================================================
+  const selOverlay = $("#selOverlay");
+  const sodx = selOverlay.getContext("2d"); // on-screen overlay (dim + marching ants)
+
+  // offscreen mask: opaque == selected, at source resolution
+  const selMask = document.createElement("canvas");
+  const smctx = selMask.getContext("2d", { willReadFrequently: true });
+
+  const selState = {
+    tool: "rect",        // rect | ellipse | lasso | polygon | wand
+    tolerance: 24,       // wand colour tolerance 0-100
+    feather: 0,          // edge feather radius 0-50px
+    hasSel: false,       // is there an active (non-empty) selection?
+    drawing: false,      // pointer drag in progress (rect/ellipse/lasso)
+    start: null,         // drag start in source coords
+    cur: null,           // current pointer in source coords
+    lassoPts: [],        // freehand lasso points (source coords)
+    polyPts: [],         // polygon-lasso committed points (source coords)
+    polyHover: null,     // live polygon cursor point
+    antsOffset: 0,       // marching-ants dash animation offset
+    raf: 0,              // animation frame handle
+    edgeDirty: true,     // recompute cached mask-edge ring on next paint
+  };
+
+  const SEL_TOOLS = [
+    { id: "rect", icon: "marquee", label: "Rectangle marquee" },
+    { id: "ellipse", icon: "marquee", label: "Ellipse marquee" },
+    { id: "lasso", icon: "lasso", label: "Lasso (freehand)" },
+    { id: "polygon", icon: "polygon", label: "Polygonal lasso" },
+    { id: "wand", icon: "wand", label: "Magic wand" },
+  ];
+  const selToolsEl = $("#selTools");
+  SEL_TOOLS.forEach((t) => {
+    const b = document.createElement("button");
+    b.className = "tool-btn"; b.dataset.t = t.id;
+    b.setAttribute("aria-pressed", t.id === selState.tool);
+    b.setAttribute("aria-label", t.label); b.title = t.label;
+    // ellipse uses a circle-ish glyph so it reads differently from the rectangle marquee
+    b.innerHTML = t.id === "ellipse"
+      ? '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6" stroke-dasharray="3 3"/></svg>'
+      : G.icon(t.icon);
+    b.addEventListener("click", () => selSetTool(t.id));
+    selToolsEl.appendChild(b);
+  });
+  function selSetTool(id) {
+    // changing tool abandons any in-progress polygon/drag
+    selCancelInProgress();
+    selState.tool = id;
+    selToolsEl.querySelectorAll(".tool-btn").forEach((x) => x.setAttribute("aria-pressed", x.dataset.t === id));
+    $("#selTolField").style.display = id === "wand" ? "" : "none";
+  }
+
+  // sliders
+  $("#selTol").addEventListener("input", (e) => { selState.tolerance = +e.target.value; $("#selTolVal").textContent = e.target.value; });
+  $("#selFeather").addEventListener("input", (e) => { selState.feather = +e.target.value; $("#selFeatherVal").textContent = e.target.value; });
+
+  // Keep the mask + overlay buffers matched to the current source size.
+  function selResize() {
+    selMask.width = src.width; selMask.height = src.height;
+    selOverlay.width = src.width; selOverlay.height = src.height;
+  }
+
+  // Enable/disable interaction and visuals for Select mode.
+  function selSetActive(on) {
+    selOverlay.classList.toggle("on", on);
+    if (on) { if (selMask.width !== src.width || selMask.height !== src.height) selResize(); selPaint(); selStartAnts(); }
+    else { selCancelInProgress(); selStopAnts(); sodx.clearRect(0, 0, selOverlay.width, selOverlay.height); }
+  }
+
+  function selCancelInProgress() {
+    selState.drawing = false; selState.start = null; selState.cur = null;
+    selState.lassoPts = []; selState.polyPts = []; selState.polyHover = null;
+    try { selOverlay.releasePointerCapture && selOverlay.releasePointerCapture(selPid); } catch (e) {}
+  }
+
+  // --- Mask helpers -----------------------------------------------------
+  function selClear() {
+    selCancelInProgress();
+    smctx.clearRect(0, 0, selMask.width, selMask.height);
+    selState.hasSel = false;
+    selState.edgeDirty = true;
+    selUpdateButtons();
+    if (mode === "select") selPaint();
+  }
+
+  // True if the mask has at least one selected pixel.
+  function selMaskNotEmpty() {
+    if (!selMask.width) return false;
+    const d = smctx.getImageData(0, 0, selMask.width, selMask.height).data;
+    for (let i = 3; i < d.length; i += 4) if (d[i] > 0) return true;
+    return false;
+  }
+
+  function selUpdateButtons() {
+    const has = selState.hasSel;
+    ["selDelete", "selCutout", "selCrop", "selInvert", "selFill", "selCopy", "selDeselect"].forEach((id) => {
+      const b = $("#" + id); if (b) b.disabled = !has;
+    });
+  }
+
+  // Fill the mask from a vector path (rect/ellipse/lasso/polygon) in source coords.
+  function selMaskFromPath(drawPath) {
+    smctx.save();
+    smctx.setTransform(1, 0, 0, 1, 0, 0);
+    smctx.clearRect(0, 0, selMask.width, selMask.height);
+    smctx.fillStyle = "#fff";
+    smctx.beginPath();
+    drawPath(smctx);
+    smctx.closePath();
+    smctx.fill();
+    smctx.restore();
+    selState.hasSel = selMaskNotEmpty();
+    selState.edgeDirty = true;
+    selUpdateButtons();
+  }
+
+  // Magic wand: contiguous flood select from src pixels within tolerance.
+  function selWandAt(sx, sy) {
+    const w = src.width, h = src.height;
+    sx = Math.round(sx); sy = Math.round(sy);
+    if (sx < 0 || sy < 0 || sx >= w || sy >= h) return;
+    const img = sctx.getImageData(0, 0, w, h);
+    const d = img.data;
+    const start = (sy * w + sx) * 4;
+    const sr = d[start], sg = d[start + 1], sb = d[start + 2], sa = d[start + 3];
+    // tolerance 0-100 mapped to a squared-distance threshold over RGBA
+    const tol = selState.tolerance / 100 * 442; // ~max euclidean dist over RGB(+A)
+    const tol2 = tol * tol;
+    const visited = new Uint8Array(w * h);
+    const out = new Uint8ClampedArray(w * h * 4); // mask RGBA
+    const stack = [sx, sy];
+    while (stack.length) {
+      const y = stack.pop(), x = stack.pop();
+      if (x < 0 || y < 0 || x >= w || y >= h) continue;
+      const p = y * w + x;
+      if (visited[p]) continue;
+      visited[p] = 1;
+      const i = p * 4;
+      const dr = d[i] - sr, dg = d[i + 1] - sg, db = d[i + 2] - sb, da = d[i + 3] - sa;
+      if (dr * dr + dg * dg + db * db + da * da > tol2) continue;
+      out[i] = 255; out[i + 1] = 255; out[i + 2] = 255; out[i + 3] = 255; // selected
+      stack.push(x + 1, y, x - 1, y, x, y + 1, x, y - 1);
+    }
+    smctx.putImageData(new ImageData(out, w, h), 0, 0);
+    selState.hasSel = selMaskNotEmpty();
+    selState.edgeDirty = true;
+    selUpdateButtons();
+    selPaint();
+    if (selState.hasSel) G.toast("Magic wand selection");
+  }
+
+  // Returns a feathered copy of the mask (or the mask itself if feather==0).
+  function selFeatheredMask() {
+    if (!selState.feather) return selMask;
+    const f = document.createElement("canvas");
+    f.width = selMask.width; f.height = selMask.height;
+    const fx = f.getContext("2d");
+    fx.filter = "blur(" + selState.feather + "px)";
+    fx.drawImage(selMask, 0, 0);
+    fx.filter = "none";
+    return f;
+  }
+
+  // --- Selection display (dim outside + marching ants) ------------------
+  function selPaint() {
+    if (mode !== "select") return;
+    const w = selOverlay.width, h = selOverlay.height;
+    sodx.setTransform(1, 0, 0, 1, 0, 0);
+    sodx.clearRect(0, 0, w, h);
+
+    // Live (in-progress) path takes priority for the dim + outline so the
+    // user sees feedback before releasing.
+    const livePath = selLivePath();
+
+    if (selState.hasSel || livePath) {
+      // Dim everything, then punch a hole where the selection is.
+      sodx.save();
+      sodx.fillStyle = "rgba(0,0,0,0.45)";
+      sodx.fillRect(0, 0, w, h);
+      sodx.globalCompositeOperation = "destination-out";
+      if (livePath) { sodx.beginPath(); livePath(sodx); sodx.closePath(); sodx.fill(); }
+      else { sodx.drawImage(selMask, 0, 0); }
+      sodx.restore();
+    }
+
+    // Marching ants outline.
+    selPaintAnts(livePath);
+  }
+
+  // Build a path function for whatever is being drawn right now, or null.
+  function selLivePath() {
+    const s = selState;
+    if (s.tool === "rect" && s.drawing && s.start && s.cur) {
+      const x = Math.min(s.start.x, s.cur.x), y = Math.min(s.start.y, s.cur.y);
+      const ww = Math.abs(s.cur.x - s.start.x), hh = Math.abs(s.cur.y - s.start.y);
+      return (c) => c.rect(x, y, ww, hh);
+    }
+    if (s.tool === "ellipse" && s.drawing && s.start && s.cur) {
+      const cx = (s.start.x + s.cur.x) / 2, cy = (s.start.y + s.cur.y) / 2;
+      const rx = Math.abs(s.cur.x - s.start.x) / 2, ry = Math.abs(s.cur.y - s.start.y) / 2;
+      return (c) => c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    }
+    if (s.tool === "lasso" && s.drawing && s.lassoPts.length > 1) {
+      const pts = s.lassoPts;
+      return (c) => { c.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y); };
+    }
+    if (s.tool === "polygon" && s.polyPts.length) {
+      const pts = s.polyPts, hov = s.polyHover;
+      return (c) => {
+        c.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y);
+        if (hov) c.lineTo(hov.x, hov.y);
+      };
+    }
+    return null;
+  }
+
+  // Stroke marching ants. For vector tools we stroke the known path; for the
+  // wand (and committed masks of any kind) we derive an edge from the mask.
+  function selPaintAnts(livePath) {
+    const w = selOverlay.width;
+    // Scale dash to roughly device-pixels so it looks consistent at any zoom.
+    const px = Math.max(1, w / Math.max(1, selOverlay.getBoundingClientRect().width));
+    const dash = 6 * px, lw = 1.4 * px;
+    function strokePath(makePath, closed) {
+      sodx.save();
+      sodx.lineWidth = lw;
+      // dark base
+      sodx.setLineDash([dash, dash]); sodx.lineDashOffset = -selState.antsOffset * px;
+      sodx.strokeStyle = "rgba(0,0,0,0.85)";
+      sodx.beginPath(); makePath(sodx); if (closed) sodx.closePath(); sodx.stroke();
+      // white ants offset by one dash for the alternating look
+      sodx.lineDashOffset = -selState.antsOffset * px + dash;
+      sodx.strokeStyle = "rgba(255,255,255,0.95)";
+      sodx.beginPath(); makePath(sodx); if (closed) sodx.closePath(); sodx.stroke();
+      sodx.restore();
+    }
+
+    if (livePath) {
+      // Polygon is left "open" (we draw the live segment to the cursor instead);
+      // rect / ellipse / lasso show a closed outline while dragging.
+      strokePath(livePath, selState.tool !== "polygon");
+      return;
+    }
+    if (!selState.hasSel) return;
+
+    // Committed selection: derive an edge mask = mask minus eroded mask, then
+    // stamp it as the ants colour. Works for ALL tools incl. magic wand.
+    selStampEdge(dash, lw);
+  }
+
+  // Derive the mask boundary as a thin "ring" (mask minus an eroded copy) and
+  // stamp it as a monochrome outline. Used for the magic wand and any committed
+  // mask whose exact vector path we no longer have. We can't easily run a dash
+  // pattern over an arbitrary bitmap edge, so the ants are faked: a dark ring
+  // underneath plus a white ring whose alpha shimmers with the dash offset for
+  // a subtle moving feel (and a static outline when reduced-motion is on).
+  const selEdgeCv = document.createElement("canvas");
+  const selEdgeCtx = selEdgeCv.getContext("2d");
+  function selStampEdge(dash, lw) {
+    const w = selOverlay.width, h = selOverlay.height;
+    // Recompute the ring bitmap only when the mask actually changed (cheap to
+    // re-stamp each frame, expensive to rebuild every frame).
+    if (selState.edgeDirty || selEdgeCv.width !== w || selEdgeCv.height !== h) {
+      if (selEdgeCv.width !== w || selEdgeCv.height !== h) { selEdgeCv.width = w; selEdgeCv.height = h; }
+      const ex = selEdgeCtx;
+      ex.setTransform(1, 0, 0, 1, 0, 0);
+      ex.clearRect(0, 0, w, h);
+      // ring = mask minus an eroded mask. Approximate erosion by destination-out
+      // of the mask shifted in 8 directions, leaving a ~inset-thick outline.
+      ex.globalCompositeOperation = "source-over";
+      ex.drawImage(selMask, 0, 0);
+      ex.globalCompositeOperation = "destination-out";
+      const inset = Math.max(1.2, lw * 1.4); // ring thickness in source px
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+        ex.drawImage(selMask, Math.cos(a) * inset, Math.sin(a) * inset);
+      }
+      ex.globalCompositeOperation = "source-over";
+      selState.edgeDirty = false;
+    }
+
+    // Dark underlay so the outline reads on light areas.
+    sodx.save();
+    sodx.globalCompositeOperation = "source-over";
+    sodx.globalAlpha = 0.85;
+    sodx.drawImage(selEdgeCv, 0, 0);
+    // White shimmer on top (alpha animates with the ants offset).
+    const shimmer = selReduceMotion ? 0.9 : 0.55 + 0.4 * (0.5 + 0.5 * Math.sin(selState.antsOffset / 12 * Math.PI * 2));
+    sodx.globalAlpha = shimmer;
+    sodx.globalCompositeOperation = "source-atop";
+    sodx.fillStyle = "#fff";
+    sodx.fillRect(0, 0, w, h);
+    sodx.restore();
+  }
+
+  // --- Marching-ants animation -----------------------------------------
+  const selReduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function selStartAnts() {
+    selStopAnts();
+    if (selReduceMotion) { selPaint(); return; } // static dashes only
+    const tick = () => {
+      selState.antsOffset = (selState.antsOffset + 0.5) % 12;
+      selPaint();
+      selState.raf = requestAnimationFrame(tick);
+    };
+    selState.raf = requestAnimationFrame(tick);
+  }
+  function selStopAnts() { if (selState.raf) cancelAnimationFrame(selState.raf); selState.raf = 0; }
+
+  // --- Pointer interaction ---------------------------------------------
+  function selToSource(clientX, clientY) {
+    const r = selOverlay.getBoundingClientRect();
+    return { x: (clientX - r.left) * (selOverlay.width / r.width), y: (clientY - r.top) * (selOverlay.height / r.height) };
+  }
+  let selPid = -1;
+
+  selOverlay.addEventListener("pointerdown", (e) => {
+    if (mode !== "select") return;
+    const p = selToSource(e.clientX, e.clientY);
+    const tool = selState.tool;
+
+    if (tool === "wand") { selWandAt(p.x, p.y); return; }
+
+    if (tool === "polygon") {
+      // click near the first point closes the polygon
+      if (selState.polyPts.length >= 3) {
+        const a = selState.polyPts[0];
+        const closeDist = 10 * (selOverlay.width / Math.max(1, selOverlay.getBoundingClientRect().width));
+        if (Math.hypot(p.x - a.x, p.y - a.y) <= closeDist) { selClosePolygon(); return; }
+      }
+      selState.polyPts.push(p);
+      selState.polyHover = p;
+      selPaint();
+      return;
+    }
+
+    // rect / ellipse / lasso — start a drag
+    selPid = e.pointerId;
+    selOverlay.setPointerCapture(e.pointerId);
+    selState.drawing = true;
+    selState.start = p; selState.cur = p;
+    selState.lassoPts = [p];
+  });
+
+  selOverlay.addEventListener("pointermove", (e) => {
+    if (mode !== "select") return;
+    const p = selToSource(e.clientX, e.clientY);
+    if (selState.tool === "polygon" && selState.polyPts.length) { selState.polyHover = p; selPaint(); return; }
+    if (!selState.drawing) return;
+    selState.cur = p;
+    if (selState.tool === "lasso") {
+      const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      for (const ev of evs) selState.lassoPts.push(selToSource(ev.clientX, ev.clientY));
+    }
+    selPaint();
+  });
+
+  function selEndDrag(e) {
+    if (!selState.drawing) return;
+    selState.drawing = false;
+    try { selOverlay.releasePointerCapture(selPid); } catch (err) {}
+    const s = selState;
+    if (s.tool === "rect" && s.start && s.cur) {
+      const x = Math.min(s.start.x, s.cur.x), y = Math.min(s.start.y, s.cur.y);
+      const w = Math.abs(s.cur.x - s.start.x), h = Math.abs(s.cur.y - s.start.y);
+      if (w > 1 && h > 1) selMaskFromPath((c) => c.rect(x, y, w, h));
+    } else if (s.tool === "ellipse" && s.start && s.cur) {
+      const cx = (s.start.x + s.cur.x) / 2, cy = (s.start.y + s.cur.y) / 2;
+      const rx = Math.abs(s.cur.x - s.start.x) / 2, ry = Math.abs(s.cur.y - s.start.y) / 2;
+      if (rx > 1 && ry > 1) selMaskFromPath((c) => c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2));
+    } else if (s.tool === "lasso" && s.lassoPts.length > 2) {
+      const pts = s.lassoPts.slice();
+      selMaskFromPath((c) => { c.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y); });
+    }
+    s.start = s.cur = null; s.lassoPts = [];
+    selPaint();
+  }
+  selOverlay.addEventListener("pointerup", selEndDrag);
+  selOverlay.addEventListener("pointercancel", selEndDrag);
+
+  // double-click closes a polygon
+  selOverlay.addEventListener("dblclick", (e) => {
+    if (mode === "select" && selState.tool === "polygon" && selState.polyPts.length >= 3) selClosePolygon();
+  });
+
+  function selClosePolygon() {
+    const pts = selState.polyPts.slice();
+    selState.polyPts = []; selState.polyHover = null;
+    if (pts.length >= 3) selMaskFromPath((c) => { c.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y); });
+    selPaint();
+  }
+
+  // --- Selection bounding box ------------------------------------------
+  function selBounds() {
+    const w = selMask.width, h = selMask.height;
+    const d = smctx.getImageData(0, 0, w, h).data;
+    let minX = w, minY = h, maxX = -1, maxY = -1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (d[(y * w + x) * 4 + 3] > 0) {
+          if (x < minX) minX = x; if (x > maxX) maxX = x;
+          if (y < minY) minY = y; if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return null;
+    return { x: minX, y: minY, w: maxX - minX + 1, h: maxY - minY + 1 };
+  }
+
+  // --- Actions ----------------------------------------------------------
+  // Apply a composite operation through the (feathered) mask onto a canvas.
+  function selApplyMask(canvas, op) {
+    const ctx = canvas.getContext("2d");
+    const m = selFeatheredMask();
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalCompositeOperation = op; // destination-out (delete) | destination-in (cut out)
+    ctx.drawImage(m, 0, 0);
+    ctx.restore();
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  function selDoDelete() {
+    if (!selState.hasSel) return;
+    selApplyMask(src, "destination-out");
+    selApplyMask(markup, "destination-out");
+    render(); buildFilterTiles(); pushHistory(); G.toast("Deleted selection");
+  }
+  function selDoCutout() {
+    if (!selState.hasSel) return;
+    selApplyMask(src, "destination-in");
+    selApplyMask(markup, "destination-in");
+    render(); buildFilterTiles(); pushHistory(); G.toast("Cut out selection");
+  }
+  function selDoCropToSelection() {
+    if (!selState.hasSel) return;
+    const b = selBounds(); if (!b) return;
+    const m = selFeatheredMask();
+    [src, markup].forEach((cv) => {
+      const tmp = document.createElement("canvas"); tmp.width = b.w; tmp.height = b.h;
+      const tx = tmp.getContext("2d");
+      tx.drawImage(cv, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);       // copy box
+      tx.globalCompositeOperation = "destination-in";             // keep only masked area
+      tx.drawImage(m, -b.x, -b.y);
+      tx.globalCompositeOperation = "source-over";
+      cv.width = b.w; cv.height = b.h; cv.getContext("2d").drawImage(tmp, 0, 0);
+    });
+    selClear();
+    selResize();
+    sizePreview(); render(); fitDisplay(); buildFilterTiles();
+    $("#docName").textContent = src.width + " × " + src.height;
+    pushHistory(); G.toast("Cropped to selection");
+  }
+  function selDoInvert() {
+    if (!selState.hasSel) { return; }
+    const w = selMask.width, h = selMask.height;
+    const tmp = document.createElement("canvas"); tmp.width = w; tmp.height = h;
+    const tx = tmp.getContext("2d");
+    tx.fillStyle = "#fff"; tx.fillRect(0, 0, w, h);    // full
+    tx.globalCompositeOperation = "destination-out";
+    tx.drawImage(selMask, 0, 0);                        // minus current
+    smctx.setTransform(1, 0, 0, 1, 0, 0);
+    smctx.clearRect(0, 0, w, h);
+    smctx.drawImage(tmp, 0, 0);
+    selState.hasSel = selMaskNotEmpty();
+    selState.edgeDirty = true;
+    selUpdateButtons(); selPaint(); G.toast("Selection inverted");
+  }
+  function selDoFill() {
+    if (!selState.hasSel) return;
+    const m = G.modal(`<h3>Fill selection</h3>
+      <label class="field" style="margin:12px 0"><span class="field-label">Color</span><input type="color" id="selFillColor" value="#000000"></label>
+      <div class="modal-actions"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" id="selFillGo">Fill</button></div>`);
+    m.el.querySelector("#selFillGo").addEventListener("click", () => {
+      const color = m.el.querySelector("#selFillColor").value;
+      const mask = selFeatheredMask();
+      // paint colour, clipped to the mask, into markup (non-destructive to base)
+      const tmp = document.createElement("canvas"); tmp.width = src.width; tmp.height = src.height;
+      const tx = tmp.getContext("2d");
+      tx.fillStyle = color; tx.fillRect(0, 0, tmp.width, tmp.height);
+      tx.globalCompositeOperation = "destination-in";
+      tx.drawImage(mask, 0, 0);
+      mctx.drawImage(tmp, 0, 0);
+      m.close(); render(); pushHistory(); G.toast("Filled selection");
+    });
+  }
+  async function selDoCopy() {
+    if (!selState.hasSel) return;
+    const b = selBounds(); if (!b) return;
+    const m = selFeatheredMask();
+    // composite base + markup at full res, then keep only the masked box
+    const comp = exportComposite();
+    const out = document.createElement("canvas"); out.width = b.w; out.height = b.h;
+    const ox = out.getContext("2d");
+    ox.drawImage(comp, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
+    ox.globalCompositeOperation = "destination-in";
+    ox.drawImage(m, -b.x, -b.y);
+    ox.globalCompositeOperation = "source-over";
+    try {
+      const blob = await G.export.canvasToBlob(out, "image/png");
+      G.export.download(blob, "glaze-selection.png");
+      G.toast("Saved selection PNG");
+    } catch (err) { G.toast("Couldn't export selection"); }
+  }
+
+  $("#selDelete").addEventListener("click", selDoDelete);
+  $("#selCutout").addEventListener("click", selDoCutout);
+  $("#selCrop").addEventListener("click", selDoCropToSelection);
+  $("#selInvert").addEventListener("click", selDoInvert);
+  $("#selFill").addEventListener("click", selDoFill);
+  $("#selCopy").addEventListener("click", selDoCopy);
+  $("#selDeselect").addEventListener("click", () => { selClear(); G.toast("Deselected"); });
+  selUpdateButtons();
+
+  // ============================================================
   //  Modes (rail)
   // ============================================================
   const MODES = [
     { id: "adjust", icon: "sliders", label: "Adjust" },
     { id: "filters", icon: "sparkles", label: "Looks" },
+    { id: "select", icon: "marquee", label: "Select" },
     { id: "crop", icon: "crop", label: "Crop" },
     { id: "transform", icon: "rotate", label: "Transform" },
     { id: "markup", icon: "brush", label: "Markup" },
@@ -468,6 +989,8 @@
     markup.style.pointerEvents = id === "markup" ? "auto" : "none";
     showCrop(id === "crop");
     ring.style.display = "none";
+    // Selection overlay: only interactive (and visible) in Select mode
+    selSetActive(id === "select");
     if (loaded && window.innerWidth < 900) $("#panel").classList.add("open");
   }
 
@@ -490,6 +1013,7 @@
     markup.width = i2.width; markup.height = i2.height; mctx.clearRect(0, 0, markup.width, markup.height); mctx.drawImage(i2, 0, 0);
     settings = Object.assign({}, h.settings); straighten = h.straighten;
     $("#straighten").value = straighten; $("#straightenVal").textContent = straighten;
+    selResize(); selClear();   // selection is not part of history; reset it to match new size
     syncAdjustUI(); sizePreview(); render(); fitDisplay(); buildFilterTiles();
     $("#docName").textContent = src.width + " × " + src.height; refreshBtns();
   }
@@ -503,7 +1027,18 @@
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input,textarea")) return;
     const meta = e.metaKey || e.ctrlKey;
-    if (meta && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? restore(hi + 1) : restore(hi - 1); }
+    if (meta && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? restore(hi + 1) : restore(hi - 1); return; }
+    // Selection keyboard shortcuts
+    if (mode === "select") {
+      if (e.key === "Escape") {
+        // cancel an in-progress polygon first, otherwise deselect
+        if (selState.polyPts.length || selState.drawing) { selCancelInProgress(); selPaint(); }
+        else if (selState.hasSel) { selClear(); }
+        e.preventDefault(); return;
+      }
+      if (e.key === "Enter" && selState.tool === "polygon" && selState.polyPts.length >= 3) { selClosePolygon(); e.preventDefault(); return; }
+      if ((e.key === "Delete" || e.key === "Backspace") && selState.hasSel) { selDoDelete(); e.preventDefault(); return; }
+    }
   });
 
   // ============================================================

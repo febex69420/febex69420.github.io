@@ -2,7 +2,7 @@
    Glaze · Paint engine
    Smooth path-based brushes + soft anti-aliased eraser,
    adjustable size/opacity/softness, zoom/pan/pinch, flood fill,
-   shapes, undo/redo, multi-format export, and 3D voxel handoff.
+   shapes, undo/redo, multi-format export, and a pixel-by-pixel art mode.
    ============================================================ */
 (function () {
   "use strict";
@@ -15,7 +15,7 @@
   const art = $("#art");
   const live = $("#live");
   const ring = $("#ring");
-  const voxelMount = $("#voxelMount");
+  const pixelGridEl = $("#pixelGrid");
   const artCtx = art.getContext("2d", { willReadFrequently: true });
 
   // offscreen buffers
@@ -61,7 +61,7 @@
     softness: 30,
     mode: "2d",
     recent: [],
-    voxelSize: 1,
+    pixelBrush: 1,
   };
   const view = { scale: 1, x: 0, y: 0 };
 
@@ -99,13 +99,13 @@
   const sizeEl = $("#size"), opacityEl = $("#opacity"), softEl = $("#softness");
   const sizeVal = $("#sizeVal"), opacityVal = $("#opacityVal"), softVal = $("#softnessVal");
   const colorEl = $("#color"), hexVal = $("#hexVal"), recentEl = $("#recent");
-  const vsizeEl = $("#vsize"), vsizeVal = $("#vsizeVal");
+  const pxBrushEl = $("#pxbrush"), pxBrushVal = $("#pxbrushVal");
 
   sizeEl.addEventListener("input", () => { state.size = +sizeEl.value; sizeVal.textContent = state.size; toolSettings[state.tool].size = state.size; updateRing(lastRing.x, lastRing.y); });
   opacityEl.addEventListener("input", () => { state.opacity = +opacityEl.value; opacityVal.textContent = state.opacity; toolSettings[state.tool].opacity = state.opacity; });
   softEl.addEventListener("input", () => { state.softness = +softEl.value; softVal.textContent = state.softness; toolSettings[state.tool].softness = state.softness; });
   colorEl.addEventListener("input", () => setColor(colorEl.value, true));
-  vsizeEl.addEventListener("input", () => { state.voxelSize = +vsizeEl.value; vsizeVal.textContent = state.voxelSize; if (voxel) voxel.setBrushSize(state.voxelSize); });
+  pxBrushEl.addEventListener("input", () => { state.pixelBrush = +pxBrushEl.value; pxBrushVal.textContent = state.pixelBrush; updateRing(lastRing.x, lastRing.y); });
 
   function setColor(c, fromUser) {
     state.color = c;
@@ -114,7 +114,6 @@
     if (fromUser) {
       state.recent = [c].concat(state.recent.filter((x) => x !== c)).slice(0, 6);
       renderRecent();
-      if (voxel) voxel.setColor(c);
     }
   }
   function renderRecent() {
@@ -140,21 +139,22 @@
     document.querySelectorAll(".tool-btn").forEach((b) => b.setAttribute("aria-pressed", b.dataset.tool === id ? "true" : "false"));
     $("#toolTitle").textContent = (TOOLS.find((t) => t.id === id) || {}).label || "Tool";
     loadToolSettings();
-    // field visibility
-    const usesOpacity = !["pipette", "bucket", "move"].includes(id);
-    const usesSoft = ["brush", "marker", "eraser", "line", "rect", "ellipse"].includes(id);
-    $("#opacityField").style.display = usesOpacity ? "" : "none";
-    $("#softnessField").style.display = usesSoft ? "" : "none";
-    $("#sizeField").style.display = id === "move" ? "none" : "";
+    // field visibility (raster fields only matter in Paint mode; Pixel mode manages its own)
+    if (state.mode !== "pixel") {
+      const usesOpacity = !["pipette", "bucket", "move"].includes(id);
+      const usesSoft = ["brush", "marker", "eraser", "line", "rect", "ellipse"].includes(id);
+      $("#opacityField").style.display = usesOpacity ? "" : "none";
+      $("#softnessField").style.display = usesSoft ? "" : "none";
+      $("#sizeField").style.display = id === "move" ? "none" : "";
+    }
     $("#colorField").style.display = id === "eraser" ? "none" : "";
-    if (voxel) voxel.setTool(id === "eraser" ? "erase" : "add");
     updateCursor();
   }
 
   function updateCursor() {
     const pointerTools = ["bucket", "pipette", "move"];
     stage.style.cursor = state.tool === "move" ? "grab" : (pointerTools.includes(state.tool) ? "pointer" : "none");
-    if (pointerTools.includes(state.tool) || state.mode !== "2d") ring.style.display = "none";
+    if (pointerTools.includes(state.tool)) ring.style.display = "none";
   }
 
   // ============================================================
@@ -178,6 +178,17 @@
   function applyTransform() {
     wrap.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.scale})`;
     $("#zoomLvl").textContent = Math.round(view.scale * 100) + "%";
+    updatePixelGrid();
+  }
+
+  function updatePixelGrid() {
+    if (state.mode !== "pixel" || view.scale < 5) { pixelGridEl.style.display = "none"; return; }
+    pixelGridEl.style.display = "block";
+    pixelGridEl.style.left = view.x + "px";
+    pixelGridEl.style.top = view.y + "px";
+    pixelGridEl.style.width = art.width * view.scale + "px";
+    pixelGridEl.style.height = art.height * view.scale + "px";
+    pixelGridEl.style.backgroundSize = view.scale + "px " + view.scale + "px";
   }
   function fitView() {
     const r = stage.getBoundingClientRect();
@@ -224,10 +235,9 @@
     img.onload = () => { artCtx.clearRect(0, 0, art.width, art.height); artCtx.drawImage(img, 0, 0); refreshHistoryButtons(); };
     img.src = history[idx];
   }
-  function undo() { if (state.mode === "voxel") { voxel && voxel.undo(); return; } if (hi > 0) restore(hi - 1); }
-  function redo() { if (state.mode === "voxel") { voxel && voxel.redo(); return; } if (hi < history.length - 1) restore(hi + 1); }
+  function undo() { if (hi > 0) restore(hi - 1); }
+  function redo() { if (hi < history.length - 1) restore(hi + 1); }
   function refreshHistoryButtons() {
-    if (state.mode === "voxel") { $("#undoBtn").disabled = false; $("#redoBtn").disabled = false; return; }
     $("#undoBtn").disabled = hi <= 0;
     $("#redoBtn").disabled = hi >= history.length - 1;
   }
@@ -237,7 +247,7 @@
   // ============================================================
   let drawing = false, isErase = false, isShape = false, isSpray = false;
   let pts = [], drawnIdx = 0, startPt = null, shiftKey = false;
-  let needsCompose = false, sprayTimer = null;
+  let needsCompose = false, sprayTimer = null, composeRaf = 0;
 
   function colorRGBA() { const c = hexToRgb(state.color); return c; }
 
@@ -316,9 +326,10 @@
     }
   }
 
-  function requestCompose() { if (!needsCompose) { needsCompose = true; requestAnimationFrame(compose); } }
+  function requestCompose() { if (!needsCompose) { needsCompose = true; composeRaf = requestAnimationFrame(compose); } }
   function compose() {
     needsCompose = false;
+    composeRaf = 0;
     if (isShape && drawing) drawShape();
     else if (drawing && !isSpray) extendStroke();
     artCtx.save();
@@ -337,15 +348,25 @@
 
   function endStroke() {
     if (!drawing) return;
-    drawing = false;
     if (sprayTimer) { clearInterval(sprayTimer); sprayTimer = null; lastSprayPt = null; }
-    compose(); // final paint
+    // Cancel any pending rAF so it can't re-composite with drawing=false and wipe the stroke.
+    if (composeRaf) { cancelAnimationFrame(composeRaf); composeRaf = 0; }
+    needsCompose = false;
+    compose();           // drawing is still true here, so the stroke is baked into the artwork
+    drawing = false;
+    // Fold the stroke into the base layer so any later compose() is a visual no-op.
+    baseCtx.setTransform(1, 0, 0, 1, 0, 0);
+    baseCtx.clearRect(0, 0, art.width, art.height);
+    baseCtx.drawImage(art, 0, 0);
+    strokeCtx.clearRect(0, 0, art.width, art.height);
     pushHistory();
   }
   function cancelStroke() {
     if (!drawing) return;
     drawing = false;
     if (sprayTimer) { clearInterval(sprayTimer); sprayTimer = null; lastSprayPt = null; }
+    if (composeRaf) { cancelAnimationFrame(composeRaf); composeRaf = 0; }
+    needsCompose = false;
     artCtx.setTransform(1, 0, 0, 1, 0, 0);
     artCtx.clearRect(0, 0, art.width, art.height);
     artCtx.drawImage(baseCanvas, 0, 0);
@@ -405,12 +426,13 @@
   function isPanGesture() { return state.tool === "move" || spaceDown; }
 
   stage.addEventListener("pointerdown", (e) => {
-    if (state.mode !== "2d") return;
+    if (state.mode !== "2d" && state.mode !== "pixel") return;
     stage.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
     if (pointers.size === 2) { // start pinch
       if (drawing) cancelStroke();
+      if (pixelDrawing) pixelCancel();
       const it = [...pointers.values()];
       pinch = { d: dist(it[0], it[1]), cx: (it[0].x + it[1].x) / 2, cy: (it[0].y + it[1].y) / 2, scale: view.scale, vx: view.x, vy: view.y };
       ring.style.display = "none";
@@ -420,14 +442,15 @@
     if (isPanGesture() || e.button === 1) { panning = true; panStart = { x: e.clientX - view.x, y: e.clientY - view.y }; stage.style.cursor = "grabbing"; return; }
 
     const p = toCanvas(e.clientX, e.clientY);
+    shiftKey = e.shiftKey;
+    if (state.mode === "pixel") { pixelDown(p); return; }
     if (state.tool === "bucket") { floodFill(p, state.color); return; }
     if (state.tool === "pipette") { pickColor(p); return; }
-    shiftKey = e.shiftKey;
     beginStroke(p);
   });
 
   stage.addEventListener("pointermove", (e) => {
-    if (state.mode !== "2d") return;
+    if (state.mode !== "2d" && state.mode !== "pixel") return;
     if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     updateRing(e.clientX, e.clientY);
 
@@ -446,6 +469,7 @@
       return;
     }
     if (panning) { view.x = e.clientX - panStart.x; view.y = e.clientY - panStart.y; applyTransform(); return; }
+    if (state.mode === "pixel") { shiftKey = e.shiftKey; if (pixelDrawing) pixelMove(e); return; }
     if (!drawing) return;
 
     shiftKey = e.shiftKey;
@@ -456,30 +480,33 @@
   });
 
   function endPointer(e) {
-    if (state.mode !== "2d") return;
+    if (state.mode !== "2d" && state.mode !== "pixel") return;
     pointers.delete(e.pointerId);
     if (pinch && pointers.size < 2) pinch = null;
     if (panning) { panning = false; stage.style.cursor = state.tool === "move" ? "grab" : (["bucket", "pipette"].includes(state.tool) ? "pointer" : "none"); }
     if (drawing && pointers.size === 0) endStroke();
+    if (pixelDrawing && pointers.size === 0) pixelUp();
   }
   stage.addEventListener("pointerup", endPointer);
   stage.addEventListener("pointercancel", endPointer);
   stage.addEventListener("pointerleave", (e) => { if (!drawing) ring.style.display = "none"; });
 
   stage.addEventListener("wheel", (e) => {
-    if (state.mode !== "2d") return;
+    if (state.mode !== "2d" && state.mode !== "pixel") return;
     e.preventDefault();
     zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 1 / 1.12);
   }, { passive: false });
 
   function updateRing(cx, cy) {
     lastRing = { x: cx, y: cy };
-    const showFor = !["bucket", "pipette", "move"].includes(state.tool) && state.mode === "2d";
+    const pixel = state.mode === "pixel";
+    const showFor = !["bucket", "pipette", "move"].includes(state.tool) && (state.mode === "2d" || pixel);
     if (!showFor) { ring.style.display = "none"; return; }
     const r = stage.getBoundingClientRect();
     if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) { ring.style.display = "none"; return; }
-    const d = state.size * view.scale;
+    const d = (pixel ? state.pixelBrush : state.size) * view.scale;
     ring.style.display = "block";
+    ring.style.borderRadius = pixel ? "1px" : "50%";
     ring.style.left = (cx - r.left) + "px";
     ring.style.top = (cy - r.top) + "px";
     ring.style.width = d + "px";
@@ -502,13 +529,12 @@
   $("#undoBtn").addEventListener("click", undo);
   $("#redoBtn").addEventListener("click", redo);
   $("#clearBtn").addEventListener("click", () => {
-    if (state.mode === "voxel") { voxel && voxel.clear(); return; }
     artCtx.clearRect(0, 0, art.width, art.height);
     pushHistory(); G.toast("Canvas cleared");
   });
   $("#zoomIn").addEventListener("click", () => { const r = stage.getBoundingClientRect(); zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1.2); });
   $("#zoomOut").addEventListener("click", () => { const r = stage.getBoundingClientRect(); zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1 / 1.2); });
-  $("#zoomFit").addEventListener("click", () => { if (state.mode === "voxel") voxel && voxel.fit && voxel.fit(); else fitView(); });
+  $("#zoomFit").addEventListener("click", () => fitView());
 
   // props sheet (mobile)
   const props = $("#props");
@@ -582,7 +608,7 @@
   // ============================================================
   //  Export
   // ============================================================
-  $("#exportBtn").addEventListener("click", () => state.mode === "voxel" ? exportVoxelModal() : exportRasterModal());
+  $("#exportBtn").addEventListener("click", exportRasterModal);
 
   function exportRasterModal() {
     const html = `
@@ -601,6 +627,10 @@
         <button class="chip" data-fmt="svg">SVG</button>
         <button class="chip" data-fmt="pdf">PDF</button>
       </div>
+      <label class="field" id="exScaleField" style="display:none;margin-bottom:10px">
+        <span class="field-label">Pixel scale <span class="val"><span id="exScaleV">8</span>×</span></span>
+        <input type="range" id="exScale" min="1" max="32" value="8">
+      </label>
       <label class="field" id="exQ" style="display:none;margin-bottom:6px">
         <span class="field-label">Quality <span class="val"><span id="exQv">92</span>%</span></span>
         <input type="range" id="exQuality" min="40" max="100" value="92">
@@ -612,6 +642,10 @@
     const m = G.modal(html);
     let fmt = "png";
     const qWrap = m.el.querySelector("#exQ");
+    if (state.mode === "pixel") {
+      m.el.querySelector("#exScaleField").style.display = "";
+      m.el.querySelector("#exScale").addEventListener("input", (e) => m.el.querySelector("#exScaleV").textContent = e.target.value);
+    }
     m.el.querySelectorAll("#exFmt .chip").forEach((c) => c.addEventListener("click", () => {
       m.el.querySelectorAll("#exFmt .chip").forEach((x) => x.setAttribute("aria-pressed", "false"));
       c.setAttribute("aria-pressed", "true"); fmt = c.dataset.fmt;
@@ -621,14 +655,16 @@
     m.el.querySelector("#exGo").addEventListener("click", async () => {
       const name = (m.el.querySelector("#exName").value || "glaze-artwork").replace(/[^\w.-]+/g, "_");
       const q = (+m.el.querySelector("#exQuality").value) / 100;
+      const scale = state.mode === "pixel" ? Math.max(1, +m.el.querySelector("#exScale").value || 1) : 1;
+      const source = scale > 1 ? upscale(art, scale) : art;
       let blob, ext = fmt;
       try {
-        if (fmt === "png") blob = await G.export.canvasToBlob(art, "image/png");
-        else if (fmt === "jpeg") { blob = await G.export.canvasToBlob(flatten(), "image/jpeg", q); ext = "jpg"; }
-        else if (fmt === "webp") blob = await G.export.canvasToBlob(art, "image/webp", q);
-        else if (fmt === "bmp") blob = G.export.canvasToBMP(art);
-        else if (fmt === "svg") blob = G.export.canvasToSVG(art);
-        else if (fmt === "pdf") blob = await G.export.canvasToPDF(flatten(), q);
+        if (fmt === "png") blob = await G.export.canvasToBlob(source, "image/png");
+        else if (fmt === "jpeg") { blob = await G.export.canvasToBlob(flatten(source), "image/jpeg", q); ext = "jpg"; }
+        else if (fmt === "webp") blob = await G.export.canvasToBlob(source, "image/webp", q);
+        else if (fmt === "bmp") blob = G.export.canvasToBMP(source);
+        else if (fmt === "svg") blob = G.export.canvasToSVG(source);
+        else if (fmt === "pdf") blob = await G.export.canvasToPDF(flatten(source), q);
         if (!blob) throw new Error("unsupported");
         G.export.download(blob, name + "." + ext);
         m.close(); G.toast("Saved " + name + "." + ext);
@@ -637,78 +673,84 @@
   }
 
   // flatten transparency over white for formats without alpha
-  function flatten() {
-    const c = document.createElement("canvas"); c.width = art.width; c.height = art.height;
-    const cx = c.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, c.width, c.height); cx.drawImage(art, 0, 0);
+  function flatten(cv) {
+    cv = cv || art;
+    const c = document.createElement("canvas"); c.width = cv.width; c.height = cv.height;
+    const cx = c.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, c.width, c.height); cx.drawImage(cv, 0, 0);
     return c;
   }
 
-  function exportVoxelModal() {
-    const html = `
-      <h3>Export voxel scene</h3>
-      <p class="muted" style="margin:6px 0 16px">Saved locally to your device.</p>
-      <span class="field-label" style="margin-bottom:8px;display:block">Format</span>
-      <div class="chips" id="vxFmt" style="margin-bottom:14px">
-        <button class="chip" data-fmt="png" aria-pressed="true">PNG image</button>
-        <button class="chip" data-fmt="obj">OBJ model</button>
-        <button class="chip" data-fmt="json">Voxel JSON</button>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" data-close>Cancel</button>
-        <button class="btn btn-primary" id="vxGo">Download</button>
-      </div>`;
-    const m = G.modal(html);
-    let fmt = "png";
-    m.el.querySelectorAll("#vxFmt .chip").forEach((c) => c.addEventListener("click", () => {
-      m.el.querySelectorAll("#vxFmt .chip").forEach((x) => x.setAttribute("aria-pressed", "false"));
-      c.setAttribute("aria-pressed", "true"); fmt = c.dataset.fmt;
-    }));
-    m.el.querySelector("#vxGo").addEventListener("click", async () => {
-      if (!voxel) return;
-      if (fmt === "png") { const b = await voxel.exportPNG(); G.export.download(b, "glaze-voxel.png"); }
-      else if (fmt === "obj") { G.export.download(new Blob([voxel.exportOBJ()], { type: "text/plain" }), "glaze-voxel.obj"); }
-      else { G.export.download(new Blob([voxel.exportJSON()], { type: "application/json" }), "glaze-voxel.json"); }
-      m.close(); G.toast("Voxel scene saved");
-    });
+  // nearest-neighbour upscale (crisp pixel-art export)
+  function upscale(cv, s) {
+    const c = document.createElement("canvas"); c.width = cv.width * s; c.height = cv.height * s;
+    const x = c.getContext("2d"); x.imageSmoothingEnabled = false; x.drawImage(cv, 0, 0, c.width, c.height);
+    return c;
   }
 
   // ============================================================
-  //  Mode switch (2D <-> Voxel 3D)
+  //  Mode switch (Paint <-> Pixel)
   // ============================================================
-  let voxel = null;
-  const mode2dBtn = $("#mode2d"), modeVoxelBtn = $("#modeVoxel");
+  const mode2dBtn = $("#mode2d"), modePixelBtn = $("#modePixel");
   mode2dBtn.addEventListener("click", () => switchMode("2d"));
-  modeVoxelBtn.addEventListener("click", () => switchMode("voxel"));
+  modePixelBtn.addEventListener("click", () => switchMode("pixel"));
 
-  async function switchMode(mode) {
+  // Each mode keeps its own independent document (canvas + history).
+  const docs = {};
+  function snapshotDoc() { return { w: art.width, h: art.height, data: art.toDataURL("image/png"), history: history, hi: hi }; }
+  function resizeBuffers(w, h) {
+    art.width = w; art.height = h; live.width = w; live.height = h;
+    baseCanvas.width = w; baseCanvas.height = h; strokeCanvas.width = w; strokeCanvas.height = h;
+    wrap.style.width = w + "px"; wrap.style.height = h + "px";
+  }
+  function applyDoc(doc) {
+    resizeBuffers(doc.w, doc.h);
+    history = doc.history; hi = doc.hi;
+    artCtx.setTransform(1, 0, 0, 1, 0, 0); artCtx.clearRect(0, 0, doc.w, doc.h);
+    artCtx.imageSmoothingEnabled = state.mode !== "pixel";
+    const img = new Image();
+    img.onload = () => { artCtx.imageSmoothingEnabled = state.mode !== "pixel"; artCtx.clearRect(0, 0, doc.w, doc.h); artCtx.drawImage(img, 0, 0); };
+    img.src = doc.data;
+    refreshHistoryButtons(); fitView();
+  }
+  function initPixelCanvas(n) {
+    resizeBuffers(n, n);
+    artCtx.setTransform(1, 0, 0, 1, 0, 0); artCtx.imageSmoothingEnabled = false; artCtx.clearRect(0, 0, n, n);
+    history = []; hi = -1; pushHistory(); fitView();
+  }
+  function setPixelGrid(n) {
+    const tmp = document.createElement("canvas"); tmp.width = n; tmp.height = n;
+    const tx = tmp.getContext("2d"); tx.imageSmoothingEnabled = false;
+    tx.drawImage(art, 0, 0, art.width, art.height, 0, 0, n, n);
+    pixelGridSize = n;
+    resizeBuffers(n, n);
+    artCtx.imageSmoothingEnabled = false; artCtx.clearRect(0, 0, n, n); artCtx.drawImage(tmp, 0, 0);
+    history = []; hi = -1; pushHistory();
+    $("#docName").textContent = n + " × " + n + " px";
+    fitView();
+    document.querySelectorAll("#pxGridChips .chip").forEach((c) => c.setAttribute("aria-pressed", +c.dataset.grid === n ? "true" : "false"));
+  }
+
+  function switchMode(mode) {
     if (mode === state.mode) return;
+    if (drawing) cancelStroke();
+    if (pixelDrawing) pixelCancel();
+    docs[state.mode] = snapshotDoc();
     state.mode = mode;
     mode2dBtn.setAttribute("aria-pressed", mode === "2d");
-    modeVoxelBtn.setAttribute("aria-pressed", mode === "voxel");
-    const voxelFields = document.querySelectorAll(".voxel-field");
-    if (mode === "voxel") {
-      wrap.classList.add("hidden"); ring.style.display = "none";
-      voxelMount.classList.remove("hidden");
+    modePixelBtn.setAttribute("aria-pressed", mode === "pixel");
+    const pixelFields = document.querySelectorAll(".pixel-field");
+    if (mode === "pixel") {
+      wrap.classList.add("pixelated");
       document.querySelectorAll(".raster-only").forEach((e) => e.style.display = "none");
-      voxelFields.forEach((e) => e.classList.remove("hidden"));
-      $("#toolTitle").textContent = "Voxel 3D";
-      // only add/eraser meaningful — visually keep brush & eraser highlighted appropriately
-      if (!voxel) {
-        $("#docName").textContent = "Loading 3D…";
-        try {
-          const mod = await import("./assets/voxel.js");
-          voxel = await mod.createVoxelEditor(voxelMount, { color: state.color, brushSize: state.voxelSize });
-          voxel.setTool(state.tool === "eraser" ? "erase" : "add");
-        } catch (err) { G.toast("Couldn't load the 3D engine (offline?)"); switchMode("2d"); return; }
-      }
-      voxel.onShow();
-      $("#docName").textContent = "Voxel";
+      pixelFields.forEach((e) => e.classList.remove("hidden"));
+      $("#toolTitle").textContent = "Pixel";
+      if (docs.pixel) applyDoc(docs.pixel); else initPixelCanvas(pixelGridSize);
+      $("#docName").textContent = art.width + " × " + art.height + " px";
     } else {
-      voxelMount.classList.add("hidden");
-      wrap.classList.remove("hidden");
+      wrap.classList.remove("pixelated");
       document.querySelectorAll(".raster-only").forEach((e) => e.style.display = "");
-      voxelFields.forEach((e) => e.classList.add("hidden"));
-      if (voxel) voxel.onHide();
+      pixelFields.forEach((e) => e.classList.add("hidden"));
+      applyDoc(docs["2d"]);
       $("#docName").textContent = art.width + " × " + art.height;
       selectTool(state.tool);
     }
@@ -716,7 +758,87 @@
     updateCursor();
   }
 
-  window.addEventListener("resize", () => { if (state.mode === "2d") applyTransform(); else if (voxel) voxel.onResize(); });
+  // ============================================================
+  //  Pixel mode engine (pixel-by-pixel grid editing)
+  // ============================================================
+  let pixelGridSize = 32;
+  let pixelDrawing = false, pixelTool = null, pixelStart = null, pixelLast = null;
+
+  function cellOf(p) { return { x: Math.floor(p.x), y: Math.floor(p.y) }; }
+  function paintCells(cx, cy, erase) {
+    const n = state.pixelBrush, off = Math.floor((n - 1) / 2);
+    if (erase) artCtx.clearRect(cx - off, cy - off, n, n);
+    else { artCtx.fillStyle = state.color; artCtx.fillRect(cx - off, cy - off, n, n); }
+  }
+  function lineCells(x0, y0, x1, y1, erase) {
+    let dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+    let sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx - dy;
+    while (true) {
+      paintCells(x0, y0, erase);
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+    }
+  }
+  function rectCells(x0, y0, x1, y1, filled) {
+    const xa = Math.min(x0, x1), xb = Math.max(x0, x1), ya = Math.min(y0, y1), yb = Math.max(y0, y1);
+    if (filled) { for (let y = ya; y <= yb; y++) for (let x = xa; x <= xb; x++) paintCells(x, y, false); }
+    else {
+      for (let x = xa; x <= xb; x++) { paintCells(x, ya, false); paintCells(x, yb, false); }
+      for (let y = ya; y <= yb; y++) { paintCells(xa, y, false); paintCells(xb, y, false); }
+    }
+  }
+  function ellipseCells(x0, y0, x1, y1) {
+    const xa = Math.min(x0, x1), xb = Math.max(x0, x1), ya = Math.min(y0, y1), yb = Math.max(y0, y1);
+    const rx = (xb - xa) / 2, ry = (yb - ya) / 2, cx = (xa + xb) / 2, cy = (ya + yb) / 2;
+    if (rx < 0.5 || ry < 0.5) { lineCells(xa, ya, xb, yb, false); return; }
+    const steps = Math.max(24, Math.round((rx + ry) * 4));
+    let px = null, py = null;
+    for (let i = 0; i <= steps; i++) {
+      const a = i / steps * Math.PI * 2;
+      const x = Math.round(cx + Math.cos(a) * rx), y = Math.round(cy + Math.sin(a) * ry);
+      if (px !== null) lineCells(px, py, x, y, false);
+      px = x; py = y;
+    }
+  }
+  function pixelDown(p) {
+    const tool = state.tool;
+    if (tool === "bucket") { floodFill(p, state.color); return; }
+    if (tool === "pipette") { pickColor(p); return; }
+    const cell = cellOf(p), erase = tool === "eraser";
+    pixelTool = ["line", "rect", "ellipse"].includes(tool) ? tool : (erase ? "eraser" : "pencil");
+    pixelDrawing = true;
+    baseCtx.setTransform(1, 0, 0, 1, 0, 0); baseCtx.clearRect(0, 0, art.width, art.height); baseCtx.drawImage(art, 0, 0);
+    pixelStart = cell; pixelLast = cell;
+    if (pixelTool === "pencil" || pixelTool === "eraser") paintCells(cell.x, cell.y, erase);
+  }
+  function pixelMove(e) {
+    if (!pixelDrawing) return;
+    if (pixelTool === "pencil" || pixelTool === "eraser") {
+      const erase = pixelTool === "eraser";
+      const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      for (const ev of evs) { const c = cellOf(toCanvas(ev.clientX, ev.clientY)); lineCells(pixelLast.x, pixelLast.y, c.x, c.y, erase); pixelLast = c; }
+    } else {
+      const c = cellOf(toCanvas(e.clientX, e.clientY));
+      let ex = c.x, ey = c.y;
+      if (shiftKey && pixelTool !== "line") { const s = Math.max(Math.abs(ex - pixelStart.x), Math.abs(ey - pixelStart.y)); ex = pixelStart.x + Math.sign(ex - pixelStart.x || 1) * s; ey = pixelStart.y + Math.sign(ey - pixelStart.y || 1) * s; }
+      artCtx.setTransform(1, 0, 0, 1, 0, 0); artCtx.clearRect(0, 0, art.width, art.height); artCtx.drawImage(baseCanvas, 0, 0);
+      if (pixelTool === "line") lineCells(pixelStart.x, pixelStart.y, ex, ey, false);
+      else if (pixelTool === "rect") rectCells(pixelStart.x, pixelStart.y, ex, ey, false);
+      else ellipseCells(pixelStart.x, pixelStart.y, ex, ey);
+    }
+  }
+  function pixelUp() { if (!pixelDrawing) return; pixelDrawing = false; pushHistory(); }
+  function pixelCancel() {
+    if (!pixelDrawing) return; pixelDrawing = false;
+    artCtx.setTransform(1, 0, 0, 1, 0, 0); artCtx.clearRect(0, 0, art.width, art.height); artCtx.drawImage(baseCanvas, 0, 0);
+  }
+
+  // pixel-mode grid presets
+  document.querySelectorAll("#pxGridChips .chip").forEach((c) => c.addEventListener("click", () => setPixelGrid(+c.dataset.grid)));
+
+  window.addEventListener("resize", applyTransform);
 
   // ============================================================
   //  Keyboard
@@ -727,7 +849,13 @@
     const meta = e.metaKey || e.ctrlKey;
     if (meta && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
     if (meta && e.key.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
-    if (e.code === "Space") { spaceDown = true; if (state.mode === "2d") stage.style.cursor = "grab"; return; }
+    if (e.code === "Space") { spaceDown = true; stage.style.cursor = "grab"; return; }
+    if (state.mode === "pixel") {
+      if (e.key === "[") { pxBrushEl.value = Math.max(1, state.pixelBrush - 1); pxBrushEl.dispatchEvent(new Event("input")); }
+      else if (e.key === "]") { pxBrushEl.value = Math.min(8, state.pixelBrush + 1); pxBrushEl.dispatchEvent(new Event("input")); }
+      else if (KEYS[e.key.toLowerCase()]) selectTool(KEYS[e.key.toLowerCase()]);
+      return;
+    }
     if (state.mode !== "2d") return;
     if (e.key === "[") { sizeEl.value = Math.max(1, state.size - Math.ceil(state.size * 0.1) - 1); sizeEl.dispatchEvent(new Event("input")); }
     else if (e.key === "]") { sizeEl.value = Math.min(400, state.size + Math.ceil(state.size * 0.1) + 1); sizeEl.dispatchEvent(new Event("input")); }

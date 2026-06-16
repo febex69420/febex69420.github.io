@@ -58,6 +58,18 @@
     contrast: '<circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/>',
     star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
     arrowRight: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    lasso: '<path d="M7 22a5 5 0 0 1-2-4"/><path d="M3.3 14A6.8 6.8 0 0 1 2 10c0-4.4 4.5-8 10-8s10 3.6 10 8-4.5 8-10 8a12 12 0 0 1-5-1"/><circle cx="5" cy="16" r="2"/>',
+    polygon: '<path d="m12 2 9 6.6L17.5 20h-11L3 8.6z"/>',
+    wand: '<path d="m3 21 9-9"/><path d="m12.2 6.8 5 5"/><path d="M15 3v3"/><path d="M19.8 6.2 17.4 8.6"/><path d="M21 11h-3"/>',
+    marquee: '<path d="M5 3a2 2 0 0 0-2 2"/><path d="M19 3a2 2 0 0 1 2 2"/><path d="M21 19a2 2 0 0 1-2 2"/><path d="M5 21a2 2 0 0 1-2-2"/><path d="M9 3h1"/><path d="M9 21h1"/><path d="M14 3h1"/><path d="M14 21h1"/><path d="M3 9v1"/><path d="M21 9v1"/><path d="M3 14v1"/><path d="M21 14v1"/>',
+    feather: '<path d="M12.67 19a2 2 0 0 0 1.42-.59l6.15-6.17a6 6 0 0 0-8.49-8.49L5.59 9.91A2 2 0 0 0 5 11.33V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    reverse: '<polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/>',
+    droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+    eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    pixel: '<rect x="3" y="3" width="18" height="18" rx="1"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/>',
+    text: '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/>',
+    sun2: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   };
 
   Glaze.icon = function (name, size) {
@@ -379,9 +391,49 @@
     return loaded[src];
   };
 
+  /* ---------------- Scroll reveal + parallax (reduced-motion aware) ---------------- */
+  Glaze.scrollReveal = function (sel) {
+    const els = document.querySelectorAll(sel || "[data-reveal]");
+    if (!els.length) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach((e) => e.classList.add("in"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          const d = en.target.getAttribute("data-reveal-delay");
+          if (d) en.target.style.transitionDelay = d + "ms";
+          en.target.classList.add("in");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -7% 0px" });
+    els.forEach((e) => io.observe(e));
+  };
+
+  Glaze.parallax = function () {
+    const els = document.querySelectorAll("[data-parallax]");
+    if (!els.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let ticking = false;
+    function update() {
+      const y = window.scrollY || window.pageYOffset;
+      els.forEach((e) => {
+        const speed = parseFloat(e.getAttribute("data-parallax")) || 0.2;
+        e.style.transform = "translate3d(0," + (y * speed).toFixed(1) + "px,0)";
+      });
+      ticking = false;
+    }
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  };
+
   /* ---------------- Boot ---------------- */
   document.addEventListener("DOMContentLoaded", function () {
     Glaze.initTheme();
+    Glaze.scrollReveal();
+    Glaze.parallax();
     if (!document.body.hasAttribute("data-no-privacy-note")) {
       // delay so it doesn't fight the entrance animation
       setTimeout(Glaze.privacyNote, 1200);
