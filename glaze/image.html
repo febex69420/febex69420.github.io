@@ -15,6 +15,9 @@
     #imgWrap { position: relative; max-width: 100%; max-height: 100%; box-shadow: var(--shadow-2); border-radius: 4px; }
     #display { display: block; border-radius: 4px; width: 100%; height: 100%; }
     #markup { position: absolute; left: 0; top: 0; width: 100%; height: 100%; touch-action: none; border-radius: 4px; }
+    /* selection interaction + display overlay — sits above display/markup, below cropBox */
+    #selOverlay { position: absolute; left: 0; top: 0; width: 100%; height: 100%; touch-action: none; border-radius: 4px; pointer-events: none; }
+    #selOverlay.on { pointer-events: auto; cursor: crosshair; }
 
     /* crop overlay */
     #cropBox { position: absolute; border: 1.5px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,0.55); cursor: move; display: none; }
@@ -83,6 +86,7 @@
         <div id="imgWrap" class="hidden">
           <canvas id="display"></canvas>
           <canvas id="markup"></canvas>
+          <canvas id="selOverlay"></canvas>
           <div id="cropBox"><span class="grid3"></span><span class="h tl"></span><span class="h tr"></span><span class="h bl"></span><span class="h br"></span></div>
         </div>
         <div id="ring"></div>
@@ -104,6 +108,33 @@
         <div class="pmode" data-mode="filters" id="m-filters">
           <h4>Looks</h4>
           <div class="swatches" id="filterGrid" style="grid-template-columns:repeat(2,1fr)"></div>
+        </div>
+
+        <!-- SELECT -->
+        <div class="pmode" data-mode="select" id="m-select">
+          <h4>Select</h4>
+          <div class="row" id="selTools" role="group" aria-label="Selection tools"></div>
+          <label class="field" id="selTolField" style="display:none">
+            <span class="field-label">Tolerance <span class="val"><span id="selTolVal">24</span></span></span>
+            <input type="range" id="selTol" min="0" max="100" value="24">
+          </label>
+          <label class="field">
+            <span class="field-label">Feather <span class="val"><span id="selFeatherVal">0</span> px</span></span>
+            <input type="range" id="selFeather" min="0" max="50" value="0">
+          </label>
+          <div class="divider"></div>
+          <div class="row wrap" id="selActions">
+            <button class="btn btn-sm" id="selDelete" disabled>Delete</button>
+            <button class="btn btn-sm btn-primary" id="selCutout" disabled>Cut out</button>
+            <button class="btn btn-sm" id="selCrop" disabled>Crop to selection</button>
+          </div>
+          <div class="row wrap">
+            <button class="btn btn-sm" id="selInvert" disabled>Invert</button>
+            <button class="btn btn-sm" id="selFill" disabled>Fill</button>
+            <button class="btn btn-sm" id="selCopy" disabled>Copy PNG</button>
+            <button class="btn btn-sm" id="selDeselect" disabled>Deselect</button>
+          </div>
+          <p class="hint muted" style="font-size:var(--fs-13)">Draw a selection on the image, then cut it out or crop to it. Esc deselects.</p>
         </div>
 
         <!-- CROP -->
