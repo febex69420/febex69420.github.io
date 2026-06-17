@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --ring: 124 92 255;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-base text-slate-200 font-sans antialiased;
+  background-image: theme('backgroundImage.mesh-violet');
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Tabular numbers for stats, timers, counts (number-tabular rule) */
+.tabnums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Headings use the display face */
+h1,
+h2,
+h3 {
+  @apply font-display tracking-wide;
+}
+
+@layer components {
+  /* Glassmorphism surface — the signature GameHub look */
+  .glass {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/10;
+  }
+  .glass-strong {
+    @apply bg-white/[0.07] backdrop-blur-2xl border border-white/10;
+  }
+  .glass-hover {
+    @apply transition-colors duration-200 hover:bg-white/[0.07];
+  }
+
+  /* Gradient text used for brand + section accents */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-soft via-accent to-rose bg-clip-text text-transparent;
+  }
+
+  /* Consistent focus ring for keyboard users (accessibility: focus-states) */
+  .focusable {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-base;
+  }
+
+  /* Standard text input */
+  .input {
+    @apply h-11 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 text-white placeholder:text-slate-600 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/40;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.16);
+    border-radius: 9999px;
+  }
+}
+
+/* Loading skeleton shimmer */
+.skeleton {
+  @apply relative overflow-hidden bg-white/5 rounded-lg;
+}
+.skeleton::after {
+  content: '';
+  @apply absolute inset-0 -translate-x-full;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+
+/* Respect users who prefer reduced motion (accessibility: reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton::after {
+    animation: none;
+  }
+}

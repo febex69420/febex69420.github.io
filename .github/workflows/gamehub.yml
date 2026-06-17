@@ -1,0 +1,30 @@
+name: GameHub CI
+
+on:
+  push:
+    paths:
+      - 'gamehub/**'
+      - '.github/workflows/gamehub.yml'
+  pull_request:
+    paths:
+      - 'gamehub/**'
+      - '.github/workflows/gamehub.yml'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gamehub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: gamehub/package-lock.json
+      - run: npm ci
+      - name: Type-check & build
+        run: npm run build
+      - name: Unit tests
+        run: npm test
