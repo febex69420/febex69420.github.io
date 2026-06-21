@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Credit Roll — paste your text, pick a speed, and watch a live preview of a scrolling end-credits video. Export it as a video in one click. No sign-up, runs entirely in your browser." />
+  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+  <title>Credit Roll — make a scrolling end-credits video</title>
+  <style>
+    /* ---------- Design tokens (shared with Felix's World) ---------- */
+    :root {
+      color-scheme: dark light;
+      --bg: #0a0a0f;
+      --bg-soft: #101019;
+      --surface: #15151f;
+      --surface-2: #1b1b27;
+      --border: #26262f;
+      --border-strong: #34343f;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --accent: #3b82f6;
+      --accent-strong: #2563eb;
+      --accent-contrast: #ffffff;
+      --ring: #60a5fa;
+      --danger: #f87171;
+      --ok: #34d399;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.4);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --max: 1280px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #fafafa;
+        --bg-soft: #f1f3f6;
+        --surface: #ffffff;
+        --surface-2: #f6f7f9;
+        --border: #e4e4e7;
+        --border-strong: #d4d4d8;
+        --text: #09090b;
+        --muted: #52525b;
+        --accent: #2563eb;
+        --accent-strong: #1d4ed8;
+        --accent-contrast: #ffffff;
+        --ring: #2563eb;
+        --danger: #dc2626;
+        --ok: #059669;
+        --shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.10);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+        radial-gradient(900px 500px at -10% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+    h1, h2, h3 { line-height: 1.2; margin: 0; letter-spacing: -0.02em; }
+
+    :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
+
+    /* ---------- Top bar ---------- */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: clamp(18px, 4vw, 28px); flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand .mark { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent); flex: 0 0 auto; }
+    .brand .mark svg { width: 24px; height: 24px; }
+    .brand h1 { font-size: clamp(1.25rem, 3vw, 1.6rem); font-weight: 800; }
+    .brand p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+    .back {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 42px; padding: 0 16px; border-radius: 999px;
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); font-weight: 600; font-size: .92rem;
+      cursor: pointer; transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .back:hover { border-color: var(--border-strong); background: var(--surface-2); }
+    .back:active { transform: translateY(1px); }
+    .back svg { width: 18px; height: 18px; }
+
+    main { padding: clamp(20px, 4vw, 32px) 0 64px; }
+
+    /* ---------- Editor layout ---------- */
+    .editor {
+      display: grid; gap: 18px;
+      grid-template-columns: 1fr;
+      grid-template-areas: "preview" "controls";
+    }
+    @media (min-width: 980px) {
+      .editor {
+        grid-template-columns: minmax(340px, 400px) 1fr;
+        grid-template-areas: "controls preview";
+        align-items: start;
+      }
+      .preview-pane { position: sticky; top: 18px; }
+    }
+
+    .pane {
+      background: linear-gradient(180deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .controls-pane { grid-area: controls; }
+    .preview-pane { grid-area: preview; background: none; border: 0; box-shadow: none; }
+
+    /* ---------- Controls ---------- */
+    .group { padding: 18px; border-bottom: 1px solid var(--border); }
+    .group:last-child { border-bottom: 0; }
+    .group > .label-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .group h2 { font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+    label.field { display: block; font-size: .82rem; font-weight: 600; color: var(--muted); margin-bottom: 7px; }
+
+    textarea, select, input[type="text"] {
+      width: 100%; font-family: inherit; color: var(--text);
+      background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    textarea {
+      min-height: 220px; padding: 12px 14px; font-size: .95rem; line-height: 1.6; resize: vertical;
+      font-variant-ligatures: none;
+    }
+    select { min-height: 44px; padding: 0 12px; font-size: .92rem; cursor: pointer; }
+    textarea:hover, select:hover { border-color: var(--border-strong); }
+    textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+    .helper { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+    details.guide { margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-soft); }
+    details.guide > summary { cursor: pointer; list-style: none; padding: 10px 12px; font-size: .82rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    details.guide > summary::-webkit-details-marker { display: none; }
+    details.guide > summary .chev { width: 16px; height: 16px; color: var(--muted); transition: transform .2s ease; }
+    details.guide[open] > summary .chev { transform: rotate(90deg); }
+    .guide-body { padding: 0 12px 12px; }
+    .guide-body dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: .82rem; }
+    .guide-body code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: var(--surface-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 6px; color: var(--text); white-space: nowrap; }
+    .guide-body dd { margin: 0; color: var(--muted); align-self: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 42px; padding: 0 16px; border-radius: 999px; font-weight: 600; font-size: .92rem;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      cursor: pointer; transition: transform .15s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
+      font-family: inherit;
+    }
+    .btn:hover { border-color: var(--border-strong); background: var(--surface-2); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn svg { width: 18px; height: 18px; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+    .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* segmented / preset chips */
+    .segment { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+    .seg-btn {
+      min-height: 36px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+      background: var(--surface); color: var(--muted); border: 1px solid var(--border);
+      font-size: .85rem; font-weight: 600; font-family: inherit;
+      transition: color .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .seg-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .seg-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+    /* range */
+    .range-row { display: flex; align-items: center; gap: 12px; }
+    input[type="range"] { flex: 1; accent-color: var(--accent); height: 28px; cursor: pointer; }
+    .range-val { font-variant-numeric: tabular-nums; font-weight: 600; font-size: .9rem; min-width: 84px; text-align: right; color: var(--text); }
+
+    /* two-column rows */
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 360px) { .row2 { grid-template-columns: 1fr; } }
+
+    /* color picker */
+    .color-field { display: flex; align-items: center; gap: 10px; }
+    input[type="color"] { -webkit-appearance: none; appearance: none; width: 42px; height: 42px; padding: 0; border: 1px solid var(--border); border-radius: 10px; background: none; cursor: pointer; }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 4px; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
+    input[type="color"]::-moz-color-swatch { border: none; border-radius: 6px; }
+    .swatches { display: inline-flex; gap: 6px; }
+    .swatch { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--border-strong); cursor: pointer; padding: 0; transition: transform .15s ease; }
+    .swatch:hover { transform: scale(1.1); }
+
+    /* toggles */
+    .toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; }
+    .toggle:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .toggle span.t-label { font-size: .92rem; font-weight: 500; }
+    .toggle input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex: 0 0 auto; }
+
+    /* ---------- Preview ---------- */
+    .stage {
+      position: relative; border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border); box-shadow: var(--shadow); background: #000;
+      line-height: 0;
+    }
+    canvas#stage { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+    .badge {
+      position: absolute; top: 12px; left: 12px;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+      background: rgba(10,10,15,.72); color: #fff; border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .badge .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 30%, transparent); }
+    .badge.rec .live-dot { background: var(--danger); box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 30%, transparent); animation: pulse 1s steps(2) infinite; }
+    @keyframes pulse { 50% { opacity: .35; } }
+
+    .transport {
+      margin-top: 14px; padding: 14px; background: linear-gradient(180deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .scrub-row { display: flex; align-items: center; gap: 12px; }
+    .scrub-row input[type="range"] { flex: 1; }
+    .time { font-variant-numeric: tabular-nums; font-size: .85rem; color: var(--muted); min-width: 92px; text-align: center; }
+    .controls-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .icon-btn {
+      width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      cursor: pointer; transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    }
+    .icon-btn:hover { background: var(--surface-2); border-color: var(--border-strong); }
+    .icon-btn:active { transform: translateY(1px); }
+    .icon-btn.play { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); width: 52px; height: 52px; }
+    .icon-btn.play:hover { background: var(--accent-strong); }
+    .icon-btn svg { width: 22px; height: 22px; }
+    .spacer { flex: 1; }
+
+    .export-bar { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .status { font-size: .85rem; color: var(--muted); min-height: 1.2em; display: flex; align-items: center; gap: 8px; }
+    .status.busy { color: var(--text); }
+    .status.error { color: var(--danger); }
+    .status .spin { width: 14px; height: 14px; border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { margin-top: 56px; border-top: 1px solid var(--border); padding: 22px 0; color: var(--muted); font-size: .85rem; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; }
+    footer a { color: var(--text); font-weight: 600; }
+    footer a:hover { color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 9h20M7 4v5M17 4v5M7 20v-5M17 20v-5"/></svg>
+        </span>
+        <div>
+          <h1>Credit Roll</h1>
+          <p>Paste your text, pick a speed, watch the preview, export a video.</p>
+        </div>
+      </div>
+      <a class="back" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Felix's World
+      </a>
+    </div>
+
+    <main>
+      <div class="editor">
+        <!-- ============ CONTROLS ============ -->
+        <section class="pane controls-pane" aria-label="Credits settings">
+          <!-- Text -->
+          <div class="group">
+            <div class="label-row">
+              <h2>Credits text</h2>
+              <div class="segment">
+                <select id="template" aria-label="Load a template">
+                  <option value="">Templates…</option>
+                  <option value="movie">🎬 Movie credits</option>
+                  <option value="youtube">▶ YouTube outro</option>
+                  <option value="wedding">💍 Wedding</option>
+                  <option value="game">🎮 Game credits</option>
+                </select>
+              </div>
+            </div>
+            <label class="field sr-only" for="text">Credits text</label>
+            <textarea id="text" spellcheck="true" placeholder="Paste your credits here…"></textarea>
+            <details class="guide">
+              <summary>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                Formatting tips
+              </summary>
+              <div class="guide-body">
+                <dl>
+                  <code># Title</code><dd>Large title</dd>
+                  <code>## Heading</code><dd>Section heading (e.g. CAST)</dd>
+                  <code>Role | Name</code><dd>Small label above a name</dd>
+                  <code>Plain text</code><dd>A normal line</dd>
+                  <code>(empty line)</code><dd>Adds extra space</dd>
+                </dl>
+              </div>
+            </details>
+            <div class="btn-row" style="margin-top:12px">
+              <button class="btn" id="reset" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset example
+              </button>
+              <button class="btn" id="clear" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Speed -->
+          <div class="group">
+            <div class="label-row">
+              <h2>Scroll speed</h2>
+              <div class="segment" role="group" aria-label="Speed presets">
+                <button class="seg-btn" type="button" data-speed="35">Slow</button>
+                <button class="seg-btn" type="button" data-speed="80">Normal</button>
+                <button class="seg-btn" type="button" data-speed="160">Fast</button>
+              </div>
+            </div>
+            <div class="range-row">
+              <span class="sr-only"><label for="speed">Scroll speed</label></span>
+              <input type="range" id="speed" min="20" max="260" step="2" value="80" aria-label="Scroll speed" />
+              <span class="range-val" id="speedVal">≈ 0:00</span>
+            </div>
+            <p class="helper">Slower = longer video. The time shown is exactly how long your exported video will be.</p>
+          </div>
+
+          <!-- Appearance -->
+          <div class="group">
+            <div class="label-row"><h2>Appearance</h2></div>
+
+            <div class="row2">
+              <div>
+                <label class="field" for="font">Font</label>
+                <select id="font">
+                  <option value="serif">Cinematic Serif</option>
+                  <option value="sans" selected>Modern Sans</option>
+                  <option value="mono">Monospace</option>
+                  <option value="condensed">Condensed</option>
+                </select>
+              </div>
+              <div>
+                <label class="field" for="align">Alignment</label>
+                <select id="align">
+                  <option value="center" selected>Center</option>
+                  <option value="left">Left</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-top:14px">
+              <label class="field" for="size">Text size</label>
+              <div class="range-row">
+                <input type="range" id="size" min="0.7" max="1.6" step="0.05" value="1" aria-label="Text size" />
+                <span class="range-val" id="sizeVal">100%</span>
+              </div>
+            </div>
+
+            <div class="row2" style="margin-top:14px">
+              <div>
+                <label class="field" for="textColor">Text color</label>
+                <div class="color-field">
+                  <input type="color" id="textColor" value="#ffffff" aria-label="Text color" />
+                  <div class="swatches" role="group" aria-label="Text color presets">
+                    <button class="swatch" type="button" data-target="textColor" data-color="#ffffff" style="background:#ffffff" aria-label="White text"></button>
+                    <button class="swatch" type="button" data-target="textColor" data-color="#f5d77a" style="background:#f5d77a" aria-label="Gold text"></button>
+                    <button class="swatch" type="button" data-target="textColor" data-color="#111111" style="background:#111111" aria-label="Black text"></button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="field" for="bgColor">Background</label>
+                <div class="color-field">
+                  <input type="color" id="bgColor" value="#000000" aria-label="Background color" />
+                  <div class="swatches" role="group" aria-label="Background color presets">
+                    <button class="swatch" type="button" data-target="bgColor" data-color="#000000" style="background:#000000" aria-label="Black background"></button>
+                    <button class="swatch" type="button" data-target="bgColor" data-color="#0b1b3a" style="background:#0b1b3a" aria-label="Midnight blue background"></button>
+                    <button class="swatch" type="button" data-target="bgColor" data-color="#ffffff" style="background:#ffffff" aria-label="White background"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px">
+              <div class="toggle">
+                <span class="t-label">Edge fade <span style="color:var(--muted);font-weight:400">— soft top &amp; bottom</span></span>
+                <input type="checkbox" id="edgeFade" checked aria-label="Edge fade" />
+              </div>
+              <div class="toggle">
+                <span class="t-label">Vignette <span style="color:var(--muted);font-weight:400">— darkened corners</span></span>
+                <input type="checkbox" id="vignette" checked aria-label="Vignette" />
+              </div>
+              <div class="toggle">
+                <span class="t-label">Loop preview</span>
+                <input type="checkbox" id="loop" aria-label="Loop preview" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Output -->
+          <div class="group">
+            <div class="label-row"><h2>Output quality</h2></div>
+            <label class="field sr-only" for="res">Resolution</label>
+            <select id="res">
+              <option value="720">720p — 1280 × 720 (smaller file)</option>
+              <option value="1080" selected>1080p — 1920 × 1080 (Full HD)</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- ============ PREVIEW ============ -->
+        <section class="preview-pane" aria-label="Live preview">
+          <div class="stage">
+            <canvas id="stage" width="1920" height="1080" role="img" aria-label="Live preview of your scrolling credits"></canvas>
+            <span class="badge" id="badge"><span class="live-dot"></span><span id="badgeText">LIVE PREVIEW</span></span>
+          </div>
+
+          <div class="transport">
+            <div class="scrub-row">
+              <span class="time" id="curTime">0:00</span>
+              <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Seek through preview" />
+              <span class="time" id="totTime">0:00</span>
+            </div>
+            <div class="controls-row">
+              <button class="icon-btn play" id="playBtn" type="button" aria-label="Play preview">
+                <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button class="icon-btn" id="restartBtn" type="button" aria-label="Restart from beginning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+              </button>
+              <div class="spacer"></div>
+              <button class="btn btn-primary" id="exportBtn" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Export video
+              </button>
+            </div>
+            <div class="export-bar">
+              <div class="status" id="status" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <span>Runs entirely in your browser · nothing is uploaded.</span>
+      <a href="index.html">← Back to Felix's World</a>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // ---------- Elements ----------
+    const $ = (id) => document.getElementById(id);
+    const canvas = $("stage");
+    const ctx = canvas.getContext("2d");
+    const LS_OK = "letterSpacing" in ctx; // canvas letter-spacing support
+
+    const els = {
+      text: $("text"), template: $("template"), reset: $("reset"), clear: $("clear"),
+      speed: $("speed"), speedVal: $("speedVal"),
+      font: $("font"), align: $("align"), size: $("size"), sizeVal: $("sizeVal"),
+      textColor: $("textColor"), bgColor: $("bgColor"),
+      edgeFade: $("edgeFade"), vignette: $("vignette"), loop: $("loop"), res: $("res"),
+      scrub: $("scrub"), curTime: $("curTime"), totTime: $("totTime"),
+      playBtn: $("playBtn"), playIcon: $("playIcon"), restartBtn: $("restartBtn"),
+      exportBtn: $("exportBtn"), status: $("status"), badge: $("badge"), badgeText: $("badgeText"),
+    };
+
+    const FONTS = {
+      serif: 'Georgia, "Times New Roman", "Iowan Old Style", serif',
+      sans: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      mono: 'ui-monospace, "SFMono-Regular", Menlo, Consolas, "Courier New", monospace',
+      condensed: '"Arial Narrow", "Roboto Condensed", "Helvetica Neue", system-ui, sans-serif',
+    };
+
+    // ---------- Templates ----------
+    const TEMPLATES = {
+      movie:
+`# THE LAST HORIZON
+
+A Felix Tycho Film
+
+## Starring
+Alex Morgan
+Sam Rivera
+Jordan Lee
+Casey Kim
+
+## Crew
+Director | Felix Tycho
+Writer | Felix Tycho
+Cinematography | Dana White
+Editor | Chris Park
+Music | The Synth Collective
+
+## Special Thanks
+Mom & Dad
+The whole crew
+Everyone who believed
+
+You, for watching.
+
+Made with Credit Roll`,
+      youtube:
+`# Thanks for watching!
+
+Don't forget to subscribe
+
+## Edited by
+Me, at 3am
+
+## Music
+Lofi Beats — Chillhop Vol. 4
+
+## Shout-out to
+My Patreon supporters
+Every single one of you
+
+See you next time!`,
+      wedding:
+`# Sarah & Tom
+
+## With love and thanks to
+
+Our Parents
+Our Bridal Party
+Our Wonderful Guests
+
+## Photography
+Bright Days Studio
+
+## Catering
+The Garden Table
+
+Forever begins today.`,
+      game:
+`# GALAXY RAIDERS
+
+## A game by
+Studio Nova
+
+## Lead Programmer
+Felix Tycho
+
+## Art & Animation
+Pixel Forge Team
+
+## Sound Design
+Echo Audio
+
+## Playtesters
+You know who you are
+
+Thanks for playing!
+Press start to play again.`,
+    };
+
+    // ---------- State ----------
+    const cfg = {
+      text: TEMPLATES.movie,
+      speedPx: 80,
+      fontKey: "sans",
+      align: "center",
+      fontScale: 1,
+      textColor: "#ffffff",
+      bgColor: "#000000",
+      edgeFade: true,
+      vignette: true,
+      loop: false,
+    };
+    const res = { w: 1920, h: 1080 };
+
+    let runs = [];
+    let contentHeight = 0;
+    let durationSec = 1;
+    let currentProgress = 0;
+    let playing = false;
+    let rafId = 0;
+    let anchorTs = 0;          // performance.now() at the moment play started
+    let anchorProgress = 0;    // progress at anchorTs
+    let exporting = false;
+
+    // ---------- Helpers ----------
+    function hexToRgb(hex) {
+      let h = (hex || "#000000").replace("#", "");
+      if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+      const n = parseInt(h, 16);
+      return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+    }
+    function rgba(hex, a) { const { r, g, b } = hexToRgb(hex); return `rgba(${r},${g},${b},${a})`; }
+    function fmt(s) {
+      s = Math.max(0, Math.round(s));
+      const m = Math.floor(s / 60);
+      const ss = String(s % 60).padStart(2, "0");
+      return `${m}:${ss}`;
+    }
+
+    // ---------- Parse + layout ----------
+    function parseBlocks(text) {
+      const out = [];
+      const lines = (text || "").replace(/\r/g, "").split("\n");
+      for (const raw of lines) {
+        const t = raw.trim();
+        if (t === "") { out.push({ type: "gap" }); continue; }
+        if (t.startsWith("## ")) { out.push({ type: "heading", text: t.slice(3).trim() }); continue; }
+        if (t.startsWith("# ")) { out.push({ type: "title", text: t.slice(2).trim() }); continue; }
+        const bar = t.indexOf("|");
+        if (bar > 0) {
+          const role = t.slice(0, bar).trim();
+          const name = t.slice(bar + 1).trim();
+          if (role && name) { out.push({ type: "pair", role, name }); continue; }
+        }
+        out.push({ type: "normal", text: t });
+      }
+      return out;
+    }
+
+    function wrapText(text, font, ls, maxWidth) {
+      ctx.font = font;
+      if (LS_OK) ctx.letterSpacing = (ls || 0) + "px";
+      const words = text.split(/\s+/).filter(Boolean);
+      const lines = [];
+      if (words.length) {
+        let cur = words[0];
+        for (let i = 1; i < words.length; i++) {
+          const test = cur + " " + words[i];
+          if (ctx.measureText(test).width <= maxWidth) cur = test;
+          else { lines.push(cur); cur = words[i]; }
+        }
+        lines.push(cur);
+      } else lines.push("");
+      if (LS_OK) ctx.letterSpacing = "0px";
+      return lines;
+    }
+
+    function relayout() {
+      const H = res.h, W = res.w;
+      const S = H * 0.038 * cfg.fontScale;
+      const maxW = W * 0.84;
+      const fam = FONTS[cfg.fontKey];
+      runs = [];
+      let y = 0;
+      const push = (line, fontPx, weight, role, upper, ls, lh) => {
+        runs.push({ line: upper ? line.toUpperCase() : line, fontPx, weight, role, ls: ls || 0, lh: lh || 1.25, yTop: y });
+        y += fontPx * (lh || 1.25);
+      };
+      const gap = (px) => { y += px; };
+
+      parseBlocks(cfg.text).forEach((b) => {
+        if (b.type === "gap") { gap(S * 0.85); return; }
+        if (b.type === "title") {
+          const f = S * 1.75;
+          gap(S * 0.5);
+          wrapText(b.text, `700 ${f}px ${fam}`, 0, maxW).forEach((l) => push(l, f, 700, "text", false, 0, 1.18));
+          gap(S * 1.25); return;
+        }
+        if (b.type === "heading") {
+          const f = S * 1.0, ls = f * 0.14;
+          gap(S * 0.9);
+          wrapText(b.text, `700 ${f}px ${fam}`, ls, maxW).forEach((l) => push(l, f, 700, "text", true, ls, 1.2));
+          gap(S * 0.55); return;
+        }
+        if (b.type === "pair") {
+          const fr = S * 0.6, fn = S * 1.0;
+          wrapText(b.role, `600 ${fr}px ${fam}`, fr * 0.12, maxW).forEach((l) => push(l, fr, 600, "muted", true, fr * 0.12, 1.25));
+          gap(S * 0.05);
+          wrapText(b.name, `600 ${fn}px ${fam}`, 0, maxW).forEach((l) => push(l, fn, 600, "text", false, 0, 1.25));
+          gap(S * 0.55); return;
+        }
+        const f = S * 1.0;
+        wrapText(b.text, `400 ${f}px ${fam}`, 0, maxW).forEach((l) => push(l, f, 400, "text", false, 0, 1.32));
+        gap(S * 0.5);
+      });
+
+      contentHeight = y;
+      recomputeDuration();
+    }
+
+    function recomputeDuration() {
+      durationSec = Math.max(0.6, (contentHeight + res.h) / cfg.speedPx);
+      els.totTime.textContent = fmt(durationSec);
+      els.speedVal.textContent = "≈ " + fmt(durationSec);
+      updateTime();
+    }
+
+    // ---------- Drawing ----------
+    function drawFrame(progress) {
+      const W = res.w, H = res.h;
+      const fam = FONTS[cfg.fontKey];
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = cfg.bgColor;
+      ctx.fillRect(0, 0, W, H);
+
+      if (!runs.length) { drawHint(); return; }
+
+      const travel = contentHeight + H;
+      const contentTop = H - progress * travel;
+      const cx = cfg.align === "center" ? W / 2 : W * 0.09;
+      const muted = rgba(cfg.textColor, 0.62);
+
+      ctx.textAlign = cfg.align === "center" ? "center" : "left";
+      ctx.textBaseline = "top";
+
+      for (const r of runs) {
+        const y = contentTop + r.yTop;
+        const h = r.fontPx * r.lh;
+        if (y > H + 4 || y + h < -4) continue; // cull offscreen
+        ctx.font = `${r.weight} ${r.fontPx}px ${fam}`;
+        ctx.fillStyle = r.role === "muted" ? muted : cfg.textColor;
+        if (LS_OK) ctx.letterSpacing = r.ls + "px";
+        ctx.fillText(r.line, cx, y);
+      }
+      if (LS_OK) ctx.letterSpacing = "0px";
+
+      if (cfg.edgeFade) drawEdgeFade();
+      if (cfg.vignette) drawVignette();
+    }
+
+    function drawHint() {
+      const W = res.w, H = res.h;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (LS_OK) ctx.letterSpacing = "0px";
+      ctx.fillStyle = rgba(cfg.textColor, 0.55);
+      ctx.font = `500 ${H * 0.035}px ${FONTS[cfg.fontKey]}`;
+      ctx.fillText("Type your credits to see a live preview", W / 2, H / 2);
+    }
+
+    function drawEdgeFade() {
+      const W = res.w, H = res.h, fh = H * 0.16;
+      let g = ctx.createLinearGradient(0, 0, 0, fh);
+      g.addColorStop(0, rgba(cfg.bgColor, 1));
+      g.addColorStop(1, rgba(cfg.bgColor, 0));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, fh);
+      g = ctx.createLinearGradient(0, H - fh, 0, H);
+      g.addColorStop(0, rgba(cfg.bgColor, 0));
+      g.addColorStop(1, rgba(cfg.bgColor, 1));
+      ctx.fillStyle = g; ctx.fillRect(0, H - fh, W, fh);
+    }
+
+    function drawVignette() {
+      const W = res.w, H = res.h;
+      const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.32, W / 2, H / 2, H * 0.78);
+      g.addColorStop(0, "rgba(0,0,0,0)");
+      g.addColorStop(1, "rgba(0,0,0,0.42)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    function drawCurrent() { drawFrame(currentProgress); }
+
+    // ---------- Playback ----------
+    function tick(ts) {
+      if (!playing) return;
+      const elapsed = (ts - anchorTs) / 1000;
+      let p = anchorProgress + elapsed / durationSec;
+
+      if (p >= 1) {
+        if (exporting) { currentProgress = 1; drawFrame(1); updateScrub(1); updateTime(); finishExport(); return; }
+        if (cfg.loop) { anchorTs = ts; anchorProgress = 0; p = 0; }
+        else { p = 1; playing = false; setPlayIcon(false); }
+      }
+      currentProgress = Math.min(p, 1);
+      drawFrame(currentProgress);
+      updateScrub(currentProgress);
+      updateTime();
+      if (exporting) setStatus(`Rendering video… ${Math.round(currentProgress * 100)}%`, "busy", true);
+      if (playing) rafId = requestAnimationFrame(tick);
+    }
+
+    function play() {
+      if (playing || !runs.length) return;
+      if (currentProgress >= 1) currentProgress = 0;
+      playing = true;
+      anchorProgress = currentProgress;
+      anchorTs = performance.now();
+      setPlayIcon(true);
+      rafId = requestAnimationFrame(tick);
+    }
+    function pause() {
+      if (!playing) return;
+      playing = false;
+      cancelAnimationFrame(rafId);
+      setPlayIcon(false);
+    }
+    function togglePlay() { playing ? pause() : play(); }
+    function seek(p) {
+      currentProgress = Math.max(0, Math.min(1, p));
+      anchorProgress = currentProgress;
+      anchorTs = performance.now();
+      drawCurrent();
+      updateScrub(currentProgress);
+      updateTime();
+    }
+    function restart() { seek(0); }
+
+    function setPlayIcon(isPlaying) {
+      els.playIcon.innerHTML = isPlaying
+        ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+        : '<path d="M8 5v14l11-7z"/>';
+      els.playBtn.setAttribute("aria-label", isPlaying ? "Pause preview" : "Play preview");
+    }
+    function updateScrub(p) {
+      if (document.activeElement !== els.scrub) els.scrub.value = String(Math.round(p * 1000));
+    }
+    function updateTime() {
+      els.curTime.textContent = fmt(currentProgress * durationSec);
+      els.totTime.textContent = fmt(durationSec);
+    }
+
+    function setStatus(msg, kind, spinner) {
+      els.status.className = "status" + (kind ? " " + kind : "");
+      els.status.innerHTML = (spinner ? '<span class="spin"></span>' : "") + (msg || "");
+    }
+
+    // ---------- Export (canvas -> WebM via MediaRecorder) ----------
+    const MIME = (function () {
+      if (!("MediaRecorder" in window) || !canvas.captureStream) return null;
+      const cands = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4"];
+      for (const c of cands) { try { if (MediaRecorder.isTypeSupported(c)) return c; } catch (e) {} }
+      return null;
+    })();
+    const EXT = MIME && MIME.includes("mp4") ? "mp4" : "webm";
+
+    let recorder = null, chunks = [];
+
+    function lockUI(locked) {
+      // exportBtn stays enabled so it can act as "Stop & save" during recording
+      [els.playBtn, els.restartBtn, els.scrub, els.text, els.template,
+       els.reset, els.clear, els.speed, els.font, els.align, els.size,
+       els.textColor, els.bgColor, els.edgeFade, els.vignette, els.loop, els.res]
+        .forEach((e) => { e.disabled = locked; });
+      document.querySelectorAll(".seg-btn, .swatch").forEach((b) => { b.disabled = locked; });
+      els.badge.classList.toggle("rec", locked);
+      els.badgeText.textContent = locked ? "RECORDING" : "LIVE PREVIEW";
+      els.exportBtn.innerHTML = locked
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> Stop &amp; save'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Export video';
+    }
+
+    function startExport() {
+      if (exporting) { stopExport(); return; }
+      if (!MIME) {
+        setStatus("Video export isn't supported in this browser — try Chrome, Edge or Firefox. The preview still works.", "error");
+        return;
+      }
+      if (!runs.length) { setStatus("Add some credits text first.", "error"); return; }
+
+      exporting = true;
+      lockUI(true);
+      const fps = 30;
+      const stream = canvas.captureStream(fps);
+      chunks = [];
+      try {
+        recorder = new MediaRecorder(stream, { mimeType: MIME, videoBitsPerSecond: res.h >= 1080 ? 9_000_000 : 5_000_000 });
+      } catch (e) {
+        recorder = new MediaRecorder(stream);
+      }
+      recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: MIME });
+        downloadBlob(blob, `credit-roll.${EXT}`);
+        exporting = false;
+        lockUI(false);
+        setStatus(`Done — saved credit-roll.${EXT} (${fmt(durationSec)}, ${humanSize(blob.size)}).`, "");
+      };
+
+      setStatus(`Rendering video… 0% — this happens in real time (~${fmt(durationSec)}).`, "busy", true);
+      seek(0);
+      recorder.start(200);
+      // give the recorder a tick to spin up, then roll
+      requestAnimationFrame(() => { anchorProgress = 0; anchorTs = performance.now(); playing = true; setPlayIcon(true); rafId = requestAnimationFrame(tick); });
+    }
+
+    function finishExport() {
+      playing = false;
+      cancelAnimationFrame(rafId);
+      setPlayIcon(false);
+      // hold the last frame briefly so it's captured, then stop
+      setTimeout(() => { try { if (recorder && recorder.state !== "inactive") recorder.stop(); } catch (e) {} }, 300);
+    }
+    function stopExport() {
+      // user pressed Stop & save early
+      playing = false;
+      cancelAnimationFrame(rafId);
+      setPlayIcon(false);
+      try { if (recorder && recorder.state !== "inactive") recorder.stop(); } catch (e) {}
+    }
+
+    function downloadBlob(blob, name) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+    function humanSize(n) {
+      if (n < 1024) return n + " B";
+      if (n < 1048576) return (n / 1024).toFixed(0) + " KB";
+      return (n / 1048576).toFixed(1) + " MB";
+    }
+
+    // ---------- Wiring ----------
+    let textTimer = 0;
+    els.text.addEventListener("input", () => {
+      clearTimeout(textTimer);
+      textTimer = setTimeout(() => {
+        cfg.text = els.text.value;
+        relayout();
+        drawCurrent();
+      }, 140);
+    });
+
+    els.template.addEventListener("change", () => {
+      const key = els.template.value;
+      if (!key || !TEMPLATES[key]) return;
+      cfg.text = TEMPLATES[key];
+      els.text.value = cfg.text;
+      els.template.value = "";
+      relayout(); seek(0);
+    });
+    els.reset.addEventListener("click", () => {
+      cfg.text = TEMPLATES.movie; els.text.value = cfg.text; relayout(); seek(0);
+    });
+    els.clear.addEventListener("click", () => {
+      cfg.text = ""; els.text.value = ""; pause(); relayout(); seek(0); els.text.focus();
+    });
+
+    els.speed.addEventListener("input", () => {
+      cfg.speedPx = Number(els.speed.value);
+      syncSpeedPresets();
+      recomputeDuration();
+    });
+    document.querySelectorAll("[data-speed]").forEach((b) => {
+      b.addEventListener("click", () => {
+        cfg.speedPx = Number(b.dataset.speed);
+        els.speed.value = String(cfg.speedPx);
+        syncSpeedPresets();
+        recomputeDuration();
+      });
+    });
+    function syncSpeedPresets() {
+      document.querySelectorAll("[data-speed]").forEach((b) =>
+        b.setAttribute("aria-pressed", String(Number(b.dataset.speed) === cfg.speedPx)));
+    }
+
+    els.font.addEventListener("change", () => { cfg.fontKey = els.font.value; relayout(); drawCurrent(); });
+    els.align.addEventListener("change", () => { cfg.align = els.align.value; drawCurrent(); });
+    els.size.addEventListener("input", () => {
+      cfg.fontScale = Number(els.size.value);
+      els.sizeVal.textContent = Math.round(cfg.fontScale * 100) + "%";
+      relayout(); drawCurrent();
+    });
+
+    els.textColor.addEventListener("input", () => { cfg.textColor = els.textColor.value; drawCurrent(); });
+    els.bgColor.addEventListener("input", () => { cfg.bgColor = els.bgColor.value; drawCurrent(); });
+    document.querySelectorAll(".swatch").forEach((b) => {
+      b.addEventListener("click", () => {
+        const target = b.dataset.target, color = b.dataset.color;
+        cfg[target] = color; els[target].value = color; drawCurrent();
+      });
+    });
+
+    els.edgeFade.addEventListener("change", () => { cfg.edgeFade = els.edgeFade.checked; drawCurrent(); });
+    els.vignette.addEventListener("change", () => { cfg.vignette = els.vignette.checked; drawCurrent(); });
+    els.loop.addEventListener("change", () => { cfg.loop = els.loop.checked; });
+
+    els.res.addEventListener("change", () => {
+      if (els.res.value === "1080") { res.w = 1920; res.h = 1080; }
+      else { res.w = 1280; res.h = 720; }
+      canvas.width = res.w; canvas.height = res.h;
+      relayout(); drawCurrent();
+    });
+
+    els.scrub.addEventListener("input", () => { seek(Number(els.scrub.value) / 1000); });
+    els.playBtn.addEventListener("click", togglePlay);
+    els.restartBtn.addEventListener("click", restart);
+    els.exportBtn.addEventListener("click", startExport);
+
+    // Spacebar toggles play (unless typing)
+    document.addEventListener("keydown", (e) => {
+      if (e.code !== "Space") return;
+      const tag = (e.target.tagName || "").toLowerCase();
+      if (tag === "textarea" || tag === "input" || tag === "select" || exporting) return;
+      e.preventDefault();
+      togglePlay();
+    });
+
+    // ---------- Init ----------
+    els.text.value = cfg.text;
+    if (!MIME) {
+      els.exportBtn.disabled = true;
+      setStatus("Heads up: this browser can't export video. Preview works fine — open in Chrome, Edge or Firefox to download.", "error");
+    }
+    syncSpeedPresets();
+    relayout();
+    seek(0);
+  })();
+  </script>
+</body>
+</html>
