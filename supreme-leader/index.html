@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0F172A" />
+<title>SUPREME LEADER — Dictator Sidescroller</title>
+<meta name="description" content="A 2D pixel-art sidescroller. Rule the world's most powerful nation as its Supreme Leader. Walk, talk, arrest, declare war, and launch nukes." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game-shell" aria-label="Supreme Leader game">
+    <!-- Accessible description for screen readers -->
+    <h1 class="sr-only">Supreme Leader — a side-scrolling game where you rule the world's
+      most powerful country. Use Arrow keys or A and D to walk, Space or W to jump,
+      E to talk to nearby characters, and Tab to open the command menu.</h1>
+
+    <canvas id="scene" width="1280" height="640" role="img"
+            aria-label="Game world rendered on a canvas"></canvas>
+
+    <!-- Top HUD: nation stats -->
+    <header id="hud" aria-label="Nation status">
+      <div class="brand"><span class="emblem" aria-hidden="true"></span>SUPREME&nbsp;LEADER</div>
+      <ul class="stats" aria-live="off">
+        <li class="stat" data-stat="popularity"><span class="label">Loyalty</span>
+          <span class="bar"><i></i></span><span class="val">70</span></li>
+        <li class="stat" data-stat="military"><span class="label">Military</span>
+          <span class="bar"><i></i></span><span class="val">80</span></li>
+        <li class="stat" data-stat="fear"><span class="label">Fear</span>
+          <span class="bar"><i></i></span><span class="val">40</span></li>
+        <li class="stat money" data-stat="treasury"><span class="label">Treasury</span>
+          <span class="val">$120<span class="unit">B</span></span></li>
+        <li class="stat zone" data-stat="zone"><span class="label">Sector</span>
+          <span class="val">Grand Palace</span></li>
+      </ul>
+    </header>
+
+    <!-- News ticker -->
+    <div id="ticker" aria-label="State news ticker">
+      <span class="tk-label">STATE&nbsp;TV</span>
+      <div class="tk-track"><span id="tk-text" aria-live="polite"></span></div>
+    </div>
+
+    <!-- Command menu (Tab) -->
+    <aside id="cmd-menu" class="hidden" aria-label="Command menu" aria-hidden="true">
+      <div class="cmd-head">SUPREME COMMAND</div>
+      <p class="cmd-sub">Issue a decree. Some are irreversible.</p>
+      <div id="cmd-list" role="menu"></div>
+      <div class="cmd-foot">Tab / Esc to close</div>
+    </aside>
+
+    <!-- Dialogue box -->
+    <section id="dialogue" class="hidden" aria-label="Conversation" aria-hidden="true">
+      <div class="dlg-portrait" aria-hidden="true"><canvas id="dlg-face" width="64" height="64"></canvas></div>
+      <div class="dlg-body">
+        <div class="dlg-name"><span id="dlg-who">Citizen</span><span id="dlg-role" class="dlg-role">Ordinary Citizen</span></div>
+        <p id="dlg-line" class="dlg-line"></p>
+        <div id="dlg-actions" class="dlg-actions"></div>
+      </div>
+    </section>
+
+    <!-- Random event modal -->
+    <div id="event-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ev-title" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-tag" id="ev-tag">ALERT</div>
+        <h2 class="modal-title" id="ev-title">Event</h2>
+        <p class="modal-text" id="ev-text"></p>
+        <div class="modal-actions" id="ev-actions"></div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" role="status" aria-live="assertive"></div>
+
+    <!-- Interaction prompt -->
+    <div id="prompt" class="hidden" aria-hidden="true"><kbd>E</kbd> Talk</div>
+
+    <!-- Touch controls -->
+    <div id="touch" aria-hidden="true">
+      <div class="pad">
+        <button class="tbtn" data-key="left" aria-label="Move left">◀</button>
+        <button class="tbtn" data-key="right" aria-label="Move right">▶</button>
+      </div>
+      <div class="acts">
+        <button class="tbtn" data-key="interact" aria-label="Talk">E</button>
+        <button class="tbtn jump" data-key="jump" aria-label="Jump">⤒</button>
+        <button class="tbtn menu" data-key="menu" aria-label="Open command menu">⚑</button>
+      </div>
+    </div>
+
+    <!-- Intro / start overlay -->
+    <div id="intro" role="dialog" aria-modal="true" aria-label="Start screen">
+      <div class="intro-inner">
+        <div class="intro-emblem" aria-hidden="true"></div>
+        <h2 class="intro-title">SUPREME&nbsp;LEADER</h2>
+        <p class="intro-sub">You are the absolute ruler of the world's most powerful nation.
+           The palace, the streets, the army, the prison and the silo all answer to you.</p>
+        <div class="intro-keys">
+          <span><kbd>A</kbd><kbd>D</kbd> / <kbd>◀</kbd><kbd>▶</kbd> Walk</span>
+          <span><kbd>Space</kbd> Jump</span>
+          <span><kbd>E</kbd> Talk</span>
+          <span><kbd>Tab</kbd> Command</span>
+        </div>
+        <button id="start-btn" class="btn-primary" type="button">ASSUME POWER</button>
+        <p class="intro-foot">Best played on a desktop with a keyboard.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Game modules (classic scripts, ordered) -->
+  <script src="js/input.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/dialogue.js"></script>
+  <script src="js/npcs.js"></script>
+  <script src="js/commands.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
