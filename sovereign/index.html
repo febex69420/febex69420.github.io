@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOVEREIGN — Rule Your Nation</title>
+<meta name="description" content="A 3D sandbox nation simulator: rule a procedurally generated country, command armies, write laws, and face the consequences.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<!-- ======================= HUD ======================= -->
+<div id="hud" style="display:none">
+  <div id="topbar"></div>
+  <div id="dock"></div>
+  <div id="windows"></div>
+  <div id="toasts"></div>
+  <div id="modal-root"></div>
+  <div id="timebar"></div>
+  <div id="cambar"></div>
+  <div id="minimap-wrap"><canvas id="minimap"></canvas></div>
+  <div id="buildhint"></div>
+  <div id="letterbox"><div class="lb-bar top"></div><div class="lb-bar bottom"></div></div>
+</div>
+
+<!-- ======================= MENU ======================= -->
+<div id="menu">
+  <div class="menu-box">
+    <div class="menu-logo">👑 SOVEREIGN</div>
+    <div class="menu-sub">A living nation is waiting for a ruler. Every citizen simulated. Every choice remembered.</div>
+    <label>World seed
+      <span class="seed-row"><input id="seed-input" maxlength="40"><button id="dice-btn" title="Random seed">🎲</button></span>
+    </label>
+    <label>Nation name<input id="nation-input" maxlength="28"></label>
+    <label>Your name<input id="ruler-input" maxlength="28"></label>
+    <label>Government
+      <select id="gov-select">
+        <option value="democracy">Democracy — elections every 4 years</option>
+        <option value="autocracy">Autocracy — no elections, more fear</option>
+        <option value="monarchy">Monarchy — rule by birthright</option>
+        <option value="junta">Military Junta — the army watches</option>
+      </select>
+    </label>
+    <button id="start-btn" class="menu-start">FOUND THE NATION</button>
+    <button id="continue-btn" class="menu-continue" style="display:none">📂 Continue saved game</button>
+    <div class="menu-help">
+      <b>WASD</b> pan · <b>Q/E</b> rotate · <b>wheel</b> zoom · <b>C</b> camera modes (fly / walk / cinematic) ·
+      <b>Space</b> pause · <b>1-3</b> speed · <b>T</b> territory · <b>B</b> build ·
+      click units to command, right-click to move · click citizens to meet them
+    </div>
+    <div class="menu-foot">Entirely fictional. Procedurally generated. No two nations alike.</div>
+  </div>
+</div>
+
+<!-- ======================= LOADING ======================= -->
+<div id="loading" style="display:none">
+  <div class="menu-logo">👑 SOVEREIGN</div>
+  <div id="loading-text">Raising continents…</div>
+  <div class="loading-bar"><div id="loading-fill"></div></div>
+</div>
+
+<!-- ======================= GAME OVER ======================= -->
+<div id="gameover" style="display:none">
+  <div class="menu-box">
+    <div class="menu-logo" id="gameover-title">THE END</div>
+    <div class="menu-sub" id="gameover-text"></div>
+    <div class="menu-sub" id="gameover-stats"></div>
+    <button class="menu-start" id="gameover-restart">START ANEW</button>
+    <button class="menu-continue" id="gameover-observe">👁 Observe the aftermath</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js" } }
+</script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
